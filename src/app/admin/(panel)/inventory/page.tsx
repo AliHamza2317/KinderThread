@@ -5,10 +5,9 @@ import { InventoryTable } from "@/components/admin/catalog/inventory-table";
 import { Card, EmptyState, PageHeader, StatCard } from "@/components/admin/ui";
 import { Input } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { PRODUCTS } from "@/data/catalog";
 import { sortSizes } from "@/lib/sizes";
 import { cn } from "@/lib/utils";
-import type { Prisma } from "@/generated/prisma/client";
 
 export const metadata: Metadata = { title: "Inventory" };
 
@@ -20,28 +19,26 @@ export default async function InventoryPage({ searchParams }: { searchParams: Pr
   const q = sp.q?.trim().slice(0, 80) ?? "";
   const filter = sp.filter === "low" || sp.filter === "out" ? sp.filter : undefined;
 
-  const where: Prisma.ProductVariantWhereInput = {
-    AND: [
-      q ? { OR: [{ sku: { contains: q, mode: "insensitive" } }, { product: { name: { contains: q, mode: "insensitive" } } }] } : {},
-      filter === "low" ? { stock: { gt: 0, lte: 3 } } : filter === "out" ? { stock: { lte: 0 } } : {},
-    ],
-  };
-
-  const [variants, totals] = await Promise.all([
-    db.productVariant.findMany({
-      where,
-      take: LIMIT,
-      orderBy: [{ product: { name: "asc" } }],
-      include: { product: { select: { id: true, name: true, status: true, isSample: true } }, color: { select: { name: true, hex: true, sortOrder: true } } },
-    }),
-    db.productVariant.groupBy({ by: ["isActive"], _sum: { stock: true }, _count: true }),
-  ]);
-  const [lowCount, outCount] = await Promise.all([
-    db.productVariant.count({ where: { stock: { gt: 0, lte: 3 }, isActive: true, product: { status: "ACTIVE" } } }),
-    db.productVariant.count({ where: { stock: { lte: 0 }, isActive: true, product: { status: "ACTIVE" } } }),
-  ]);
-  const units = totals.find((t) => t.isActive)?._sum.stock ?? 0;
-  const variantCount = totals.reduce((n, t) => n + t._count, 0);
+  const all = PRODUCTS.flatMap((p) =>
+    p.variants.map((v) => ({
+      ...v,
+      product: { id: p.id, name: p.name, status: p.status, isSample: p.isSample },
+      color: (() => {
+        const c = p.colors.find((x) => x.id === v.colorId);
+        return c ? { name: c.name, hex: c.hex, sortOrder: c.sortOrder } : null;
+      })(),
+    })),
+  );
+  const needle = q.toLowerCase();
+  const variants = all
+    .filter((v) => !needle || v.sku.toLowerCase().includes(needle) || v.product.name.toLowerCase().includes(needle))
+    .filter((v) => (filter === "low" ? v.stock > 0 && v.stock <= 3 : filter === "out" ? v.stock <= 0 : true))
+    .slice(0, LIMIT);
+  const live = all.filter((v) => v.isActive && v.product.status === "ACTIVE");
+  const lowCount = live.filter((v) => v.stock > 0 && v.stock <= 3).length;
+  const outCount = live.filter((v) => v.stock <= 0).length;
+  const units = all.filter((v) => v.isActive).reduce((n, v) => n + v.stock, 0);
+  const variantCount = all.length;
 
   // stable, readable ordering: product → colour → size ladder
   const sizeOrder = (s: string) => sortSizes(variants.map((v) => v.size)).indexOf(s);

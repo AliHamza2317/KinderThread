@@ -5,15 +5,18 @@ import { Card, EmptyState, PageHeader, TableWrap, tableCls, tdCls, thCls } from 
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { PRODUCTS, SIZE_GUIDES } from "@/data/catalog";
+import { DemoNotice } from "@/components/admin/demo-notice";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Size guides" };
 
-export default async function SizeGuidesPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
+export default async function SizeGuidesPage({ searchParams }: { searchParams: Promise<{ deleted?: string; demo?: string }> }) {
   await requireStaff();
-  const { deleted } = await searchParams;
-  const guides = await db.sizeGuide.findMany({ orderBy: [{ isDefault: "desc" }, { name: "asc" }], include: { _count: { select: { products: true } } } });
+  const { deleted, demo } = await searchParams;
+  const guides = [...SIZE_GUIDES]
+    .sort((a, b) => Number(b.isDefault) - Number(a.isDefault) || a.name.localeCompare(b.name))
+    .map((g) => ({ ...g, _count: { products: PRODUCTS.filter((p) => p.sizeGuideId === g.id).length } }));
   return (
     <>
       <PageHeader
@@ -25,6 +28,7 @@ export default async function SizeGuidesPage({ searchParams }: { searchParams: P
           </ButtonLink>
         }
       />
+      <DemoNotice show={demo === "1"} />
       {deleted && (
         <p className="mb-6 rounded-xl bg-sage-100 px-4 py-3 text-sm font-medium text-sage-800" role="status">
           Size guide deleted.

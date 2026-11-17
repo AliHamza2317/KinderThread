@@ -5,7 +5,7 @@ import { SizeGuideForm, type SizeRow } from "@/components/admin/catalog/size-gui
 import { ConfirmSubmit } from "@/components/admin/form-bits";
 import { PageHeader } from "@/components/admin/ui";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { PRODUCTS, SIZE_GUIDES } from "@/data/catalog";
 
 export const metadata: Metadata = { title: "Edit size guide" };
 
@@ -21,8 +21,9 @@ function toRows(json: unknown): SizeRow[] {
 export default async function EditSizeGuidePage({ params }: { params: Promise<{ id: string }> }) {
   await requireStaff();
   const { id } = await params;
-  const g = await db.sizeGuide.findUnique({ where: { id }, include: { _count: { select: { products: true } } } });
-  if (!g) notFound();
+  const found = SIZE_GUIDES.find((x) => x.id === id);
+  if (!found) notFound();
+  const g = { ...found, _count: { products: PRODUCTS.filter((p) => p.sizeGuideId === found.id).length } };
   return (
     <>
       <PageHeader

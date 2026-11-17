@@ -6,18 +6,18 @@ import { Card, EmptyState, PageHeader, TableWrap, tableCls, tdCls, thCls } from 
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { CATEGORIES, PRODUCTS } from "@/data/catalog";
+import { DemoNotice } from "@/components/admin/demo-notice";
 import { cn } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Categories" };
 
-export default async function CategoriesPage({ searchParams }: { searchParams: Promise<{ deleted?: string }> }) {
+export default async function CategoriesPage({ searchParams }: { searchParams: Promise<{ deleted?: string; demo?: string }> }) {
   await requireStaff();
-  const { deleted } = await searchParams;
-  const categories = await db.category.findMany({
-    orderBy: [{ kind: "asc" }, { sortOrder: "asc" }, { name: "asc" }],
-    include: { _count: { select: { products: true } } },
-  });
+  const { deleted, demo } = await searchParams;
+  const categories = [...CATEGORIES]
+    .sort((a, b) => a.kind.localeCompare(b.kind) || a.sortOrder - b.sortOrder || a.name.localeCompare(b.name))
+    .map((c) => ({ ...c, _count: { products: PRODUCTS.filter((p) => p.categoryIds.includes(c.id)).length } }));
   return (
     <>
       <PageHeader
@@ -29,6 +29,7 @@ export default async function CategoriesPage({ searchParams }: { searchParams: P
           </ButtonLink>
         }
       />
+      <DemoNotice show={demo === "1"} />
       {deleted && (
         <p className="mb-6 rounded-xl bg-sage-100 px-4 py-3 text-sm font-medium text-sage-800" role="status">
           Category deleted. Products in it were kept.

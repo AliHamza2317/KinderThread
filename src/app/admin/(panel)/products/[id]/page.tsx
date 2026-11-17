@@ -9,12 +9,13 @@ import { getProductFormOptions } from "@/components/admin/catalog/data";
 import { ProductForm, type ProductFormData } from "@/components/admin/catalog/product-form";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ORDERS } from "@/data/admin";
+import { PRODUCTS } from "@/data/catalog";
 import { formatDate } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const p = await db.product.findUnique({ where: { id }, select: { name: true } });
+  const p = PRODUCTS.find((x) => x.id === id);
   return { title: p ? `Edit ${p.name}` : "Product" };
 }
 
@@ -22,19 +23,12 @@ export default async function EditProductPage({ params, searchParams }: { params
   await requireStaff();
   const { id } = await params;
   const { created } = await searchParams;
-  const [p, options, sold] = await Promise.all([
-    db.product.findUnique({
-      where: { id },
-      include: {
-        categories: { select: { id: true } },
-        colors: { orderBy: { sortOrder: "asc" } },
-        images: { orderBy: { sortOrder: "asc" } },
-        variants: true,
-      },
-    }),
-    getProductFormOptions(),
-    db.orderItem.aggregate({ where: { productId: id, order: { status: { notIn: ["CANCELLED", "RETURNED"] } } }, _sum: { quantity: true } }),
-  ]);
+  const p = PRODUCTS.find((x) => x.id === id);
+  const options = await getProductFormOptions();
+  const sold = ORDERS.filter((o) => o.status !== "CANCELLED" && o.status !== "RETURNED")
+    .flatMap((o) => o.items)
+    .filter((i) => i.productId === id)
+    .reduce((n, i) => n + i.quantity, 0);
   if (!p) notFound();
 
   const data: ProductFormData = {
@@ -48,7 +42,7 @@ export default async function EditProductPage({ params, searchParams }: { params
     compareAtPrice: p.compareAtPrice,
     status: p.status,
     gender: p.gender,
-    categoryIds: p.categories.map((c) => c.id),
+    categoryIds: p.categoryIds,
     isFeatured: p.isFeatured,
     isNewArrival: p.isNewArrival,
     isBestSeller: p.isBestSeller,
@@ -71,7 +65,7 @@ export default async function EditProductPage({ params, searchParams }: { params
             <Badge tone={p.status === "ACTIVE" ? "success" : "neutral"}>{p.status.toLowerCase()}</Badge>
             {p.isSample && <Badge tone="sample">Sample</Badge>}
             <span>
-              {sold._sum.quantity ?? 0} sold · updated {formatDate(p.updatedAt, { dateStyle: "medium", timeStyle: "short" })}
+              {sold} sold · updated {formatDate(p.updatedAt, { dateStyle: "medium", timeStyle: "short" })}
             </span>
           </span>
         }

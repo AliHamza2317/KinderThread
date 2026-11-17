@@ -7,7 +7,7 @@ import { CategoryForm } from "@/components/admin/catalog/category-form";
 import { ConfirmSubmit } from "@/components/admin/form-bits";
 import { PageHeader } from "@/components/admin/ui";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { CATEGORIES, PRODUCTS } from "@/data/catalog";
 
 export const metadata: Metadata = { title: "Edit category" };
 
@@ -15,8 +15,9 @@ export default async function EditCategoryPage({ params, searchParams }: { param
   await requireStaff();
   const { id } = await params;
   const { created } = await searchParams;
-  const c = await db.category.findUnique({ where: { id }, include: { _count: { select: { products: true } } } });
-  if (!c) notFound();
+  const found = CATEGORIES.find((x) => x.id === id);
+  if (!found) notFound();
+  const c = { ...found, _count: { products: PRODUCTS.filter((p) => p.categoryIds.includes(found.id)).length } };
   return (
     <>
       <PageHeader
