@@ -56,8 +56,18 @@ export function toCard(p: CardRow): ProductCardData {
   };
 }
 
+export type CollectionFlag = "isNewArrival" | "isBestSeller" | "sale";
+
+/** Automatic collections that are driven by product flags rather than category membership */
+export const VIRTUAL_COLLECTIONS: Record<string, { name: string; description: string; flag: CollectionFlag }> = {
+  "new-arrivals": { name: "New Arrivals", description: "Fresh pieces for the new season — soft colours, easy fits.", flag: "isNewArrival" },
+  "best-sellers": { name: "Best Sellers", description: "The styles little ones (and their grown-ups) love most.", flag: "isBestSeller" },
+  sale: { name: "On Sale", description: "Little treasures at little prices, while sizes last.", flag: "sale" },
+};
+
 export type ShopFilters = {
   category?: string;
+  flag?: CollectionFlag;
   q?: string;
   gender?: string[];
   sizes?: string[];
@@ -101,6 +111,8 @@ export function parseFilters(sp: Record<string, string | string[] | undefined>):
 function buildWhere(f: ShopFilters): Prisma.ProductWhereInput {
   const and: Prisma.ProductWhereInput[] = [{ status: "ACTIVE" }];
   if (f.category) and.push({ categories: { some: { slug: f.category } } });
+  if (f.flag === "sale") and.push({ compareAtPrice: { not: null } });
+  else if (f.flag) and.push({ [f.flag]: true });
   if (f.q) {
     const q = f.q;
     and.push({
@@ -160,9 +172,9 @@ export async function listProducts(f: ShopFilters) {
 }
 
 /** Facet values available within a scope (category or whole shop). */
-export async function getFacets(category?: string) {
+export async function getFacets(scope: { category?: string; flag?: CollectionFlag; q?: string } = {}) {
   const rows = await db.product.findMany({
-    where: { status: "ACTIVE", ...(category ? { categories: { some: { slug: category } } } : {}) },
+    where: buildWhere({ category: scope.category, flag: scope.flag, q: scope.q }),
     select: {
       price: true,
       gender: true,

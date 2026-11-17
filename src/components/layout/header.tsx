@@ -53,7 +53,7 @@ export function Header({ categories, signedIn }: Props) {
     <motion.header
       className={cn(
         "sticky top-0 z-40 transition-[background-color,box-shadow,border-color] duration-500",
-        scrolled ? "border-b border-cocoa-100/70 bg-cream/90 backdrop-blur-md" : "border-b border-transparent bg-cream",
+        scrolled ? "border-b border-cocoa-100/70 bg-cream shadow-[0_8px_30px_-18px_rgb(91_58_38/0.25)]" : "border-b border-transparent bg-cream",
       )}
       animate={{ y: hidden ? "-100%" : "0%" }}
       transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
@@ -78,7 +78,10 @@ export function Header({ categories, signedIn }: Props) {
         <nav className="mx-auto hidden lg:block" aria-label="Main">
           <ul className="flex items-center gap-1 xl:gap-2">
             {nav.map((item) => {
-              const active = item.href === "/" ? pathname === "/" : pathname.startsWith(item.href);
+              // the most specific matching link wins, so /collections/baby-girls highlights "Baby Girls" only
+              const matches = nav.filter((n) => (n.href === "/" ? pathname === "/" : pathname === n.href || pathname.startsWith(n.href + "/")));
+              const best = matches.sort((a, b) => b.href.length - a.href.length)[0];
+              const active = best?.href === item.href;
               return (
                 <li key={item.label} className="relative" onMouseEnter={() => setOpenMenu(item.menu ?? null)}>
                   <Link

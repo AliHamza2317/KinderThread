@@ -60,6 +60,9 @@ export type DeviceTier = "full" | "lite" | "static";
 /** Decide how much 3D a device should get. */
 export function detectDeviceTier(): DeviceTier {
   if (typeof window === "undefined") return "static";
+  // manual override for QA: ?kt3d=full|lite|static
+  const forced = new URLSearchParams(window.location.search).get("kt3d");
+  if (forced === "full" || forced === "lite" || forced === "static") return forced;
   if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return "static";
   const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean; effectiveType?: string } };
   if (nav.connection?.saveData || /(^|-)2g$/.test(nav.connection?.effectiveType ?? "")) return "static";
