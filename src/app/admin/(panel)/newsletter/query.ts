@@ -1,4 +1,4 @@
-import type { Prisma, SubscriberSource } from "@/generated/prisma/client";
+import type { Subscriber, SubscriberSource } from "@/lib/types";
 
 export const SOURCES: { id: SubscriberSource; label: string }[] = [
   { id: "NEWSLETTER", label: "Newsletter" },
@@ -20,12 +20,12 @@ export function parseSubscriberFilters(sp: Record<string, string | string[] | un
   };
 }
 
-export function subscriberWhere(f: SubscriberFilters): Prisma.SubscriberWhereInput {
-  return {
-    ...(f.source ? { source: f.source } : {}),
-    ...(f.status ? { isActive: f.status === "active" } : {}),
-    ...(f.q ? { email: { contains: f.q, mode: "insensitive" } } : {}),
-  };
+/** Applies the filters to a list of subscribers, newest first (returns a new array). */
+export function filterSubscribers(list: Subscriber[], f: SubscriberFilters): Subscriber[] {
+  const q = f.q?.toLowerCase();
+  return list
+    .filter((s) => (!f.source || s.source === f.source) && (!f.status || s.isActive === (f.status === "active")) && (!q || s.email.toLowerCase().includes(q)))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 }
 
 export function filterQuery(f: SubscriberFilters, extra: Record<string, string> = {}) {

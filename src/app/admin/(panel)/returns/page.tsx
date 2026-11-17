@@ -4,9 +4,9 @@ import { EmptyState, PageHeader, TableWrap, tableCls, tdCls, thCls } from "@/com
 import { RETURN_STATUS_LABEL, RETURN_STATUS_TONE, RETURN_TYPE_LABEL } from "@/components/admin/sales/labels";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ORDERS, RETURNS } from "@/data/admin";
 import { cn, formatDate } from "@/lib/utils";
-import { ReturnStatus } from "@/generated/prisma/enums";
+import { RETURN_STATUSES, type ReturnStatus } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Returns & exchanges" };
 
@@ -15,25 +15,22 @@ const OPEN: ReturnStatus[] = ["REQUESTED", "APPROVED", "RECEIVED"];
 export default async function ReturnsPage({ searchParams }: { searchParams: Promise<{ status?: string }> }) {
   await requireStaff();
   const sp = await searchParams;
-  const filter = sp.status === "all" ? "all" : sp.status && sp.status in ReturnStatus ? (sp.status as ReturnStatus) : "open";
-  const where = filter === "all" ? {} : filter === "open" ? { status: { in: OPEN } } : { status: filter };
-
-  const [requests, grouped] = await Promise.all([
-    db.returnRequest.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      take: 200,
-      include: { order: { select: { id: true, number: true, customerName: true, phone: true, status: true, total: true } } },
-    }),
-    db.returnRequest.groupBy({ by: ["status"], _count: { _all: true } }),
-  ]);
-  const counts = Object.fromEntries(grouped.map((g) => [g.status, g._count._all])) as Partial<Record<ReturnStatus, number>>;
+  const filter = sp.status === "all" ? "all" : sp.status && (RETURN_STATUSES as readonly string[]).includes(sp.status) ? (sp.status as ReturnStatus) : "open";
+  const requests = RETURNS.filter((r) => (filter === "all" ? true : filter === "open" ? OPEN.includes(r.status) : r.status === filter))
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 200)
+    .flatMap((r) => {
+      const order = ORDERS.find((o) => o.id === r.orderId);
+      return order ? [{ ...r, order }] : [];
+    });
+  const counts: Partial<Record<ReturnStatus, number>> = {};
+  for (const r of RETURNS) counts[r.status] = (counts[r.status] ?? 0) + 1;
   const openCount = OPEN.reduce((n, s) => n + (counts[s] ?? 0), 0);
-  const all = grouped.reduce((n, g) => n + g._count._all, 0);
+  const all = RETURNS.length;
 
   const tabs: { key: string; label: string; n: number }[] = [
     { key: "open", label: "Open", n: openCount },
-    ...(Object.keys(ReturnStatus) as ReturnStatus[]).map((s) => ({ key: s, label: RETURN_STATUS_LABEL[s], n: counts[s] ?? 0 })),
+    ...RETURN_STATUSES.map((s) => ({ key: s, label: RETURN_STATUS_LABEL[s], n: counts[s] ?? 0 })),
     { key: "all", label: "All", n: all },
   ];
 

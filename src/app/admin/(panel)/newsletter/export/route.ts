@@ -1,6 +1,6 @@
-import { getCurrentUser, isStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
-import { parseSubscriberFilters, subscriberWhere } from "../query";
+import { assertStaff } from "@/lib/auth";
+import { SUBSCRIBERS } from "@/data/admin";
+import { filterSubscribers, parseSubscriberFilters } from "../query";
 
 /** Neutralise spreadsheet formula injection and quote every cell. */
 function cell(v: unknown) {
@@ -10,11 +10,10 @@ function cell(v: unknown) {
 }
 
 export async function GET(req: Request) {
-  const user = await getCurrentUser();
-  if (!isStaff(user)) return new Response("Unauthorized", { status: 401 });
+  await assertStaff();
   const url = new URL(req.url);
   const filters = parseSubscriberFilters(Object.fromEntries(url.searchParams));
-  const rows = await db.subscriber.findMany({ where: subscriberWhere(filters), orderBy: { createdAt: "desc" }, take: 50000 });
+  const rows = filterSubscribers(SUBSCRIBERS, filters).slice(0, 50000);
   const lines = [
     ["email", "source", "status", "subscribed_at"].map(cell).join(","),
     ...rows.map((r) => [r.email, r.source.toLowerCase(), r.isActive ? "active" : "unsubscribed", r.createdAt.toISOString()].map(cell).join(",")),

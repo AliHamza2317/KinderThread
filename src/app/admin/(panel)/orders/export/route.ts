@@ -1,8 +1,8 @@
-import { getCurrentUser, isStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { assertStaff } from "@/lib/auth";
+import { ORDERS } from "@/data/admin";
 import { ORDER_STATUS_LABEL } from "@/lib/orders";
 import { PAYMENT_LABELS } from "@/lib/pricing";
-import { orderWhere, parseOrderFilters } from "@/components/admin/sales/order-query";
+import { filterOrders, parseOrderFilters } from "@/components/admin/sales/order-query";
 import { PAYMENT_STATUS_LABEL } from "@/components/admin/sales/labels";
 
 const MAX_ROWS = 10000;
@@ -16,17 +16,13 @@ function csvCell(v: unknown) {
 }
 
 export async function GET(req: Request) {
-  const user = await getCurrentUser();
-  if (!isStaff(user)) return new Response("Not authorised", { status: 401 });
+  await assertStaff();
 
   const sp = Object.fromEntries(new URL(req.url).searchParams);
   const f = parseOrderFilters(sp);
-  const orders = await db.order.findMany({
-    where: orderWhere(f),
-    orderBy: { createdAt: "desc" },
-    take: MAX_ROWS,
-    include: { items: { select: { name: true, sku: true, size: true, color: true, quantity: true } } },
-  });
+  const orders = filterOrders(ORDERS, f)
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, MAX_ROWS);
 
   const header = [
     "Order number", "Date", "Status", "Payment method", "Payment status", "Payment reference", "Customer", "Phone", "Email", "City",

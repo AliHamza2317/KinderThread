@@ -5,7 +5,7 @@ import { CouponForm } from "@/components/admin/sales/coupon-form";
 import { COUPON_STATE_TONE, couponState } from "@/components/admin/sales/labels";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { COUPONS } from "@/data/admin";
 
 export const metadata: Metadata = { title: "Edit coupon" };
 
@@ -19,7 +19,7 @@ const day = (d: Date | null) => {
 export default async function EditCoupon({ params }: { params: Promise<{ id: string }> }) {
   await requireStaff();
   const { id } = await params;
-  const c = await db.coupon.findUnique({ where: { id } });
+  const c = COUPONS.find((x) => x.id === id);
   if (!c) notFound();
   const state = couponState(c);
   return (

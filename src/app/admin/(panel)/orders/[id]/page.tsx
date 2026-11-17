@@ -17,7 +17,8 @@ import {
 } from "@/components/admin/sales/order-forms";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { CUSTOMERS, ORDERS, RETURNS } from "@/data/admin";
+import { PRODUCTS } from "@/data/catalog";
 import { ORDER_FLOW, ORDER_STATUS_LABEL } from "@/lib/orders";
 import { PAYMENT_LABELS } from "@/lib/pricing";
 import { sizeLabel } from "@/lib/sizes";
@@ -25,22 +26,14 @@ import { cn, formatDate, formatPrice, whatsappLink } from "@/lib/utils";
 
 export async function generateMetadata({ params }: { params: Promise<{ id: string }> }): Promise<Metadata> {
   const { id } = await params;
-  const o = await db.order.findUnique({ where: { id }, select: { number: true } });
+  const o = ORDERS.find((x) => x.id === id);
   return { title: o ? `Order ${o.number}` : "Order" };
 }
 
 export default async function OrderDetail({ params }: { params: Promise<{ id: string }> }) {
   await requireStaff();
   const { id } = await params;
-  const order = await db.order.findUnique({
-    where: { id },
-    include: {
-      items: { include: { product: { select: { slug: true, id: true } } } },
-      events: { orderBy: { createdAt: "desc" } },
-      returnRequests: { orderBy: { createdAt: "desc" } },
-      user: { select: { id: true, name: true, email: true, _count: { select: { orders: true } } } },
-    },
-  });
+  const order = getOrder(id);
   if (!order) notFound();
 
   const closed = order.status === "CANCELLED" || order.status === "RETURNED";
@@ -294,4 +287,22 @@ function Row({ label, value, strong }: { label: string; value: string; strong?: 
       <dd className="tabular-nums">{value}</dd>
     </div>
   );
+}
+
+function getOrder(id: string) {
+  const o = ORDERS.find((x) => x.id === id);
+  if (!o) return null;
+  const customer = o.userId ? CUSTOMERS.find((c) => c.id === o.userId) : undefined;
+  return {
+    ...o,
+    items: o.items.map((i) => {
+      const p = i.productId ? PRODUCTS.find((x) => x.id === i.productId) : undefined;
+      return { ...i, product: p ? { id: p.id, slug: p.slug } : null };
+    }),
+    events: [...o.events].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
+    returnRequests: RETURNS.filter((r) => r.orderId === o.id).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
+    user: customer
+      ? { id: customer.id, name: customer.name, email: customer.email, _count: { orders: ORDERS.filter((x) => x.userId === customer.id).length } }
+      : null,
+  };
 }

@@ -8,9 +8,10 @@ import { Badge } from "@/components/ui/badge";
 import { buttonClass } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { SUBSCRIBERS } from "@/data/admin";
+import { DemoNotice } from "@/components/admin/demo-notice";
 import { formatDate } from "@/lib/utils";
-import { SOURCES, filterQuery, parseSubscriberFilters, subscriberWhere } from "./query";
+import { SOURCES, filterQuery, filterSubscribers, parseSubscriberFilters } from "./query";
 
 export const metadata: Metadata = { title: "Subscribers" };
 
@@ -21,13 +22,10 @@ export default async function NewsletterPage({ searchParams }: { searchParams: P
   const sp = await searchParams;
   const filters = parseSubscriberFilters(sp);
   const page = Math.max(1, Number(Array.isArray(sp.page) ? sp.page[0] : sp.page) || 1);
-  const where = subscriberWhere(filters);
-  const [rows, total, counts] = await Promise.all([
-    db.subscriber.findMany({ where, orderBy: { createdAt: "desc" }, skip: (page - 1) * PAGE, take: PAGE }),
-    db.subscriber.count({ where }),
-    db.subscriber.groupBy({ by: ["source"], where: { isActive: true }, _count: { _all: true } }),
-  ]);
-  const countFor = (id: string) => counts.find((c) => c.source === id)?._count._all ?? 0;
+  const matching = filterSubscribers(SUBSCRIBERS, filters);
+  const total = matching.length;
+  const rows = matching.slice((page - 1) * PAGE, page * PAGE);
+  const countFor = (id: string) => SUBSCRIBERS.filter((s) => s.isActive && s.source === id).length;
   const pages = Math.max(1, Math.ceil(total / PAGE));
 
   return (
@@ -41,6 +39,7 @@ export default async function NewsletterPage({ searchParams }: { searchParams: P
           </a>
         }
       />
+      <DemoNotice show={sp.demo === "1"} />
 
       <div className="mb-6 grid grid-cols-2 gap-3 lg:grid-cols-4">
         {SOURCES.map((s, i) => (

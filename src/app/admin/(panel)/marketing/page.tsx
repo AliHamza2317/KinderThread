@@ -6,7 +6,7 @@ import { GalleryManager } from "@/components/admin/content/gallery";
 import { AnnouncementForm, BenefitsForm } from "@/components/admin/content/list-forms";
 import { SettingsForm } from "@/components/admin/content/settings-form";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { BANNERS, GALLERY } from "@/data/content";
 import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = { title: "Homepage & marketing" };
@@ -25,11 +25,10 @@ const SECTIONS = [
 
 export default async function MarketingPage() {
   await requireStaff();
-  const [settings, banners, gallery] = await Promise.all([
-    getSettings(),
-    db.banner.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] }),
-    db.galleryImage.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "asc" }] }),
-  ]);
+  const settings = await getSettings();
+  const bySort = <T extends { sortOrder: number; createdAt: Date }>(a: T, b: T) => a.sortOrder - b.sortOrder || a.createdAt.getTime() - b.createdAt.getTime();
+  const banners = [...BANNERS].sort(bySort);
+  const gallery = [...GALLERY].sort(bySort);
   const { home, announcement } = settings;
 
   return (

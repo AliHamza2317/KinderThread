@@ -5,16 +5,18 @@ import { Card, EmptyState, PageHeader, TableWrap, tableCls, tdCls, thCls } from 
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { PAGES_DATA } from "@/data/content";
+import { DemoNotice } from "@/components/admin/demo-notice";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Pages" };
 
 const CORE = ["shipping", "returns", "faq", "contact", "privacy", "terms", "about"];
 
-export default async function PagesList() {
+export default async function PagesList({ searchParams }: { searchParams: Promise<{ demo?: string }> }) {
   await requireStaff();
-  const pages = await db.page.findMany({ orderBy: [{ title: "asc" }] });
+  const sp = await searchParams;
+  const pages = [...PAGES_DATA].sort((a, b) => a.title.localeCompare(b.title));
   return (
     <>
       <PageHeader
@@ -26,6 +28,7 @@ export default async function PagesList() {
           </ButtonLink>
         }
       />
+      <DemoNotice show={sp.demo === "1"} />
       <Card>
         {pages.length === 0 ? (
           <EmptyState title="No pages yet" action={<ButtonLink href="/admin/pages/new">Create a page</ButtonLink>} />

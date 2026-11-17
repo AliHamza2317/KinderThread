@@ -7,7 +7,7 @@ import { RETURN_STATUS_LABEL, RETURN_STATUS_TONE, RETURN_TYPE_LABEL } from "@/co
 import { ReturnUpdateForm } from "@/components/admin/sales/return-form";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ORDERS, RETURNS } from "@/data/admin";
 import { sizeLabel } from "@/lib/sizes";
 import { formatDate, formatPrice, whatsappLink } from "@/lib/utils";
 
@@ -16,19 +16,13 @@ export const metadata: Metadata = { title: "Return request" };
 export default async function ReturnDetail({ params }: { params: Promise<{ id: string }> }) {
   await requireStaff();
   const { id } = await params;
-  const r = await db.returnRequest.findUnique({
-    where: { id },
-    include: {
-      order: {
-        include: {
-          items: true,
-          events: { where: { status: "DELIVERED" }, orderBy: { createdAt: "desc" }, take: 1 },
-        },
-      },
-    },
-  });
-  if (!r) notFound();
-  const deliveredAt = r.order.events[0]?.createdAt;
+  const req = RETURNS.find((x) => x.id === id);
+  const order = req ? ORDERS.find((o) => o.id === req.orderId) : undefined;
+  if (!req || !order) notFound();
+  const r = { ...req, order };
+  const deliveredAt = r.order.events
+    .filter((e) => e.status === "DELIVERED")
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0]?.createdAt;
 
   return (
     <>

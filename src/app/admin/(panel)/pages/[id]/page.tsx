@@ -5,7 +5,7 @@ import { ConfirmSubmit } from "@/components/admin/form-bits";
 import { PageHeader } from "@/components/admin/ui";
 import { PageEditor } from "@/components/admin/content/page-editor";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { PAGES_DATA } from "@/data/content";
 
 export const metadata: Metadata = { title: "Edit page" };
 
@@ -14,7 +14,7 @@ const CORE = ["shipping", "returns", "faq", "contact", "privacy", "terms", "abou
 export default async function EditPage({ params, searchParams }: { params: Promise<{ id: string }>; searchParams: Promise<{ created?: string }> }) {
   await requireStaff();
   const [{ id }, sp] = await Promise.all([params, searchParams]);
-  const page = await db.page.findUnique({ where: { id } });
+  const page = PAGES_DATA.find((p) => p.id === id);
   if (!page) notFound();
   const core = CORE.includes(page.slug);
   return (

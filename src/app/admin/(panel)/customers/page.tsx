@@ -8,8 +8,7 @@ import { Badge } from "@/components/ui/badge";
 import { buttonClass } from "@/components/ui/button";
 import { Input } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
-import type { Prisma } from "@/generated/prisma/client";
+import { CUSTOMERS, ORDERS } from "@/data/admin";
 import { cn, formatDate, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Customers" };
@@ -71,36 +70,32 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
   );
 
   if (view === "guests") {
-    const where: Prisma.OrderWhereInput = {
-      userId: null,
-      status: { not: "CANCELLED" },
-      ...(q
-        ? {
-            OR: [
-              { customerName: { contains: q, mode: "insensitive" } },
-              { email: { contains: q, mode: "insensitive" } },
-              { phone: { contains: q.replace(/\D/g, "").replace(/^92/, "").replace(/^0/, "") || q } },
-            ],
-          }
-        : {}),
-    };
-    const groups = await db.order.groupBy({
-      by: ["email"],
-      where,
-      _count: { _all: true },
-      _sum: { total: true },
-      _max: { createdAt: true },
-      orderBy: { _max: { createdAt: "desc" } },
-      take: 300,
+    const needle = q.toLowerCase();
+    const digits = q.replace(/\D/g, "").replace(/^92/, "").replace(/^0/, "");
+    const guestOrders = ORDERS.filter(
+      (o) =>
+        o.userId === null &&
+        o.status !== "CANCELLED" &&
+        (!q ||
+          o.customerName.toLowerCase().includes(needle) ||
+          o.email.toLowerCase().includes(needle) ||
+          (digits ? o.phone.replace(/\D/g, "").includes(digits) : o.phone.includes(q))),
+    );
+    const byEmail = new Map<string, { email: string; _count: { _all: number }; _sum: { total: number }; _max: { createdAt: Date } }>();
+    for (const o of guestOrders) {
+      const g = byEmail.get(o.email);
+      if (!g) byEmail.set(o.email, { email: o.email, _count: { _all: 1 }, _sum: { total: o.total }, _max: { createdAt: o.createdAt } });
+      else {
+        g._count._all++;
+        g._sum.total += o.total;
+        if (o.createdAt > g._max.createdAt) g._max.createdAt = o.createdAt;
+      }
+    }
+    const groups = [...byEmail.values()].sort((a, b) => b._max.createdAt.getTime() - a._max.createdAt.getTime()).slice(0, 300);
+    const latest = groups.map((g) => {
+      const o = ORDERS.filter((x) => x.userId === null && x.email === g.email).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())[0]!;
+      return { email: o.email, customerName: o.customerName, phone: o.phone, city: o.city };
     });
-    const latest = groups.length
-      ? await db.order.findMany({
-          where: { userId: null, email: { in: groups.map((g) => g.email) } },
-          orderBy: { createdAt: "desc" },
-          distinct: ["email"],
-          select: { email: true, customerName: true, phone: true, city: true },
-        })
-      : [];
     const info = new Map(latest.map((l) => [l.email, l]));
     return (
       <>
@@ -156,25 +151,17 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
     );
   }
 
-  const where: Prisma.UserWhereInput = {
-    role: "CUSTOMER",
-    ...(q
-      ? {
-          OR: [
-            { name: { contains: q, mode: "insensitive" } },
-            { email: { contains: q, mode: "insensitive" } },
-            { phone: { contains: q } },
-            { tags: { has: q.toLowerCase() } },
-          ],
-        }
-      : {}),
-    ...(sp.tag ? { tags: { has: sp.tag } } : {}),
-  };
-  const users = await db.user.findMany({
-    where,
-    orderBy: { createdAt: "desc" },
-    select: { id: true, name: true, email: true, phone: true, tags: true, isActive: true, createdAt: true },
-  });
+  const needle = q.toLowerCase();
+  const users = CUSTOMERS.filter(
+    (u) =>
+      u.role === "CUSTOMER" &&
+      (!q ||
+        u.name.toLowerCase().includes(needle) ||
+        u.email.toLowerCase().includes(needle) ||
+        (u.phone ?? "").includes(q) ||
+        u.tags.includes(needle)) &&
+      (!sp.tag || u.tags.includes(sp.tag)),
+  ).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
   const stats = await statsForUsers(users.map((u) => u.id));
   const segment = sp.segment && SEGMENTS.includes(sp.segment as Segment) ? (sp.segment as Segment) : undefined;
   const segCounts = Object.fromEntries(SEGMENTS.map((s) => [s, 0])) as Record<Segment, number>;

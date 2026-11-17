@@ -7,15 +7,16 @@ import { COUPON_STATE_TONE, COUPON_TYPE_LABEL, couponState } from "@/components/
 import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { COUPONS } from "@/data/admin";
+import { DemoNotice } from "@/components/admin/demo-notice";
 import { cn, formatDate, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Coupons" };
 
-export default async function CouponsPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string }> }) {
+export default async function CouponsPage({ searchParams }: { searchParams: Promise<{ saved?: string; deleted?: string; demo?: string }> }) {
   await requireStaff();
   const sp = await searchParams;
-  const coupons = await db.coupon.findMany({ orderBy: [{ isActive: "desc" }, { createdAt: "desc" }] });
+  const coupons = [...COUPONS].sort((a, b) => Number(b.isActive) - Number(a.isActive) || b.createdAt.getTime() - a.createdAt.getTime());
 
   return (
     <>
@@ -28,6 +29,7 @@ export default async function CouponsPage({ searchParams }: { searchParams: Prom
           </ButtonLink>
         }
       />
+      <DemoNotice show={sp.demo === "1"} />
       {(sp.saved || sp.deleted) && (
         <p role="status" className="mb-5 rounded-xl bg-sage-100 px-4 py-3 text-sm font-medium text-sage-800">
           {sp.deleted ? "Coupon deleted." : "Coupon saved."}

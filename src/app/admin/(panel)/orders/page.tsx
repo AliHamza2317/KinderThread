@@ -2,17 +2,17 @@ import type { Metadata } from "next";
 import Link from "next/link";
 import { Download, Search } from "lucide-react";
 import { EmptyState, OrderStatusBadge, PageHeader, TableWrap, tableCls, tdCls, thCls } from "@/components/admin/ui";
-import { filtersToQuery, orderWhere, parseOrderFilters } from "@/components/admin/sales/order-query";
+import { filterOrders, filtersToQuery, parseOrderFilters } from "@/components/admin/sales/order-query";
 import { PAYMENT_STATUS_LABEL, PAYMENT_STATUS_TONE } from "@/components/admin/sales/labels";
 import { Badge } from "@/components/ui/badge";
 import { buttonClass } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ORDERS } from "@/data/admin";
 import { ORDER_STATUS_LABEL } from "@/lib/orders";
 import { PAYMENT_LABELS } from "@/lib/pricing";
 import { cn, formatDate, formatPrice } from "@/lib/utils";
-import { OrderStatus, PaymentStatus } from "@/generated/prisma/enums";
+import { ORDER_STATUSES, PAYMENT_STATUSES, type OrderStatus, type PaymentStatus } from "@/lib/types";
 
 export const metadata: Metadata = { title: "Orders" };
 
@@ -21,38 +21,14 @@ const PER_PAGE = 25;
 export default async function OrdersPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   await requireStaff();
   const f = parseOrderFilters(await searchParams);
-  const where = orderWhere(f);
-  const { status: _s, ...withoutStatus } = f;
-  const tabWhere = orderWhere({ ...withoutStatus, page: 1 });
-
-  const [orders, total, grouped] = await Promise.all([
-    db.order.findMany({
-      where,
-      orderBy: { createdAt: "desc" },
-      skip: (f.page - 1) * PER_PAGE,
-      take: PER_PAGE,
-      select: {
-        id: true,
-        number: true,
-        createdAt: true,
-        customerName: true,
-        phone: true,
-        city: true,
-        total: true,
-        status: true,
-        paymentMethod: true,
-        paymentStatus: true,
-        userId: true,
-        _count: { select: { items: true } },
-        items: { select: { quantity: true } },
-      },
-    }),
-    db.order.count({ where }),
-    db.order.groupBy({ by: ["status"], where: tabWhere, _count: { _all: true } }),
-  ]);
+  const matching = filterOrders(ORDERS, f).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  const total = matching.length;
+  const orders = matching.slice((f.page - 1) * PER_PAGE, f.page * PER_PAGE);
+  const tabbed = filterOrders(ORDERS, f, { ignoreStatus: true });
   const pages = Math.max(1, Math.ceil(total / PER_PAGE));
-  const counts = Object.fromEntries(grouped.map((g) => [g.status, g._count._all])) as Partial<Record<OrderStatus, number>>;
-  const allCount = grouped.reduce((n, g) => n + g._count._all, 0);
+  const counts: Partial<Record<OrderStatus, number>> = {};
+  for (const o of tabbed) counts[o.status] = (counts[o.status] ?? 0) + 1;
+  const allCount = tabbed.length;
   const filtered = !!(f.q || f.pay || f.method || f.from || f.to);
 
   return (
@@ -69,7 +45,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
 
       {/* status tabs */}
       <nav className="-mx-1 mb-5 flex gap-1 overflow-x-auto pb-1" aria-label="Filter by status">
-        {[undefined, ...Object.keys(OrderStatus)].map((s) => {
+        {[undefined, ...ORDER_STATUSES].map((s) => {
           const active = f.status === s;
           const n = s ? (counts[s as OrderStatus] ?? 0) : allCount;
           return (
@@ -101,7 +77,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
           <span className="sr-only">Payment status</span>
           <Select name="pay" defaultValue={f.pay ?? ""}>
             <option value="">Any payment</option>
-            {Object.keys(PaymentStatus).map((p) => (
+            {PAYMENT_STATUSES.map((p) => (
               <option key={p} value={p}>
                 {PAYMENT_STATUS_LABEL[p as PaymentStatus]}
               </option>

@@ -7,7 +7,7 @@ import { statsForUsers } from "@/components/admin/sales/customer-stats";
 import { SEGMENT_HINT, SEGMENT_LABEL, SEGMENT_TONE } from "@/components/admin/sales/labels";
 import { Badge } from "@/components/ui/badge";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ADDRESSES, CUSTOMERS, ORDERS, RETURNS } from "@/data/admin";
 import { cn, formatDate, formatPrice, whatsappLink } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Customer" };
@@ -15,17 +15,20 @@ export const metadata: Metadata = { title: "Customer" };
 export default async function CustomerDetail({ params }: { params: Promise<{ id: string }> }) {
   await requireStaff();
   const { id } = await params;
-  const user = await db.user.findFirst({
-    where: { id, role: "CUSTOMER" },
-    include: {
-      addresses: { orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] },
-      orders: { orderBy: { createdAt: "desc" }, take: 50, include: { items: { select: { quantity: true } } } },
-      _count: { select: { wishlist: true, orders: true } },
-    },
-  });
-  if (!user) notFound();
+  const customer = CUSTOMERS.find((u) => u.id === id && u.role === "CUSTOMER");
+  if (!customer) notFound();
+  const allOrders = ORDERS.filter((o) => o.userId === customer.id).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  const user = {
+    ...customer,
+    addresses: ADDRESSES.filter((a) => a.userId === customer.id).sort(
+      (a, b) => Number(b.isDefault) - Number(a.isDefault) || b.createdAt.getTime() - a.createdAt.getTime(),
+    ),
+    orders: allOrders.slice(0, 50),
+    _count: { orders: allOrders.length },
+  };
   const stats = (await statsForUsers([user.id])).get(user.id)!;
-  const returns = await db.returnRequest.count({ where: { order: { userId: user.id } } });
+  const orderIds = new Set(allOrders.map((o) => o.id));
+  const returns = RETURNS.filter((r) => orderIds.has(r.orderId)).length;
   const avg = stats.orders ? Math.round(stats.spend / stats.orders) : 0;
 
   return (
@@ -45,7 +48,7 @@ export default async function CustomerDetail({ params }: { params: Promise<{ id:
         <StatCard label="Orders" value={stats.orders} hint={user._count.orders !== stats.orders ? `${user._count.orders - stats.orders} cancelled` : undefined} />
         <StatCard label="Total spend" value={formatPrice(stats.spend)} tone="sage" hint={SEGMENT_HINT[stats.segment]} />
         <StatCard label="Average order" value={formatPrice(avg)} tone="sun" />
-        <StatCard label="Wishlist · returns" value={`${user._count.wishlist} · ${returns}`} tone="coral" />
+        <StatCard label="Returns & exchanges" value={returns} tone="coral" />
       </div>
 
       <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
