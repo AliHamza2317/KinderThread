@@ -35,7 +35,7 @@ export function AnnouncementBar({ messages }: { messages: Msg[] }) {
       role="region"
       aria-label="Announcements"
     >
-      <div className="container-kt flex h-9 items-center justify-center">
+      <div className="container-kt flex h-9 items-center justify-center pr-10 pl-10">
         <AnimatePresence mode="wait" initial={false}>
           <motion.p
             key={i}
@@ -43,12 +43,9 @@ export function AnnouncementBar({ messages }: { messages: Msg[] }) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -8 }}
             transition={{ duration: 0.35, ease: [0.22, 1, 0.36, 1] }}
-            className="flex items-center gap-2 truncate text-[0.72rem] font-semibold uppercase tracking-[0.18em]"
+            className="flex min-w-0 items-center gap-2 truncate text-[0.64rem] font-semibold tracking-[0.12em] uppercase sm:text-[0.7rem] sm:tracking-[0.18em]"
             aria-live="polite"
           >
-            <span className="text-sun" aria-hidden>
-              ✦
-            </span>
             {m.href ? (
               <Link href={m.href} className="link-underline truncate">
                 {m.text}

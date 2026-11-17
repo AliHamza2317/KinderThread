@@ -26,7 +26,7 @@ export default async function OrdersPage() {
       <p className="mt-2 text-cocoa-500">Track deliveries, view details and request returns.</p>
 
       {orders.length === 0 ? (
-        <div className="stitch-border mt-8 flex flex-col items-center rounded-[1.5rem] px-6 py-14 text-center">
+        <div className="stitch-border mt-8 flex flex-col items-center rounded-sm px-6 py-14 text-center">
           <span className="grid h-14 w-14 place-items-center rounded-full bg-cream-200">
             <ShoppingBag className="h-6 w-6 text-cocoa-400" />
           </span>
@@ -43,7 +43,7 @@ export default async function OrdersPage() {
           </ButtonLink>
         </div>
       ) : (
-        <div className="mt-8 overflow-hidden rounded-[1.5rem] border border-cocoa-100 bg-cream-50">
+        <div className="mt-8 overflow-hidden rounded-sm border border-cocoa-100 bg-cream-50">
           <div className="hidden grid-cols-[1.3fr_1fr_0.7fr_1fr_0.9fr_24px] gap-4 border-b border-cocoa-100 px-6 py-3 text-[0.7rem] font-bold tracking-[0.16em] text-cocoa-400 uppercase md:grid">
             <span>Order</span>
             <span>Date</span>

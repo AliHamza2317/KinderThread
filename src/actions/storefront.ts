@@ -59,7 +59,7 @@ export async function subscribeAction(_prev: SubscribeState, formData: FormData)
   const { email, source } = parsed.data;
   const existing = await db.subscriber.findUnique({ where: { email_source: { email, source } } });
   if (existing?.isActive) {
-    return { ok: true, message: source === "NEWSLETTER" ? "You're already part of our little world. 💛" : "You're already on the list — we'll be in touch." };
+    return { ok: true, message: source === "NEWSLETTER" ? "You're already subscribed — thank you." : "You're already on the list — we'll be in touch." };
   }
   await db.subscriber.upsert({
     where: { email_source: { email, source } },

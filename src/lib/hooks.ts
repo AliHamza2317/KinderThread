@@ -54,27 +54,3 @@ export function useDebounced<T>(value: T, ms = 250) {
   }, [value, ms]);
   return v;
 }
-
-export type DeviceTier = "full" | "lite" | "static";
-
-/** Decide how much 3D a device should get. */
-export function detectDeviceTier(): DeviceTier {
-  if (typeof window === "undefined") return "static";
-  // manual override for QA: ?kt3d=full|lite|static
-  const forced = new URLSearchParams(window.location.search).get("kt3d");
-  if (forced === "full" || forced === "lite" || forced === "static") return forced;
-  if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return "static";
-  const nav = navigator as Navigator & { deviceMemory?: number; connection?: { saveData?: boolean; effectiveType?: string } };
-  if (nav.connection?.saveData || /(^|-)2g$/.test(nav.connection?.effectiveType ?? "")) return "static";
-  try {
-    const c = document.createElement("canvas");
-    const gl = c.getContext("webgl2") || c.getContext("webgl");
-    if (!gl) return "static";
-  } catch {
-    return "static";
-  }
-  if ((nav.deviceMemory ?? 8) <= 2 || (navigator.hardwareConcurrency ?? 8) <= 2) return "static";
-  const small = window.matchMedia("(max-width: 767px)").matches;
-  if (small || (nav.deviceMemory ?? 8) <= 4 || (navigator.hardwareConcurrency ?? 8) <= 4) return "lite";
-  return "full";
-}

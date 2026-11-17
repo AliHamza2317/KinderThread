@@ -141,13 +141,13 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
               Payment
             </h2>
             {options.length === 0 ? (
-              <p className="mt-5 rounded-2xl bg-coral-50 p-4 text-sm text-coral-800">Online ordering is temporarily unavailable. Please contact us to place your order.</p>
+              <p className="mt-5 rounded-md bg-coral-50 p-4 text-sm text-coral-800">Online ordering is temporarily unavailable. Please contact us to place your order.</p>
             ) : (
               <div className="mt-5 space-y-3" role="radiogroup" aria-label="Payment method">
                 {options.map((o) => {
                   const on = o.id === payment;
                   return (
-                    <div key={o.id} className={cn("rounded-2xl border transition", on ? "border-cocoa bg-cream-50 shadow-soft" : "border-cocoa-100 hover:border-cocoa-300")}>
+                    <div key={o.id} className={cn("rounded-md border transition", on ? "border-cocoa bg-cream-50 shadow-soft" : "border-cocoa-100 hover:border-cocoa-300")}>
                       <label className="flex cursor-pointer items-center gap-4 p-4">
                         <input type="radio" name="_pay" checked={on} onChange={() => setPayment(o.id)} className="h-5 w-5 shrink-0 appearance-none rounded-full border border-cocoa-300 transition checked:border-[6px] checked:border-sage-600" />
                         <span className="flex-1 font-semibold">{o.label}</span>
@@ -157,7 +157,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
                         <div className="space-y-3 border-t border-cocoa-100 px-4 pt-3 pb-4 text-[0.88rem] text-cocoa-600">
                           <p>{o.instructions}</p>
                           {o.details.length > 0 && (
-                            <dl className="grid gap-1 rounded-xl bg-cream-100 p-3">
+                            <dl className="grid gap-1 rounded-sm bg-cream-100 p-3">
                               {o.details.map(([k, v]) => (
                                 <div key={k} className="flex flex-wrap justify-between gap-2">
                                   <dt className="text-cocoa-500">{k}</dt>
@@ -183,11 +183,11 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
         </div>
 
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 space-y-6 rounded-[1.75rem] bg-cream-100 p-6 md:p-8">
+          <div className="sticky top-28 space-y-6 rounded-sm bg-cream-100 p-6 md:p-8">
             <h2 className="font-display text-2xl">Your order</h2>
             <SummaryLines quote={quote} />
             {hasSamples && (
-              <p className="flex gap-2 rounded-xl bg-sun-50 p-3 text-[0.8rem] text-sun-700 ring-1 ring-sun-200">
+              <p className="flex gap-2 border-l-2 border-cocoa-200 py-1 pl-3 text-[0.8rem] text-cocoa-500">
                 <Info className="h-4 w-4 shrink-0" /> Your bag contains sample listings used for testing the store.
               </p>
             )}
@@ -195,8 +195,8 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
             <CouponField value={couponCode} onApply={setCoupon} error={quote?.couponError} applied={quote?.coupon?.code} />
             <Totals quote={quote} />
             <div id="checkout-message" aria-live="assertive">
-              {showMsg && <p className="rounded-xl bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">{msg}</p>}
-              {hasIssues && <p className="rounded-xl bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">Some items changed — please review your bag.</p>}
+              {showMsg && <p className="rounded-sm bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">{msg}</p>}
+              {hasIssues && <p className="rounded-sm bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">Some items changed — please review your bag.</p>}
             </div>
             <Button type="submit" size="lg" className="w-full" loading={pending} disabled={loading || hasIssues || !options.length || !quote?.itemCount}>
               {pending ? "Placing order…" : quote ? `Place order · ${formatPrice(quote.total)}` : "Place order"}

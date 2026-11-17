@@ -19,11 +19,7 @@ export function Footer({ settings, categories, pages }: { settings: Settings; ca
   const policy = (slug: string) => pages.find((p) => p.slug === slug);
 
   return (
-    <footer className="relative mt-24 bg-cream">
-      {/* golden thread divider */}
-      <svg className="block h-8 w-full text-honey" viewBox="0 0 1440 32" preserveAspectRatio="none" aria-hidden>
-        <path d="M0 16 C 240 2, 480 30, 720 16 S 1200 2, 1440 16" fill="none" stroke="currentColor" strokeWidth="1.5" strokeDasharray="6 7" vectorEffect="non-scaling-stroke" />
-      </svg>
+    <footer className="relative mt-24 border-t border-cocoa-100 bg-cream">
       <div className="container-kt grid gap-12 py-16 md:grid-cols-12">
         <div className="md:col-span-4">
           <div className="w-[220px]">
@@ -34,7 +30,7 @@ export function Footer({ settings, categories, pages }: { settings: Settings; ca
             <ul className="mt-6 flex gap-2">
               {socials.map(({ href, label, Icon }) => (
                 <li key={label}>
-                  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="grid h-11 w-11 place-items-center rounded-full border border-cocoa-100 text-cocoa transition hover:border-cocoa hover:bg-cocoa hover:text-cream">
+                  <a href={href} target="_blank" rel="noopener noreferrer" aria-label={label} className="grid h-10 w-10 place-items-center rounded-full border border-cocoa-200/70 text-cocoa transition hover:border-cocoa hover:bg-cocoa hover:text-cream">
                     <Icon />
                   </a>
                 </li>

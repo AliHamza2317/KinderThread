@@ -75,11 +75,9 @@ export default async function ProductPage({ params }: Props) {
           items={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, ...(primaryCat ? [{ label: primaryCat.name, href: `/collections/${primaryCat.slug}` }] : []), { label: p.name }]}
         />
         {p.isSample && (
-          <p className="mt-5 flex items-start gap-3 rounded-2xl bg-sun-50 px-4 py-3 text-[0.85rem] text-sun-700 ring-1 ring-sun-200">
-            <Info className="mt-0.5 h-4 w-4 shrink-0" />
-            <span>
-              <strong>Sample listing.</strong> This product and its illustration are placeholders used while our first collection is prepared — they are not actual Kinder Thread products.
-            </span>
+          <p className="mt-5 flex items-start gap-2.5 border-l-2 border-cocoa-200 py-1 pl-3 text-[0.82rem] text-cocoa-500">
+            <Info className="mt-0.5 h-4 w-4 shrink-0 text-cocoa-400" />
+            <span>Sample listing — shown while our first collection is being prepared. Photography is placeholder imagery, not an actual Kinder Thread product.</span>
           </p>
         )}
         <div className="mt-6 grid gap-10 lg:grid-cols-12 lg:gap-14">

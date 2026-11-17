@@ -103,7 +103,7 @@ export function SearchOverlay({ categories }: { categories: NavCategory[] }) {
                   <p className="eyebrow mb-4">Popular</p>
                   <div className="flex flex-wrap gap-2">
                     {categories.slice(0, 7).map((c) => (
-                      <Link key={c.id} href={`/collections/${c.slug}`} onClick={close} className="rounded-full border border-cocoa-100 px-4 py-2 text-sm font-semibold transition hover:border-cocoa hover:bg-cocoa hover:text-cream">
+                      <Link key={c.id} href={`/collections/${c.slug}`} onClick={close} className="rounded-[3px] border border-cocoa-100 px-4 py-2 text-sm font-semibold transition hover:border-cocoa hover:bg-cocoa hover:text-cream">
                         {c.name}
                       </Link>
                     ))}
@@ -133,7 +133,7 @@ export function SearchOverlay({ categories }: { categories: NavCategory[] }) {
                       {res.products.map((p) => (
                         <li key={p.id}>
                           <Link href={`/products/${p.slug}`} onClick={close} className="group block">
-                            <div className="relative aspect-[4/5] overflow-hidden rounded-2xl bg-cream-100">
+                            <div className="relative aspect-[4/5] overflow-hidden rounded-md bg-cream-100">
                               {p.images[0] && <Image src={p.images[0].url} alt={p.images[0].alt} fill sizes="200px" className="object-cover transition-transform duration-500 group-hover:scale-105" />}
                             </div>
                             <p className="mt-2 text-sm font-semibold leading-snug">{p.name}</p>

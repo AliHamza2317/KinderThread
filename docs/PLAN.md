@@ -1,5 +1,11 @@
 # Kinder Thread — Research, Creative Direction & Implementation Plan
 
+> **Revision (client feedback):** the first build used a cartoon-style 3D teddy bear hero, a 3D wardrobe and
+> illustrated sample images. The client asked for a more premium, professional look with real photography and
+> no cartoon elements, so the storefront is now **photography-led**: an editorial photo hero, crisper serif
+> typography, refined rectangular buttons, quiet badges, and no 3D scenes or decorative glyphs. Sections 1, 4,
+> 5 and 6 below describe the original concept and are kept for reference; the 3D code was removed.
+
 > Phase 1 deliverable. This document records the decisions behind the build so that
 > future designers and developers can extend the site without diluting the brand.
 

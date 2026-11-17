@@ -35,13 +35,13 @@ export function TrackOrderClient({ initialOrder }: { initialOrder: string }) {
         </Button>
       </form>
       {state && !state.ok && (
-        <p className="mt-6 rounded-xl bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800" role="alert">
+        <p className="mt-6 rounded-sm bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800" role="alert">
           {state.message}
         </p>
       )}
 
       {order && (
-        <section className="mt-12 space-y-8 rounded-[1.75rem] bg-cream-100 p-6 md:p-8" aria-live="polite">
+        <section className="mt-12 space-y-8 rounded-sm bg-cream-100 p-6 md:p-8" aria-live="polite">
           <div className="flex flex-wrap items-baseline justify-between gap-2">
             <h2 className="font-display text-2xl">Order {order.number}</h2>
             <p className="text-sm text-cocoa-500">
@@ -49,7 +49,7 @@ export function TrackOrderClient({ initialOrder }: { initialOrder: string }) {
             </p>
           </div>
           {order.status === "CANCELLED" || order.status === "RETURNED" ? (
-            <p className="rounded-xl bg-cocoa-50 p-4 font-semibold">This order was {LABEL[order.status].toLowerCase()}.</p>
+            <p className="rounded-sm bg-cocoa-50 p-4 font-semibold">This order was {LABEL[order.status].toLowerCase()}.</p>
           ) : (
             <ol className="grid grid-cols-5 gap-2" aria-label="Order progress">
               {FLOW.map((s, i) => (
@@ -61,7 +61,7 @@ export function TrackOrderClient({ initialOrder }: { initialOrder: string }) {
             </ol>
           )}
           {order.trackingNumber && (
-            <div className="rounded-xl bg-cream-50 p-4 text-sm">
+            <div className="rounded-sm bg-cream-50 p-4 text-sm">
               <p>
                 <strong>{order.courier || "Courier"}</strong> · Tracking number <strong className="select-all">{order.trackingNumber}</strong>
               </p>

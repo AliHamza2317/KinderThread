@@ -23,7 +23,7 @@ export default function TryOnPage() {
       </p>
       <ul className="mt-12 grid gap-6 md:grid-cols-3">
         {STEPS.map(({ icon: Icon, title, body }) => (
-          <li key={title} className="rounded-[1.5rem] bg-cream-100 p-6">
+          <li key={title} className="rounded-sm bg-cream-100 p-6">
             <Icon className="h-7 w-7 text-sage-600" strokeWidth={1.5} />
             <h2 className="mt-4 font-display text-xl">{title}</h2>
             <p className="mt-2 text-[0.92rem] leading-relaxed text-cocoa-500">{body}</p>

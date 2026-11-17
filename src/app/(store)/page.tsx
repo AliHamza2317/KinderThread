@@ -4,29 +4,18 @@ import { BrandStory } from "@/components/home/brand-story";
 import { FeaturedCategories } from "@/components/home/categories";
 import { Gallery } from "@/components/home/gallery";
 import { Hero } from "@/components/home/hero";
-import { Marquee } from "@/components/home/marquee";
 import { NewsletterSection } from "@/components/home/newsletter";
 import { ProductRail, RailControls } from "@/components/home/product-rail";
 import { SectionHeader } from "@/components/home/section-header";
-import { Wardrobe, type WardrobeCategory } from "@/components/home/wardrobe";
+import { ServiceBar, type ServiceItem } from "@/components/home/service-bar";
+import { ShopByAge } from "@/components/home/shop-by-age";
 import { ProductCard } from "@/components/product/product-card";
+import { buttonClass } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { getProductsBy } from "@/lib/catalog";
 import { db } from "@/lib/db";
-import type { GarmentKind } from "@/lib/garment-paths";
 import { getSettings } from "@/lib/settings";
 import { absoluteUrl, formatPrice } from "@/lib/utils";
-
-const GARMENT_FOR: Record<string, GarmentKind> = {
-  "baby-boys": "dungaree",
-  "baby-girls": "dress",
-  newborn: "romper",
-  "everyday-wear": "tee",
-  "casual-outfits": "polo",
-  "matching-sets": "tee",
-  seasonal: "hoodie",
-};
-const FALLBACK_GARMENTS: GarmentKind[] = ["tee", "dress", "romper", "dungaree"];
 
 export default async function Home() {
   const settings = await getSettings();
@@ -68,22 +57,13 @@ export default async function Home() {
     settings.shipping.freeThreshold > 0 && `Free delivery over ${formatPrice(settings.shipping.freeThreshold)}`,
   ].filter(Boolean) as string[];
 
-  const marquee = [
-    "Thoughtfully selected",
-    "Newborn to five years",
-    settings.payments.cod.enabled && "Cash on delivery",
-    settings.policies.returnWindowDays > 0 && `Easy exchanges within ${settings.policies.returnWindowDays} days`,
-    "Delivery across Pakistan",
-  ].filter(Boolean) as string[];
+  const service: ServiceItem[] = [
+    settings.shipping.freeThreshold > 0 ? { icon: "truck" as const, label: `Free delivery over ${formatPrice(settings.shipping.freeThreshold)}` } : { icon: "truck" as const, label: "Delivery across Pakistan" },
+    settings.payments.cod.enabled && { icon: "cash" as const, label: "Cash on delivery" },
+    settings.policies.returnWindowDays > 0 && { icon: "exchange" as const, label: `${settings.policies.returnWindowDays}-day exchanges` },
+    { icon: "ruler" as const, label: "Sizes 0–5 years" },
+  ].filter(Boolean) as ServiceItem[];
 
-  const wardrobe: WardrobeCategory[] = featuredCats.map((c, i) => ({
-    slug: c.slug,
-    name: c.name,
-    description: c.description,
-    image: c.image,
-    garment: GARMENT_FOR[c.slug] ?? FALLBACK_GARMENTS[i % FALLBACK_GARMENTS.length],
-    products: c.products.map((p) => ({ ...p, image: p.images[0]?.url ?? null })),
-  }));
   const showSample = settings.features.showSampleBadges;
 
   const jsonLd = {
@@ -99,7 +79,7 @@ export default async function Home() {
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
       <Hero content={home.hero} trust={trust} />
-      <Marquee items={marquee} />
+      <ServiceBar items={service} />
 
       {sec.categories && featuredCats.length > 0 && (
         <section className="container-kt py-24 md:py-32" aria-labelledby="cat-heading">
@@ -119,16 +99,17 @@ export default async function Home() {
 
       {sec.story && <BrandStory story={home.story} />}
 
-      {sec.wardrobe && wardrobe.length > 0 && (
-        <section className="container-kt py-24 md:py-32">
-          <Wardrobe categories={wardrobe} />
+      {sec.shopByAge && (
+        <section className="container-kt py-24 md:py-28">
+          <SectionHeader eyebrow="Shop by age" title="Every size, every little stage" link={{ href: "/size-guide", label: "Size guide" }} />
+          <ShopByAge />
         </section>
       )}
 
       {sec.bestSellers && bestSellers.length > 0 && (
         <section className="container-kt py-24 md:py-28">
           <SectionHeader eyebrow="Loved by little ones" title="Best Sellers" link={{ href: "/collections/best-sellers", label: "Shop best sellers" }} />
-          <Reveal stagger={0.06} className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-6 lg:grid-cols-4">
+          <Reveal stagger={0.06} className="grid grid-cols-2 gap-x-3 gap-y-12 md:gap-x-5 lg:grid-cols-4">
             {bestSellers.map((p) => (
               <ProductCard key={p.id} product={p} showSample={showSample} />
             ))}
@@ -143,9 +124,9 @@ export default async function Home() {
       )}
 
       {sec.benefits && home.benefits.length > 0 && (
-        <section className="border-y border-cocoa-100 bg-cream-100 py-24 md:py-28">
+        <section className="py-24 md:py-28">
           <div className="container-kt">
-            <SectionHeader eyebrow="Why Kinder Thread?" title="Little things, done with care" align="center" />
+            <SectionHeader eyebrow="Why Kinder Thread?" title="Little things, done with care" />
             <Benefits items={home.benefits} />
           </div>
         </section>
@@ -153,9 +134,9 @@ export default async function Home() {
 
       {sec.gallery && gallery.length > 0 && (
         <section className="container-kt py-24 md:py-32">
-          <SectionHeader eyebrow={settings.social.instagramHandle || "Instagram"} title={home.gallery.heading} body={home.gallery.body}>
+          <SectionHeader eyebrow={settings.social.instagram ? settings.social.instagramHandle || "Instagram" : "Gallery"} title={home.gallery.heading} body={home.gallery.body}>
             {settings.social.instagram && (
-              <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" className="rounded-full bg-cocoa px-5 py-3 text-[0.88rem] font-bold text-cream-50 transition hover:bg-cocoa-800">
+              <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" className={buttonClass("secondary", "md")}>
                 Follow us
               </a>
             )}

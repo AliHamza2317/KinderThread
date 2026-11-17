@@ -15,7 +15,7 @@ const nextConfig: NextConfig = {
     remotePatterns: [{ protocol: "https", hostname: "res.cloudinary.com" }],
   },
   experimental: {
-    optimizePackageImports: ["lucide-react", "@react-three/drei"],
+    optimizePackageImports: ["lucide-react"],
     serverActions: { bodySizeLimit: "12mb" },
   },
   async headers() {

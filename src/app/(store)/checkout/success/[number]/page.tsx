@@ -35,11 +35,11 @@ export default async function OrderSuccess({ params, searchParams }: { params: P
         </p>
       </div>
 
-      <div className="mt-12 space-y-6 rounded-[1.75rem] bg-cream-100 p-6 md:p-8">
+      <div className="mt-12 space-y-6 rounded-sm bg-cream-100 p-6 md:p-8">
         <ul className="divide-y divide-cocoa-100">
           {order.items.map((it) => (
             <li key={it.id} className="flex gap-4 py-4">
-              <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-xl bg-cream-200">{it.image && <Image src={it.image} alt="" fill sizes="64px" className="object-cover" />}</div>
+              <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-sm bg-cream-200">{it.image && <Image src={it.image} alt="" fill sizes="64px" className="object-cover" />}</div>
               <div className="flex-1">
                 <p className="font-semibold">{it.name}</p>
                 <p className="text-sm text-cocoa-500">

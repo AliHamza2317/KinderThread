@@ -68,8 +68,8 @@
   --text-micro: 0.75rem;
   --text-micro--line-height: 1rem;
 
-  --radius-media: 1.5rem;
-  --radius-panel: 1rem;
+  --radius-media: 0.25rem;
+  --radius-panel: 0.375rem;
 
   --shadow-soft: 0 1px 2px rgb(91 58 38 / 0.05), 0 10px 30px -12px rgb(91 58 38 / 0.18);
   --shadow-lift: 0 2px 6px rgb(91 58 38 / 0.06), 0 28px 60px -20px rgb(91 58 38 / 0.28);
@@ -112,8 +112,8 @@
   }
   h1, h2, h3, h4 {
     font-family: var(--font-display);
-    font-variation-settings: "SOFT" 100;
-    font-weight: 450;
+    font-variation-settings: "SOFT" 0;
+    font-weight: 400;
     letter-spacing: -0.02em;
     text-wrap: balance;
   }
@@ -139,34 +139,34 @@
 
 @utility font-display {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 100;
+  font-variation-settings: "SOFT" 0;
 }
 
 @utility display-xl {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 100;
-  font-weight: 420;
-  font-size: clamp(3rem, 1.6rem + 6vw, 7.25rem);
-  line-height: 0.95;
-  letter-spacing: -0.035em;
-}
-
-@utility display-lg {
-  font-family: var(--font-display);
-  font-variation-settings: "SOFT" 100;
-  font-weight: 430;
-  font-size: clamp(2.4rem, 1.5rem + 3.6vw, 4.5rem);
+  font-variation-settings: "SOFT" 0;
+  font-weight: 380;
+  font-size: clamp(2.75rem, 1.4rem + 5vw, 6rem);
   line-height: 1;
   letter-spacing: -0.03em;
 }
 
+@utility display-lg {
+  font-family: var(--font-display);
+  font-variation-settings: "SOFT" 0;
+  font-weight: 380;
+  font-size: clamp(2.2rem, 1.5rem + 2.8vw, 3.9rem);
+  line-height: 1.04;
+  letter-spacing: -0.025em;
+}
+
 @utility display-md {
   font-family: var(--font-display);
-  font-variation-settings: "SOFT" 100;
-  font-weight: 450;
-  font-size: clamp(1.9rem, 1.4rem + 1.8vw, 3rem);
-  line-height: 1.05;
-  letter-spacing: -0.025em;
+  font-variation-settings: "SOFT" 0;
+  font-weight: 400;
+  font-size: clamp(1.8rem, 1.4rem + 1.5vw, 2.6rem);
+  line-height: 1.08;
+  letter-spacing: -0.02em;
 }
 
 @utility eyebrow {
@@ -246,13 +246,13 @@ html.lenis, html.lenis body { height: auto; }
 .prose-kt ul { list-style: disc; }
 .prose-kt ol { list-style: decimal; }
 .prose-kt li { margin: 0.35rem 0; }
-.prose-kt li::marker { color: var(--color-coral-600); }
+.prose-kt li::marker { color: var(--color-cocoa-300); }
 .prose-kt a { color: var(--color-sage-700); text-decoration: underline; text-underline-offset: 3px; }
 .prose-kt strong { color: var(--color-cocoa); font-weight: 700; }
 .prose-kt table { width: 100%; border-collapse: collapse; margin: 1rem 0 1.5rem; font-size: 0.95rem; }
 .prose-kt th, .prose-kt td { border-bottom: 1px solid var(--color-cocoa-100); padding: 0.6rem 0.5rem; text-align: left; }
 .prose-kt hr { border: 0; border-top: 1px solid var(--color-cocoa-100); margin: 2rem 0; }
-.prose-kt blockquote { border-left: 3px solid var(--color-sun); padding-left: 1rem; color: var(--color-cocoa-500); }
+.prose-kt blockquote { border-left: 2px solid var(--color-cocoa-200); padding-left: 1rem; color: var(--color-cocoa-500); }
 
 .kt-checkbox:checked {
   background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='white' stroke-width='3' stroke-linecap='round'%3E%3Cpath d='m5 12 5 5 9-10'/%3E%3C/svg%3E");

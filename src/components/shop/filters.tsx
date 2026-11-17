@@ -110,7 +110,7 @@ export function FilterPanel({ facets, hideGender }: { facets: Facets; hideGender
             {facets.sizes.map((s) => {
               const on = list("size").includes(s);
               return (
-                <button key={s} type="button" onClick={() => toggle("size", s)} aria-pressed={on} className={cn("h-9 rounded-full border px-3.5 text-[0.8rem] font-semibold transition", on ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa-100 hover:border-cocoa-400")}>
+                <button key={s} type="button" onClick={() => toggle("size", s)} aria-pressed={on} className={cn("h-9 rounded-[3px] border px-3.5 text-[0.8rem] font-semibold transition", on ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa-100 hover:border-cocoa-400")}>
                   {s}
                 </button>
               );
@@ -190,7 +190,7 @@ export function ActiveFilters() {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {chips.map((c) => (
-        <button key={c.label} onClick={c.remove} className="inline-flex items-center gap-1.5 rounded-full bg-cocoa-50 py-1.5 pr-2.5 pl-3.5 text-[0.8rem] font-semibold text-cocoa-600 transition hover:bg-cocoa-100" aria-label={`Remove filter ${c.label}`}>
+        <button key={c.label} onClick={c.remove} className="inline-flex items-center gap-1.5 rounded-[3px] bg-cocoa-50 py-1.5 pr-2.5 pl-3.5 text-[0.8rem] font-semibold text-cocoa-600 transition hover:bg-cocoa-100" aria-label={`Remove filter ${c.label}`}>
           {c.label} <X className="h-3.5 w-3.5" />
         </button>
       ))}
@@ -206,7 +206,7 @@ export function SortSelect() {
   return (
     <label className="flex items-center gap-2 text-[0.85rem] text-cocoa-500">
       <span className="hidden sm:inline">Sort by</span>
-      <select value={sp.get("sort") ?? ""} onChange={(e) => set("sort", e.target.value || null)} className="h-10 cursor-pointer rounded-full border border-cocoa-100 bg-cream-50 pr-8 pl-4 text-[0.85rem] font-semibold text-cocoa focus:border-sage-500 focus:outline-none" aria-label="Sort products">
+      <select value={sp.get("sort") ?? ""} onChange={(e) => set("sort", e.target.value || null)} className="h-10 cursor-pointer rounded-[3px] border border-cocoa-100 bg-cream-50 pr-8 pl-4 text-[0.85rem] font-semibold text-cocoa focus:border-sage-500 focus:outline-none" aria-label="Sort products">
         {SORTS.map((s) => (
           <option key={s.value} value={s.value}>
             {s.label}
@@ -223,7 +223,7 @@ export function MobileFilters({ facets, total, hideGender }: { facets: Facets; t
   const count = KEYS.filter((k) => sp.get(k)).length;
   return (
     <>
-      <button onClick={() => setOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-full border border-cocoa-100 px-4 text-[0.85rem] font-semibold lg:hidden">
+      <button onClick={() => setOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-[3px] border border-cocoa-100 px-4 text-[0.85rem] font-semibold lg:hidden">
         <SlidersHorizontal className="h-4 w-4" /> Filters {count > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-cocoa px-1 text-[0.65rem] text-cream-50">{count}</span>}
       </button>
       <Drawer open={open} onClose={() => setOpen(false)} side="left" title="Filters" footer={<Button className="w-full" onClick={() => setOpen(false)}>Show {total} {total === 1 ? "product" : "products"}</Button>}>

@@ -2,7 +2,7 @@ import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
 const control =
-  "w-full rounded-2xl border border-cocoa-100 bg-cream-50 px-4 text-[0.95rem] text-cocoa placeholder:text-cocoa-400/80 transition-[border-color,box-shadow] duration-200 hover:border-cocoa-200 focus:border-sage-500 focus:outline-none focus:ring-4 focus:ring-sage-200/50 disabled:opacity-60 aria-[invalid=true]:border-coral-600";
+  "w-full rounded-md border border-cocoa-100 bg-cream-50 px-4 text-[0.95rem] text-cocoa placeholder:text-cocoa-400/80 transition-[border-color,box-shadow] duration-200 hover:border-cocoa-200 focus:border-cocoa-600 focus:outline-none focus:ring-2 focus:ring-cocoa-100 disabled:opacity-60 aria-[invalid=true]:border-coral-600";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
   return <input className={cn(control, "h-12", className)} {...props} />;
@@ -48,9 +48,9 @@ export function Field({
   const msg = Array.isArray(error) ? error[0] : error;
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={htmlFor} className="text-[0.82rem] font-semibold text-cocoa-600">
+      <label htmlFor={htmlFor} className="text-[0.72rem] font-bold tracking-[0.08em] text-cocoa-600 uppercase">
         {label}
-        {optional && <span className="ml-1 font-normal text-cocoa-400">(optional)</span>}
+        {optional && <span className="ml-1 font-normal tracking-normal text-cocoa-400 normal-case">(optional)</span>}
       </label>
       {children}
       {msg ? (
@@ -69,7 +69,7 @@ export function Checkbox({ label, className, ...props }: ComponentProps<"input">
     <label className={cn("inline-flex cursor-pointer items-center gap-3 text-[0.92rem] text-cocoa-600", className)}>
       <input
         type="checkbox"
-        className="kt-checkbox h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-md border border-cocoa-200 bg-cream-50 transition checked:border-sage-600 checked:bg-sage-600"
+        className="kt-checkbox h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-[3px] border border-cocoa-200 bg-cream-50 transition checked:border-sage-600 checked:bg-sage-600"
         {...props}
       />
       {label}

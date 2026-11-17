@@ -71,7 +71,7 @@ export function SizeGrid({
             disabled={out}
             onClick={() => onChange(s)}
             className={cn(
-              "relative flex h-12 flex-col items-center justify-center rounded-xl border text-[0.82rem] font-semibold transition",
+              "relative flex h-12 flex-col items-center justify-center rounded-sm border text-[0.82rem] font-semibold transition",
               active ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa-100 bg-cream-50 hover:border-cocoa-400",
               out && "cursor-not-allowed border-dashed text-cocoa-300 line-through hover:border-cocoa-100",
             )}

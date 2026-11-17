@@ -22,7 +22,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
   const off = discountPercent(product.price, product.compareAtPrice);
   return (
     <article className={cn("group/card relative", className)}>
-      <div className="relative overflow-hidden rounded-[1.5rem] bg-cream-100">
+      <div className="relative overflow-hidden rounded-sm bg-cream-100">
         <Link href={`/products/${product.slug}`} className="block aspect-[4/5]" aria-label={product.name}>
           {a && (
             <Image
@@ -47,7 +47,6 @@ export function ProductCard({ product, priority, showSample = true, className }:
 
         <div className="pointer-events-none absolute top-3 left-3 flex flex-col items-start gap-1.5">
           {!product.inStock ? <Badge tone="out">Sold out</Badge> : off > 0 ? <Badge tone="sale">−{off}%</Badge> : product.isNewArrival ? <Badge tone="new">New</Badge> : null}
-          {showSample && product.isSample && <Badge tone="sample">Sample</Badge>}
         </div>
         <WishlistButton productId={product.id} name={product.name} className="absolute top-3 right-3" />
 
@@ -56,14 +55,14 @@ export function ProductCard({ product, priority, showSample = true, className }:
             <button
               type="button"
               onClick={() => openQuickAdd(product)}
-              className="absolute inset-x-3 bottom-3 hidden h-11 translate-y-3 items-center justify-center gap-2 rounded-full bg-cream-50/95 text-[0.85rem] font-bold text-cocoa opacity-0 shadow-soft backdrop-blur transition duration-500 ease-[var(--ease-soft)] group-hover/card:translate-y-0 group-hover/card:opacity-100 hover:bg-cocoa hover:text-cream-50 focus-visible:translate-y-0 focus-visible:opacity-100 md:flex"
+              className="absolute inset-x-3 bottom-3 hidden h-11 translate-y-3 items-center justify-center gap-2 rounded-[3px] bg-cream-50 text-[0.7rem] font-bold tracking-[0.14em] text-cocoa uppercase opacity-0 transition duration-500 ease-[var(--ease-soft)] group-hover/card:translate-y-0 group-hover/card:opacity-100 hover:bg-cocoa hover:text-cream-50 focus-visible:translate-y-0 focus-visible:opacity-100 md:flex"
             >
               <Plus className="h-4 w-4" /> Quick add
             </button>
             <button
               type="button"
               onClick={() => openQuickAdd(product)}
-              className="absolute right-3 bottom-3 grid h-10 w-10 place-items-center rounded-full bg-cream-50/95 text-cocoa shadow-soft md:hidden"
+              className="absolute right-3 bottom-3 grid h-10 w-10 place-items-center rounded-full bg-cream-50 text-cocoa md:hidden"
               aria-label={`Quick add ${product.name}`}
             >
               <Plus className="h-4 w-4" />
@@ -72,7 +71,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
         )}
       </div>
 
-      <div className="mt-4 flex items-start justify-between gap-3 px-1">
+      <div className="mt-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
           <h3 className="font-sans text-[0.95rem] leading-snug font-semibold tracking-normal">
             <Link href={`/products/${product.slug}`} className="link-underline">
@@ -82,7 +81,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
           <Price price={product.price} compareAt={product.compareAtPrice} className="mt-1" />
         </div>
       </div>
-      <div className="mt-2 flex items-center gap-3 px-1 text-[0.75rem] text-cocoa-500">
+      <div className="mt-2 flex items-center gap-3 text-[0.75rem] text-cocoa-500">
         {product.colors.length > 0 && (
           <span className="flex items-center gap-1" aria-label={`Colours: ${product.colors.map((c) => c.name).join(", ")}`}>
             {product.colors.slice(0, 4).map((c) => (
@@ -92,6 +91,11 @@ export function ProductCard({ product, priority, showSample = true, className }:
           </span>
         )}
         {product.sizes.length > 0 && <span>Sizes {sizeRange(product.sizes)}</span>}
+        {showSample && product.isSample && (
+          <span className="ml-auto text-[0.6rem] font-bold tracking-[0.16em] text-cocoa-400 uppercase" title="Sample listing used while the first collection is prepared">
+            Sample
+          </span>
+        )}
       </div>
     </article>
   );

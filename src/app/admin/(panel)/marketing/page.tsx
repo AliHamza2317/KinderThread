@@ -60,16 +60,18 @@ export default async function MarketingPage() {
         </div>
 
         <div id="hero" className="scroll-mt-32">
-          <Card title="Hero" description="The first thing visitors see, next to the 3D teddy bear.">
+          <Card title="Hero" description="The first thing visitors see: a large photograph with your headline and buttons.">
             <SettingsForm
               settingKey="home"
               root="hero"
               initial={home.hero}
               submitLabel="Save hero"
+              images={[{ path: "image", label: "Hero photograph", aspect: "aspect-[4/5]" }]}
               fields={[
                 { path: "eyebrow", label: "Eyebrow", hint: "Short label above the heading" },
                 { path: "heading", label: "Heading", wide: true },
                 { path: "subheading", label: "Supporting text", type: "textarea" },
+                { path: "imageAlt", label: "Photograph description (alt text)", wide: true },
                 { type: "heading", label: "Buttons" },
                 { path: "primary.label", label: "Primary button label" },
                 { path: "primary.href", label: "Primary button link", placeholder: "/shop" },
@@ -99,10 +101,10 @@ export default async function MarketingPage() {
                 { path: "image2Alt", label: "Detail image description (alt text)" },
                 {
                   path: "imagesAreSamples",
-                  label: "These are sample / placeholder images",
+                  label: "Show a “Placeholder imagery” note",
                   type: "checkbox",
                   wide: true,
-                  hint: "Keeps a small “Sample imagery” label on the homepage. Untick once you upload real Kinder Thread photography.",
+                  hint: "Optional small note under the story photos while you use placeholder photography.",
                 },
                 { path: "cta.label", label: "Link label" },
                 { path: "cta.href", label: "Link URL", placeholder: "/about" },
@@ -158,7 +160,7 @@ export default async function MarketingPage() {
                 { path: "categories", label: "Featured categories", type: "checkbox" },
                 { path: "newArrivals", label: "New arrivals", type: "checkbox" },
                 { path: "story", label: "Brand story", type: "checkbox" },
-                { path: "wardrobe", label: "3D wardrobe", type: "checkbox" },
+                { path: "shopByAge", label: "Shop by age", type: "checkbox" },
                 { path: "bestSellers", label: "Best sellers", type: "checkbox" },
                 { path: "banners", label: "Promotional banners", type: "checkbox" },
                 { path: "benefits", label: "Why Kinder Thread", type: "checkbox" },

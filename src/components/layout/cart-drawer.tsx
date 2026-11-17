@@ -44,11 +44,11 @@ export function FreeShippingMeter({ subtotal, threshold }: { subtotal: number; t
             You&apos;re <strong className="text-cocoa">{formatPrice(remaining)}</strong> away from free delivery
           </>
         ) : (
-          <strong className="text-sage-700">You&apos;ve unlocked free delivery ✦</strong>
+          <strong className="text-sage-700">You&apos;ve unlocked free delivery</strong>
         )}
       </p>
-      <div className="mt-2 h-1.5 overflow-hidden rounded-full bg-cocoa-100" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
-        <div className="h-full rounded-full bg-sage-500 transition-[width] duration-700 ease-[var(--ease-soft)]" style={{ width: `${pct}%` }} />
+      <div className="mt-2 h-[3px] overflow-hidden bg-cocoa-100" role="progressbar" aria-valuenow={Math.round(pct)} aria-valuemin={0} aria-valuemax={100}>
+        <div className="h-full bg-cocoa-700 transition-[width] duration-700 ease-[var(--ease-soft)]" style={{ width: `${pct}%` }} />
       </div>
     </div>
   );
@@ -118,7 +118,7 @@ export function CartDrawer({ freeThreshold }: { freeThreshold: number }) {
         <ul className="divide-y divide-cocoa-100 px-6">
           {lines.map((l) => (
             <li key={l.variantId} className="flex gap-4 py-5">
-              <Link href={`/products/${l.slug}`} onClick={() => setOpen(false)} className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-xl bg-cream-100">
+              <Link href={`/products/${l.slug}`} onClick={() => setOpen(false)} className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-sm bg-cream-100">
                 {l.image && <Image src={l.image} alt="" fill sizes="80px" className="object-cover" />}
               </Link>
               <div className="flex min-w-0 flex-1 flex-col">

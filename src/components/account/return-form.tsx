@@ -48,7 +48,7 @@ export function ReturnRequestForm({ orderNumber, deadline }: { orderNumber: stri
               aria-checked={type === v}
               onClick={() => setType(v)}
               className={cn(
-                "rounded-2xl border px-4 py-3 text-left transition",
+                "rounded-md border px-4 py-3 text-left transition",
                 type === v ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa-100 bg-cream-50 hover:border-cocoa-300",
               )}
             >

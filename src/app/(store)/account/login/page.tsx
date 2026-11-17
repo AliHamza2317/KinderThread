@@ -28,7 +28,7 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
       }
     >
       {sp.signedout && (
-        <p role="status" className="mb-5 rounded-2xl bg-sage-100 px-4 py-3 text-sm font-medium text-sage-800">
+        <p role="status" className="mb-5 rounded-md bg-sage-100 px-4 py-3 text-sm font-medium text-sage-800">
           You&apos;ve been signed out of all devices.
         </p>
       )}

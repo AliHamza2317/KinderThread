@@ -57,10 +57,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
         </p>
       </header>
 
-      <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-5 md:p-7" aria-label="Order progress">
+      <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-5 md:p-7" aria-label="Order progress">
         <OrderProgress status={order.status} events={order.events} />
         {(order.courier || order.trackingNumber) && (
-          <div className="mt-6 flex flex-col gap-3 rounded-2xl bg-sage-50 p-4 sm:flex-row sm:items-center sm:justify-between">
+          <div className="mt-6 flex flex-col gap-3 rounded-md bg-sage-50 p-4 sm:flex-row sm:items-center sm:justify-between">
             <p className="flex items-center gap-3 text-sm">
               <Truck className="h-5 w-5 shrink-0 text-sage-700" />
               <span>
@@ -88,10 +88,10 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
             <h2 id="items-heading" className="font-display text-2xl">
               Items
             </h2>
-            <ul className="mt-4 divide-y divide-cocoa-100 rounded-[1.5rem] border border-cocoa-100 bg-cream-50 px-5">
+            <ul className="mt-4 divide-y divide-cocoa-100 rounded-sm border border-cocoa-100 bg-cream-50 px-5">
               {order.items.map((it) => (
                 <li key={it.id} className="flex gap-4 py-4">
-                  <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-xl bg-cream-200 sm:w-20">
+                  <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-sm bg-cream-200 sm:w-20">
                     {it.image && <Image src={it.image} alt="" fill sizes="80px" className="object-cover" />}
                   </div>
                   <div className="flex min-w-0 flex-1 flex-col justify-center">
@@ -130,14 +130,14 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
             </section>
           )}
 
-          <section aria-labelledby="returns-heading" className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-5 md:p-6">
+          <section aria-labelledby="returns-heading" className="rounded-sm border border-cocoa-100 bg-cream-50 p-5 md:p-6">
             <h2 id="returns-heading" className="font-sans text-base font-bold tracking-normal">
               Returns & exchanges
             </h2>
             {order.returnRequests.length > 0 && (
               <ul className="mt-4 flex flex-col gap-3">
                 {order.returnRequests.map((r) => (
-                  <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 rounded-2xl bg-cream-100 px-4 py-3">
+                  <li key={r.id} className="flex flex-wrap items-center justify-between gap-2 rounded-md bg-cream-100 px-4 py-3">
                     <div>
                       <p className="text-sm font-semibold">
                         {r.type === "RETURN" ? "Return" : "Exchange"} · {r.reason}
@@ -166,7 +166,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
         </div>
 
         <aside className="flex flex-col gap-4 lg:sticky lg:top-28 lg:self-start">
-          <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="summary-heading">
+          <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="summary-heading">
             <h2 id="summary-heading" className="font-sans text-base font-bold tracking-normal">
               Summary
             </h2>
@@ -192,7 +192,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
             </dl>
           </section>
 
-          <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="pay-heading">
+          <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="pay-heading">
             <h2 id="pay-heading" className="font-sans text-base font-bold tracking-normal">
               Payment
             </h2>
@@ -201,7 +201,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
             {order.paymentReference && <p className="mt-1 text-[0.8rem] text-cocoa-400">Reference: {order.paymentReference}</p>}
           </section>
 
-          <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="ship-heading">
+          <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="ship-heading">
             <h2 id="ship-heading" className="font-sans text-base font-bold tracking-normal">
               Delivery address
             </h2>
@@ -216,7 +216,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
               href={whatsappLink(settings.store.whatsapp, `Hi! I have a question about my order ${order.number}.`)}
               target="_blank"
               rel="noopener noreferrer"
-              className="rounded-[1.5rem] border border-dashed border-cocoa-200 p-5 text-sm text-cocoa-600 transition hover:border-cocoa-400"
+              className="rounded-sm border border-dashed border-cocoa-200 p-5 text-sm text-cocoa-600 transition hover:border-cocoa-400"
             >
               Questions about this order? <span className="font-bold text-sage-700">Message us on WhatsApp</span>
             </a>

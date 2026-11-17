@@ -7,12 +7,16 @@
  *
  * Safe to re-run: existing records are left untouched.
  *   npm run db:seed
+ *
+ * Replace previously seeded sample content (sample products, and any category /
+ * banner / gallery images that still point at old sample files) with the current set:
+ *   npm run db:seed -- --refresh-samples
  */
 import "dotenv/config";
 import { PrismaPg } from "@prisma/adapter-pg";
 import bcrypt from "bcryptjs";
-import { PrismaClient } from "../src/generated/prisma/client";
-import { SAMPLE_CATEGORIES, SAMPLE_PRODUCTS, productImagePath } from "./sample-data";
+import { Prisma, PrismaClient } from "../src/generated/prisma/client";
+import { SAMPLE_BANNERS, SAMPLE_CATEGORIES, SAMPLE_GALLERY, SAMPLE_PRODUCTS } from "./sample-data";
 
 const db = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL! }) });
 
@@ -197,6 +201,30 @@ async function main() {
     });
   }
 
+  // ---------------- refresh old sample content ----------------
+  const refresh = process.argv.includes("--refresh-samples");
+  if (refresh) {
+    const removed = await db.product.deleteMany({ where: { isSample: true } });
+    // placeholder imagery lives under /samples (old) or /images (current); admin uploads live under /media
+    const placeholder = [{ startsWith: "/samples/" }, { startsWith: "/images/" }];
+    const oldBanners = await db.banner.deleteMany({ where: { OR: placeholder.map((p) => ({ image: p })) } });
+    const oldGallery = await db.galleryImage.deleteMany({ where: { OR: [{ isSample: true }, ...placeholder.map((p) => ({ url: p }))] } });
+    for (const c of SAMPLE_CATEGORIES)
+      await db.category.updateMany({ where: { slug: c.slug, OR: [{ image: null }, ...placeholder.map((p) => ({ image: p }))] }, data: { image: c.image, description: c.description } });
+    const home = await db.setting.findUnique({ where: { key: "home" } });
+    if (home && /\/samples\/|\/images\//.test(JSON.stringify(home.value))) {
+      const value = home.value as Record<string, Record<string, unknown>>;
+      if (value.story) {
+        delete value.story.image;
+        delete value.story.image2;
+        delete value.story.imageAlt;
+        delete value.story.image2Alt;
+      }
+      await db.setting.update({ where: { key: "home" }, data: { value: value as Prisma.InputJsonObject } });
+    }
+    console.log(`✔ Removed ${removed.count} old sample products, ${oldBanners.count} banners, ${oldGallery.count} gallery images`);
+  }
+
   // ---------------- categories ----------------
   for (const [i, c] of SAMPLE_CATEGORIES.entries()) {
     await db.category.upsert({
@@ -209,7 +237,7 @@ async function main() {
         description: c.description,
         isFeatured: c.featured,
         sortOrder: i,
-        image: `/samples/categories/${c.slug}.webp`,
+        image: c.image,
       },
     });
   }
@@ -245,13 +273,11 @@ async function main() {
       const color = await db.productColor.create({
         data: { productId: product.id, name: col.name, hex: col.hex, sortOrder: ci },
       });
-      await db.productImage.create({
-        data: { productId: product.id, colorId: color.id, url: productImagePath(p.slug, ci, "front"), alt: `${p.name} in ${col.name} (sample illustration)`, sortOrder: sort++ },
-      });
-      if (ci === 0)
+      for (const url of col.images) {
         await db.productImage.create({
-          data: { productId: product.id, colorId: color.id, url: productImagePath(p.slug, ci, "detail"), alt: `${p.name} detail (sample illustration)`, sortOrder: sort++ },
+          data: { productId: product.id, colorId: color.id, url, alt: `${p.name} in ${col.name}`, sortOrder: sort++ },
         });
+      }
       const colorCode = col.name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase();
       for (const size of p.sizes) {
         const r = rand();
@@ -276,40 +302,10 @@ async function main() {
 
   // ---------------- banners & gallery ----------------
   if ((await db.banner.count()) === 0) {
-    await db.banner.createMany({
-      data: [
-        {
-          eyebrow: "Collection",
-          title: "Matching Sets",
-          subtitle: "Coordinated tops and bottoms — one less decision in the morning.",
-          image: "/samples/categories/matching-sets.webp",
-          ctaLabel: "Shop sets",
-          ctaHref: "/collections/matching-sets",
-          tone: "sun",
-          sortOrder: 0,
-        },
-        {
-          eyebrow: "First days",
-          title: "Newborn Essentials",
-          subtitle: "Soft rompers, sleepsuits and bodysuits for the very beginning.",
-          image: "/samples/categories/newborn.webp",
-          ctaLabel: "Shop newborn",
-          ctaHref: "/collections/newborn",
-          tone: "sage",
-          sortOrder: 1,
-        },
-      ],
-    });
+    await db.banner.createMany({ data: SAMPLE_BANNERS.map((b, i) => ({ ...b, sortOrder: i })) });
   }
   if ((await db.galleryImage.count()) === 0) {
-    await db.galleryImage.createMany({
-      data: Array.from({ length: 8 }, (_, i) => ({
-        url: `/samples/gallery/g${i + 1}.webp`,
-        alt: "Kinder Thread sample flat-lay illustration",
-        isSample: true,
-        sortOrder: i,
-      })),
-    });
+    await db.galleryImage.createMany({ data: SAMPLE_GALLERY.map((g, i) => ({ ...g, isSample: true, sortOrder: i })) });
   }
 
   // ---------------- coupons ----------------

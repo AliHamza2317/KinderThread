@@ -23,7 +23,7 @@ export function OrderProgress({ status, events }: { status: OrderStatus; events:
   if (status === "CANCELLED" || status === "RETURNED") {
     const Icon = status === "CANCELLED" ? PackageX : RotateCcw;
     return (
-      <div className={cn("flex items-start gap-4 rounded-2xl p-5", status === "CANCELLED" ? "bg-coral-50" : "bg-cocoa-50")}>
+      <div className={cn("flex items-start gap-4 rounded-md p-5", status === "CANCELLED" ? "bg-coral-50" : "bg-cocoa-50")}>
         <span className={cn("grid h-10 w-10 shrink-0 place-items-center rounded-full", status === "CANCELLED" ? "bg-coral-100 text-coral-700" : "bg-cocoa-100 text-cocoa-600")}>
           <Icon className="h-5 w-5" />
         </span>

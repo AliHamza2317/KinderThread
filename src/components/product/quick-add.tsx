@@ -53,7 +53,7 @@ function QuickAddBody({ product, onDone }: { product: ProductCardData; onDone: (
 
   return (
     <div className="grid gap-6 sm:grid-cols-[220px_1fr]">
-      <div className="relative hidden aspect-[4/5] overflow-hidden rounded-2xl bg-cream-100 sm:block">
+      <div className="relative hidden aspect-[4/5] overflow-hidden rounded-md bg-cream-100 sm:block">
         {product.images[0] && <Image src={product.images[0].url} alt={product.images[0].alt} fill sizes="220px" className="object-cover" />}
       </div>
       <div className="flex flex-col gap-5">

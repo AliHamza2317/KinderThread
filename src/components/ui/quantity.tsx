@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils";
 export function QuantityStepper({ value, onChange, max = 10, min = 1, size = "md", label = "Quantity" }: { value: number; onChange: (v: number) => void; max?: number; min?: number; size?: "sm" | "md"; label?: string }) {
   const h = size === "sm" ? "h-9" : "h-12";
   return (
-    <div className={cn("inline-flex items-center rounded-full border border-cocoa-100 bg-cream-50", h)} role="group" aria-label={label}>
+    <div className={cn("inline-flex items-center rounded-[3px] border border-cocoa-200/70 bg-cream-50", h)} role="group" aria-label={label}>
       <button type="button" className={cn("grid place-items-center rounded-full text-cocoa-500 transition hover:text-cocoa disabled:opacity-30", size === "sm" ? "h-9 w-9" : "h-12 w-12")} onClick={() => onChange(Math.max(min, value - 1))} disabled={value <= min} aria-label="Decrease quantity">
         <Minus className="h-3.5 w-3.5" />
       </button>

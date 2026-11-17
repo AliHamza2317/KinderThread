@@ -66,7 +66,7 @@ export default async function ComingSoon() {
           </p>
         </div>
       </div>
-      <ComingSoonArt />
+      <ComingSoonArt image={s.home.hero.image} alt={s.home.hero.imageAlt} />
     </main>
   );
 }

@@ -66,13 +66,13 @@ export function MobileMenu({ categories, signedIn }: { categories: NavCategory[]
           </Link>
         ))}
         <div className="mt-6 grid grid-cols-3 gap-3 text-center text-[0.8rem] font-semibold">
-          <Link href={signedIn ? "/account" : "/account/login"} className="flex flex-col items-center gap-2 rounded-2xl bg-cream-100 py-4">
+          <Link href={signedIn ? "/account" : "/account/login"} className="flex flex-col items-center gap-2 rounded-md bg-cream-100 py-4">
             <User className="h-5 w-5" /> Account
           </Link>
-          <Link href="/wishlist" className="flex flex-col items-center gap-2 rounded-2xl bg-cream-100 py-4">
+          <Link href="/wishlist" className="flex flex-col items-center gap-2 rounded-md bg-cream-100 py-4">
             <Heart className="h-5 w-5" /> Wishlist
           </Link>
-          <Link href="/track-order" className="flex flex-col items-center gap-2 rounded-2xl bg-cream-100 py-4">
+          <Link href="/track-order" className="flex flex-col items-center gap-2 rounded-md bg-cream-100 py-4">
             <PackageSearch className="h-5 w-5" /> Track order
           </Link>
         </div>

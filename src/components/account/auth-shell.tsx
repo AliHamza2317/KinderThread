@@ -15,16 +15,15 @@ export function AuthShell({ eyebrow, title, intro, children, footer }: { eyebrow
           {footer && <div className="mt-8 border-t border-cocoa-100 pt-6 text-sm text-cocoa-500">{footer}</div>}
         </div>
 
-        <aside className="relative hidden min-h-[560px] overflow-hidden rounded-[2rem] bg-cream-200 lg:block" aria-hidden>
-          <Image src="/samples/editorial-story.webp" alt="" fill sizes="(min-width: 1024px) 45vw, 0px" className="object-cover" priority />
-          <div className="absolute inset-x-6 bottom-6 rounded-[1.5rem] bg-cream/92 p-6 backdrop-blur-sm">
+        <aside className="relative hidden min-h-[560px] overflow-hidden rounded-sm bg-cream-200 lg:block" aria-hidden>
+          <Image src="/images/gallery/g8.webp" alt="" fill sizes="(min-width: 1024px) 45vw, 0px" className="object-cover" priority />
+          <div className="absolute inset-x-6 bottom-6 rounded-sm bg-cream p-6">
             <p className="font-display text-2xl leading-snug">Your little world, all in one place.</p>
             <ul className="mt-4 grid gap-2 text-sm text-cocoa-600">
               <li className="flex items-center gap-2"><Dot /> Track orders and deliveries</li>
               <li className="flex items-center gap-2"><Dot /> Save addresses for a faster checkout</li>
               <li className="flex items-center gap-2"><Dot /> Keep a wishlist across devices</li>
             </ul>
-            <p className="mt-4 text-[0.7rem] font-semibold tracking-[0.16em] text-cocoa-400 uppercase">Sample image</p>
           </div>
         </aside>
       </div>
@@ -33,5 +32,5 @@ export function AuthShell({ eyebrow, title, intro, children, footer }: { eyebrow
 }
 
 function Dot() {
-  return <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-coral" />;
+  return <span className="h-1.5 w-1.5 shrink-0 rounded-full bg-cocoa-300" />;
 }

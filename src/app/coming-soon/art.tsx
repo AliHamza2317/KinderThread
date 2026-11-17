@@ -1,9 +1,9 @@
-import { BearStage } from "@/components/home/bear-stage";
+import Image from "next/image";
 
-export function ComingSoonArt() {
+export function ComingSoonArt({ image, alt }: { image: string; alt: string }) {
   return (
-    <div className="relative flex items-center justify-center border-t border-cocoa-100 px-6 py-12 lg:border-t-0 lg:border-l lg:py-0">
-      <BearStage className="w-full max-w-[640px]" />
+    <div className="relative min-h-[46vh] lg:min-h-0">
+      <Image src={image} alt={alt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
     </div>
   );
 }

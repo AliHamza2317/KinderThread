@@ -18,7 +18,7 @@ export function Toaster() {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 12, scale: 0.96 }}
             transition={{ type: "spring", stiffness: 380, damping: 30 }}
-            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-2xl bg-cocoa-800 px-4 py-3.5 text-cream-50 shadow-lift"
+            className="pointer-events-auto flex w-full max-w-sm items-start gap-3 rounded-md bg-cocoa-800 px-4 py-3.5 text-cream-50 shadow-lift"
             role="status"
           >
             <span className={`mt-0.5 grid h-6 w-6 shrink-0 place-items-center rounded-full ${t.tone === "error" ? "bg-coral" : "bg-sage-500"}`}>

@@ -71,7 +71,7 @@ export function Header({ categories, signedIn }: Props) {
             alt="Kinder Thread"
             priority
             sizes="120px"
-            className={cn("h-auto transition-[width] duration-500 ease-[var(--ease-soft)]", scrolled ? "w-[84px] lg:w-[96px]" : "w-[92px] lg:w-[112px]")}
+            className={cn("h-auto transition-[width] duration-500 ease-[var(--ease-soft)]", scrolled ? "w-[78px] lg:w-[88px]" : "w-[86px] lg:w-[100px]")}
           />
         </Link>
 
@@ -98,7 +98,7 @@ export function Header({ categories, signedIn }: Props) {
                     {item.menu && <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", openMenu === item.menu && "rotate-180")} />}
                     <span
                       className={cn(
-                        "absolute inset-x-3 bottom-1.5 h-[2px] origin-left rounded-full bg-coral transition-transform duration-500 ease-[var(--ease-soft)] xl:inset-x-4",
+                        "absolute inset-x-3 bottom-1.5 h-px origin-left bg-cocoa transition-transform duration-500 ease-[var(--ease-soft)] xl:inset-x-4",
                         active ? "scale-x-100" : "scale-x-0 group-hover/nav:scale-x-100",
                       )}
                     />
@@ -160,8 +160,8 @@ export function Header({ categories, signedIn }: Props) {
                     <MenuLink href="/shop?age=little">2–5 years</MenuLink>
                   </MenuColumn>
                   {featured?.image && (
-                    <Link href={`/collections/${featured.slug}`} className="group col-span-4 grid grid-cols-2 items-center gap-6 rounded-[1.5rem] bg-cream-100 p-4">
-                      <div className="relative aspect-[4/5] overflow-hidden rounded-[1rem]">
+                    <Link href={`/collections/${featured.slug}`} className="group col-span-4 grid grid-cols-2 items-center gap-6 rounded-sm bg-cream-100 p-4">
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
                         <Image src={featured.image} alt="" fill sizes="200px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                       </div>
                       <div>
@@ -188,7 +188,7 @@ export function Header({ categories, signedIn }: Props) {
                   <div className="col-span-8 grid grid-cols-3 gap-4">
                     {collections.slice(0, 3).map((c) => (
                       <Link key={c.id} href={`/collections/${c.slug}`} className="group">
-                        <div className="relative aspect-[4/5] overflow-hidden rounded-[1rem] bg-cream-100">
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-cream-100">
                           {c.image && <Image src={c.image} alt="" fill sizes="240px" className="object-cover transition-transform duration-700 group-hover:scale-105" />}
                         </div>
                         <p className="mt-3 font-display text-lg">{c.name}</p>
@@ -217,7 +217,7 @@ function MenuColumn({ title, children, className }: { title: string; children: R
 function MenuLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link href={href} className="font-display text-[1.15rem] text-cocoa transition-colors hover:text-coral-600">
+      <Link href={href} className="font-display text-[1.1rem] text-cocoa transition-colors hover:text-sage-700">
         {children}
       </Link>
     </li>
@@ -245,7 +245,7 @@ function CountBadge({ n, bump = 0 }: { n: number; bump?: number }) {
       initial={{ scale: 0.4 }}
       animate={{ scale: 1 }}
       transition={{ type: "spring", stiffness: 500, damping: 14 }}
-      className="absolute top-1 right-0.5 grid h-[18px] min-w-[18px] place-items-center rounded-full bg-coral px-1 text-[0.65rem] font-bold text-cocoa-900"
+      className="absolute top-1 right-0.5 grid h-[17px] min-w-[17px] place-items-center rounded-full bg-cocoa-800 px-1 text-[0.6rem] font-bold text-cream-50"
     >
       {n > 99 ? "99+" : n}
     </motion.span>

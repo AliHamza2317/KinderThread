@@ -105,7 +105,7 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
       <div>
         <div className="flex flex-wrap gap-2">
           {product.isNewArrival && <Badge tone="new">New</Badge>}
-          {product.isSample && <Badge tone="sample">Sample listing</Badge>}
+          {product.isSample && <span className="text-[0.62rem] font-bold tracking-[0.16em] text-cocoa-400 uppercase">Sample listing</span>}
         </div>
         <h1 className="display-md mt-3">{product.name}</h1>
         <Price price={price} compareAt={product.compareAtPrice} size="lg" className="mt-3" />
@@ -183,21 +183,21 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
         </div>
       </div>
 
-      <ul className="grid gap-3 rounded-[1.25rem] bg-cream-100 p-5 text-[0.85rem] text-cocoa-600">
+      <ul className="grid gap-3 border-y border-cocoa-100 py-5 text-[0.85rem] text-cocoa-600">
         <li className="flex gap-3">
-          <Truck className="h-5 w-5 shrink-0 text-sage-600" />
+          <Truck className="h-5 w-5 shrink-0 text-cocoa-400" strokeWidth={1.5} />
           <span>
             {info.estimate}.{info.freeThreshold > 0 && <> Free delivery over {formatPrice(info.freeThreshold)}.</>}
           </span>
         </li>
         {info.cod && (
           <li className="flex gap-3">
-            <Banknote className="h-5 w-5 shrink-0 text-sage-600" /> Cash on delivery available across Pakistan.
+            <Banknote className="h-5 w-5 shrink-0 text-cocoa-400" strokeWidth={1.5} /> Cash on delivery available across Pakistan.
           </li>
         )}
         {info.returnDays > 0 && (
           <li className="flex gap-3">
-            <RotateCcw className="h-5 w-5 shrink-0 text-sage-600" /> Returns & exchanges within {info.returnDays} days of delivery.
+            <RotateCcw className="h-5 w-5 shrink-0 text-cocoa-400" strokeWidth={1.5} /> Returns & exchanges within {info.returnDays} days of delivery.
           </li>
         )}
       </ul>

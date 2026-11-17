@@ -114,6 +114,8 @@ export const settingSchemas = {
           .default(
             "Discover thoughtfully selected outfits for your little ones, from their very first days to their biggest little adventures.",
           ),
+        image: z.string().default("/images/editorial/hero-tulle.webp"),
+        imageAlt: z.string().default("A toddler in a mint tulle dress sitting by a sunny window"),
         primary: link.default({ label: "Explore Collection", href: "/shop" }),
         secondary: link.default({ label: "Our Story", href: "/about" }),
       })
@@ -127,11 +129,11 @@ export const settingSchemas = {
           .default(
             "Every little outfit is part of a bigger story. Discover thoughtfully selected styles for the little ones who make every moment special.",
           ),
-        image: z.string().default("/samples/editorial-story.webp"),
-        imageAlt: z.string().default("Folded baby clothes in soft colours"),
-        image2: z.string().default("/samples/editorial-detail.webp"),
-        image2Alt: z.string().default("Close-up of buttons and thread"),
-        imagesAreSamples: z.boolean().default(true),
+        image: z.string().default("/images/editorial/story-muslin.webp"),
+        imageAlt: z.string().default("Soft folded muslins stacked on a wooden stool"),
+        image2: z.string().default("/images/editorial/story-feet.webp"),
+        image2Alt: z.string().default("A parent holding a baby's tiny feet"),
+        imagesAreSamples: z.boolean().default(false),
         cta: link.default({ label: "Read our story", href: "/about" }),
       })
       .prefault({}),
@@ -161,7 +163,7 @@ export const settingSchemas = {
         categories: z.boolean().default(true),
         newArrivals: z.boolean().default(true),
         story: z.boolean().default(true),
-        wardrobe: z.boolean().default(true),
+        shopByAge: z.boolean().default(true),
         bestSellers: z.boolean().default(true),
         banners: z.boolean().default(true),
         benefits: z.boolean().default(true),

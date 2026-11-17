@@ -49,7 +49,7 @@ export function CartPageClient({ freeThreshold }: { freeThreshold: number }) {
             const issue = quote?.lines.find((q) => q.variantId === l.variantId)?.issue;
             return (
               <li key={l.variantId} className="flex gap-5 py-6">
-                <Link href={`/products/${l.slug}`} className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-2xl bg-cream-100 md:w-32">
+                <Link href={`/products/${l.slug}`} className="relative aspect-[4/5] w-24 shrink-0 overflow-hidden rounded-md bg-cream-100 md:w-32">
                   {l.image && <Image src={l.image} alt="" fill sizes="128px" className="object-cover" />}
                 </Link>
                 <div className="flex min-w-0 flex-1 flex-col">
@@ -77,7 +77,7 @@ export function CartPageClient({ freeThreshold }: { freeThreshold: number }) {
         </ul>
 
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 space-y-6 rounded-[1.75rem] bg-cream-100 p-6 md:p-8">
+          <div className="sticky top-28 space-y-6 rounded-sm bg-cream-100 p-6 md:p-8">
             <h2 className="font-display text-2xl">Order summary</h2>
             <FreeShippingMeter subtotal={(quote?.subtotal ?? 0) - (quote?.discount ?? 0)} threshold={freeThreshold} />
             <CouponField value={couponCode} onApply={setCoupon} error={quote?.couponError} applied={quote?.coupon?.code} />

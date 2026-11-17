@@ -52,7 +52,7 @@ export function Notice({ state, className }: { state: ActionResult; className?: 
   return (
     <p
       role={state.ok ? "status" : "alert"}
-      className={cn("rounded-2xl px-4 py-3 text-sm font-medium", state.ok ? "bg-sage-100 text-sage-800" : "bg-coral-100 text-coral-800", className)}
+      className={cn("rounded-md px-4 py-3 text-sm font-medium", state.ok ? "bg-sage-100 text-sage-800" : "bg-coral-100 text-coral-800", className)}
     >
       {state.message}
     </p>

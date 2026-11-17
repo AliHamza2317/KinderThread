@@ -22,7 +22,7 @@ export function Countdown({ to }: { to: string }) {
   return (
     <dl className="mt-8 flex gap-3" aria-label="Time until launch">
       {parts.map(([k, v]) => (
-        <div key={k} className="min-w-[4.5rem] rounded-2xl bg-cream-100 px-3 py-3 text-center">
+        <div key={k} className="min-w-[4.5rem] rounded-md bg-cream-100 px-3 py-3 text-center">
           <dd className="font-display text-3xl tabular-nums">{String(v).padStart(2, "0")}</dd>
           <dt className="text-[0.68rem] font-bold tracking-[0.16em] text-cocoa-500 uppercase">{k}</dt>
         </div>

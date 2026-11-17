@@ -54,7 +54,7 @@ export function AccountNav() {
               href={href}
               aria-current={isActive(href) ? "page" : undefined}
               className={cn(
-                "group flex items-center gap-3 rounded-2xl px-4 py-3 text-[0.95rem] font-semibold transition",
+                "group flex items-center gap-3 rounded-md px-4 py-3 text-[0.95rem] font-semibold transition",
                 isActive(href) ? "bg-cream-200 text-cocoa" : "text-cocoa-500 hover:bg-cream-100 hover:text-cocoa",
               )}
             >
@@ -66,7 +66,7 @@ export function AccountNav() {
         <li className="mt-3 border-t border-cocoa-100 pt-3">
           <form action={logoutAction}>
             <input type="hidden" name="redirectTo" value="/" />
-            <button className="flex w-full items-center gap-3 rounded-2xl px-4 py-3 text-[0.95rem] font-semibold text-cocoa-500 transition hover:bg-cream-100 hover:text-cocoa">
+            <button className="flex w-full items-center gap-3 rounded-md px-4 py-3 text-[0.95rem] font-semibold text-cocoa-500 transition hover:bg-cream-100 hover:text-cocoa">
               <LogOut className="h-[1.1rem] w-[1.1rem] text-cocoa-400" /> Sign out
             </button>
           </form>

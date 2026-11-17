@@ -50,7 +50,7 @@ export function SizeGuideButton({ guide, highlight }: { guide: SizeGuideData | n
       <Modal open={open} onClose={() => setOpen(false)} title="Size guide" className="sm:max-w-2xl">
         <p className="mb-4 text-sm text-cocoa-500">{guide.name}. Measurements are of the child, not the garment, unless noted.</p>
         <SizeGuideTable guide={guide} highlight={highlight} />
-        <div className="mt-5 grid gap-3 rounded-2xl bg-cream-100 p-4 text-[0.85rem] text-cocoa-600 sm:grid-cols-3">
+        <div className="mt-5 grid gap-3 rounded-md bg-cream-100 p-4 text-[0.85rem] text-cocoa-600 sm:grid-cols-3">
           <p>
             <strong className="block text-cocoa">Height</strong>Measure from the top of the head to the heels, standing or lying flat.
           </p>
