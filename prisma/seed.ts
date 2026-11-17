@@ -169,14 +169,18 @@ const SIZE_ROWS = [
 
 async function main() {
   // ---------------- admin ----------------
-  const email = (process.env.ADMIN_EMAIL || "admin@kinderthread.local").toLowerCase();
-  const password = process.env.ADMIN_PASSWORD || "ChangeMe-KT-2026!";
-  const existingAdmin = await db.user.findUnique({ where: { email } });
-  if (!existingAdmin) {
-    await db.user.create({
-      data: { email, name: "Store Admin", role: "ADMIN", passwordHash: await bcrypt.hash(password, 12) },
-    });
-    console.log(`✔ Admin created: ${email}  (password from ADMIN_PASSWORD${process.env.ADMIN_PASSWORD ? "" : `, default "${password}" — change it after first login`})`);
+  // ADMIN_EMAIL/ADMIN_PASSWORD create that admin if missing. The documented default
+  // admin is only ever created on a database that has no administrator at all.
+  const adminCount = await db.user.count({ where: { role: "ADMIN" } });
+  const explicit = !!process.env.ADMIN_EMAIL;
+  if (explicit || adminCount === 0) {
+    const email = (process.env.ADMIN_EMAIL || "admin@kinderthread.local").toLowerCase();
+    const password = process.env.ADMIN_PASSWORD || "ChangeMe-KT-2026!";
+    if (explicit && !process.env.ADMIN_PASSWORD) throw new Error("Set ADMIN_PASSWORD together with ADMIN_EMAIL.");
+    if (!(await db.user.findUnique({ where: { email } }))) {
+      await db.user.create({ data: { email, name: "Store Admin", role: "ADMIN", passwordHash: await bcrypt.hash(password, 12) } });
+      console.log(`✔ Admin created: ${email}${explicit ? " (password from ADMIN_PASSWORD)" : ` with default password "${password}" — change it after first login`}`);
+    }
   }
 
   // ---------------- size guide ----------------

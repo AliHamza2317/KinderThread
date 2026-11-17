@@ -34,7 +34,7 @@ export default async function ComingSoon() {
         </div>
         <div className="max-w-xl">
           <p className="eyebrow eyebrow-rule">{prelaunch.eyebrow}</p>
-          <h1 className="display-xl mt-5">{prelaunch.heading}</h1>
+          <h1 className="display-lg mt-5">{prelaunch.heading}</h1>
           <p className="mt-6 text-lg leading-relaxed text-cocoa-500">{prelaunch.message}</p>
           {prelaunch.launchDate && <Countdown to={prelaunch.launchDate} />}
           <NewsletterForm source="LAUNCH" tone="light" cta="Notify me" className="mt-8 max-w-lg" />

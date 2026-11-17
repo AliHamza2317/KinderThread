@@ -90,7 +90,7 @@ export const settingSchemas = {
     message: z
       .string()
       .default(
-        "Our first collection is on its way. Leave your email and we'll let you know the moment the doors open — with a little welcome gift.",
+        "Our first collection is on its way. Leave your email and we'll let you know the moment the doors open.",
       ),
     launchDate: z.string().default(""),
   }),
@@ -142,12 +142,12 @@ export const settingSchemas = {
         { icon: "feather", title: "Comfortable everyday outfits", body: "Soft, easy-on pieces made for crawling, playing, napping and growing." },
         { icon: "bag", title: "Convenient shopping", body: "Clear sizes by age, simple filters and a checkout that takes a minute." },
         { icon: "chat", title: "Friendly customer support", body: "Questions about sizing or an order? Message us on WhatsApp or email." },
-        { icon: "truck", title: "Easy ordering & delivery", body: "Cash on delivery and nationwide shipping, with tracking for every order." },
+        { icon: "truck", title: "Easy ordering & delivery", body: "Cash on delivery, delivery across Pakistan and online order tracking." },
       ]),
     newsletter: z
       .object({
         heading: z.string().default("Be Part of Our Little World."),
-        body: z.string().default("New arrivals, gentle restocks and the occasional little surprise. No spam — unsubscribe anytime."),
+        body: z.string().default("New arrivals, restock alerts and styling ideas for little ones. No spam — unsubscribe anytime."),
       })
       .prefault({}),
     gallery: z

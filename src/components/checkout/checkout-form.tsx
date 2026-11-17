@@ -179,7 +179,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
               </div>
             )}
           </section>
-          <Checkbox name="newsletter" label="Email me about new arrivals and little surprises (optional)" />
+          <Checkbox name="newsletter" label="Email me about new arrivals and offers (optional)" />
         </div>
 
         <aside className="lg:col-span-5">

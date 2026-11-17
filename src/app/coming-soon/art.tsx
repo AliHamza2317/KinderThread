@@ -1,10 +1,9 @@
-import Image from "next/image";
+import { BearStage } from "@/components/home/bear-stage";
 
 export function ComingSoonArt() {
   return (
-    <div className="relative hidden items-center justify-center bg-bear-100 lg:flex">
-      <div className="absolute inset-[12%] rounded-full bg-cream/60" />
-      <Image src="/brand/hero-bear.webp" alt="" width={640} height={584} priority className="relative mix-blend-multiply" />
+    <div className="relative flex items-center justify-center border-t border-cocoa-100 px-6 py-12 lg:border-t-0 lg:border-l lg:py-0">
+      <BearStage className="w-full max-w-[640px]" />
     </div>
   );
 }
