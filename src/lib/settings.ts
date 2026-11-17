@@ -114,6 +114,8 @@ export const settingSchemas = {
           ),
         image: z.string().default("/images/editorial/hero-tulle.webp"),
         imageAlt: z.string().default("A toddler in a mint tulle dress sitting by a sunny window"),
+        // text that runs around the rotating badge on the hero photo
+        badge: z.string().default("New season · Ages 0–5 · Kinder Thread · "),
         primary: link.default({ label: "Explore Collection", href: "/shop" }),
         secondary: link.default({ label: "Our Story", href: "/about" }),
       })
@@ -149,13 +151,13 @@ export const settingSchemas = {
       .prefault({}),
     marquee: z.array(z.string()).default(["Soft on skin", "Made to play", "Ages 0–5", "Sized by age", "Cash on delivery"]),
     benefits: z
-      .array(z.object({ title: z.string(), body: z.string(), icon: z.string() }))
+      .array(z.object({ title: z.string(), body: z.string(), icon: z.string(), image: z.string().default("") }))
       .default([
-        { icon: "sparkles", title: "Carefully selected styles", body: "Every piece is chosen by hand for colour, cut and everyday practicality." },
-        { icon: "feather", title: "Comfortable everyday outfits", body: "Soft, easy-on pieces made for crawling, playing, napping and growing." },
-        { icon: "bag", title: "Convenient shopping", body: "Clear sizes by age, simple filters and a checkout that takes a minute." },
-        { icon: "chat", title: "Friendly customer support", body: "Questions about sizing or an order? Message us on WhatsApp or email." },
-        { icon: "truck", title: "Easy ordering & delivery", body: "Cash on delivery, delivery across Pakistan and online order tracking." },
+        { icon: "sparkles", title: "Carefully selected styles", body: "Every piece is chosen by hand for colour, cut and everyday practicality.", image: "/images/products/lace-dress-ivory-2.webp" },
+        { icon: "feather", title: "Comfortable everyday outfits", body: "Soft, easy-on pieces made for crawling, playing, napping and growing.", image: "/images/products/sleepsuit-set.webp" },
+        { icon: "bag", title: "Convenient shopping", body: "Clear sizes by age, simple filters and a checkout that takes a minute.", image: "/images/gallery/g7.webp" },
+        { icon: "chat", title: "Friendly customer support", body: "Questions about sizing or an order? Message us on WhatsApp or email.", image: "/images/products/crochet-booties-cream.webp" },
+        { icon: "truck", title: "Easy ordering & delivery", body: "Cash on delivery, delivery across Pakistan and online order tracking.", image: "/images/editorial/banner-knitwear.webp" },
       ]),
     newsletter: z
       .object({

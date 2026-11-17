@@ -26,6 +26,11 @@
 >   sentence, category index with a cursor-following photo, pinned horizontal New Arrivals, a photo that opens
 >   to full screen for the brand story, stacking "why us" cards, parallax gallery columns, page transitions
 >   and a giant footer wordmark.
+> - **3.1 (client feedback):** the floating-photo hero felt busy, so the hero is now calmer: a large headline
+>   beside one tall arched photo that changes with a WebGL "liquid" transition and ripples under the cursor,
+>   a glass card with the product on the photo, a rotating badge and the logo's thread drawing a small heart.
+>   Shop by Category became tall photo panels that open wide on hover (swipe cards on phones), and
+>   "Why Kinder Thread" became a pinned photo that changes as each reason scrolls into focus.
 > - Homepage order: hero → marquee → statement → categories → New Arrivals → story → 3D ring → shop by age
 >   (bento) → best sellers → banners → why us → gallery → newsletter. Every section can be hidden in
 >   Admin → Homepage & marketing; texts live in `src/lib/settings.ts`.

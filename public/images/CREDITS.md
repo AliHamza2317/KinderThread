@@ -17,7 +17,6 @@ Unsplash licence note: stock photos don't come with model or property releases. 
 | `editorial/cat-baby-girls.webp` | https://images.unsplash.com/photo-1685770101390-58e99f56202e |
 | `editorial/cat-newborn.webp` | https://images.unsplash.com/photo-1555252333-9f8e92e65df9 |
 | `editorial/cat-everyday.webp` | https://images.unsplash.com/photo-1566454544259-f4b94c3d758c |
-| `editorial/cat-casual.webp` | https://images.unsplash.com/photo-1768896041267-f15e07697fc8 |
 | `editorial/cat-matching-sets.webp` | https://images.unsplash.com/photo-1777397660834-67c6d0eabe15 |
 | `editorial/cat-seasonal.webp` | https://images.unsplash.com/photo-1773747203070-fb053b12af82 |
 | `gallery/g1.webp` | https://images.unsplash.com/photo-1476089194965-888edb96d2dc |
@@ -49,7 +48,7 @@ Unsplash licence note: stock photos don't come with model or property releases. 
 | `products/rainbow-socks.webp` | https://images.unsplash.com/photo-1542355581-caf7454785ca |
 | `products/linen-romper-set.webp` | https://images.unsplash.com/photo-1777397660834-67c6d0eabe15 |
 
-`hero/h1–h10.webp` and `ring/*.webp` are smaller crops of the photos above, made for the 3D scenes
+`hero/h1–h10.webp` and `ring/*.webp` are smaller crops of the photos above (used by the marquee, the statement and the 3D ring)
 (hero: hero-tulle, linen-shirt-sky, cat-newborn, nordic-cardigan-rose, crochet-booties-coral,
 dot-smock-dress-lilac, knit-bloomers-moss, gallery/g1, chunky-sweater-rust, lace-dress-ivory;
 ring: the category images plus gallery/g1, nordic-cardigan-rose and crochet-booties-cream).

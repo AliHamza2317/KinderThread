@@ -36,7 +36,7 @@ const CATEGORY_DEFS = [
   { slug: "baby-girls", name: "Baby Girls", kind: "category", featured: true, image: "/images/editorial/cat-baby-girls.webp", description: "Dresses, blouses and knits for little girls, in soft and timeless colours." },
   { slug: "newborn", name: "Newborn", kind: "category", featured: true, image: "/images/editorial/cat-newborn.webp", description: "Gentle first pieces for the very first days — bodysuits, knits and booties." },
   { slug: "everyday-wear", name: "Everyday Wear", kind: "category", featured: true, image: "/images/editorial/cat-everyday.webp", description: "Comfortable essentials for crawling, playing, napping and growing." },
-  { slug: "casual-outfits", name: "Casual Outfits", kind: "category", featured: false, image: "/images/editorial/cat-casual.webp", description: "Relaxed looks for playdates, park days and family visits." },
+  { slug: "casual-outfits", name: "Casual Outfits", kind: "category", featured: false, image: "/images/products/rainbow-socks.webp", description: "Relaxed looks for playdates, park days and family visits." },
   { slug: "matching-sets", name: "Matching Sets", kind: "collection", featured: false, image: "/images/editorial/cat-matching-sets.webp", description: "Coordinated pieces that work together — one less decision in the morning." },
   { slug: "seasonal", name: "Seasonal Collection", kind: "collection", featured: false, image: "/images/editorial/cat-seasonal.webp", description: "Knits and layers for cooler days." },
 ] as const;

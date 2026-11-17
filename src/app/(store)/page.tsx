@@ -1,10 +1,10 @@
 import { Banners } from "@/components/home/banners";
 import { Benefits } from "@/components/home/benefits";
 import { BrandStory } from "@/components/home/brand-story";
-import { CategoryIndex } from "@/components/home/category-index";
+import { CategoryShowcase } from "@/components/home/category-showcase";
 import { EditRing } from "@/components/home/edit-ring";
 import { Gallery } from "@/components/home/gallery";
-import { Hero } from "@/components/home/hero";
+import { Hero, type HeroSlide } from "@/components/home/hero";
 import { HorizontalShowcase } from "@/components/home/horizontal-showcase";
 import { NewsletterSection } from "@/components/home/newsletter";
 import { ScrubStatement } from "@/components/home/scrub-statement";
@@ -15,21 +15,21 @@ import { ProductCard } from "@/components/product/product-card";
 import { buttonClass } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { countProductsInCategory, getProductsBy, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
-import { CATEGORIES } from "@/data/catalog";
+import { CATEGORIES, PRODUCTS } from "@/data/catalog";
 import { BANNERS, GALLERY } from "@/data/content";
 import { getSettings } from "@/lib/settings";
-import { absoluteUrl, formatPrice } from "@/lib/utils";
+import { absoluteUrl } from "@/lib/utils";
 
-// photographs used by the 3D hero (small copies made for WebGL textures)
-const HERO_ITEMS = [
-  { src: "/images/hero/h1.webp", href: "/collections/baby-girls", label: "Baby Girls" },
-  { src: "/images/hero/h2.webp", href: "/collections/baby-boys", label: "Baby Boys" },
-  { src: "/images/hero/h3.webp", href: "/collections/newborn", label: "Newborn" },
-  { src: "/images/hero/h4.webp", href: "/collections/seasonal", label: "Knitwear" },
-  { src: "/images/hero/h5.webp", href: "/products/hand-crochet-booties", label: "Crochet Booties" },
-  { src: "/images/hero/h6.webp", href: "/products/polka-dot-smock-dress", label: "Smock Dresses" },
-  { src: "/images/hero/h7.webp", href: "/products/cable-knit-bloomers", label: "Knit Bloomers" },
-  { src: "/images/hero/h8.webp", href: "/collections/new-arrivals", label: "New Arrivals" },
+// photographs for the marquee strip (small copies)
+const MARQUEE_IMAGES = ["/images/hero/h1.webp", "/images/hero/h4.webp", "/images/hero/h7.webp", "/images/hero/h5.webp", "/images/hero/h2.webp"];
+
+// products shown in the hero slideshow (photo + live name/price from the catalogue)
+const HERO_PRODUCTS: { slug: string; image?: string }[] = [
+  { slug: "tulle-party-dress", image: "/images/editorial/hero-tulle.webp" },
+  { slug: "nordic-yoke-cardigan" },
+  { slug: "lace-occasion-dress" },
+  { slug: "cable-knit-bloomers" },
+  { slug: "hand-crochet-booties" },
 ];
 
 export default async function Home() {
@@ -53,13 +53,14 @@ export default async function Home() {
     ...visibleCats.map((c) => ({ src: `/images/ring/${c.slug}.webp`, href: `/collections/${c.slug}`, label: c.name, description: c.description })),
   ];
 
-  const trust = [
-    "Ages 0–5",
-    settings.payments.cod.enabled && "Cash on delivery",
-    settings.shipping.freeThreshold > 0 && `Free delivery over ${formatPrice(settings.shipping.freeThreshold)}`,
-  ].filter(Boolean) as string[];
+  const slides: HeroSlide[] = HERO_PRODUCTS.flatMap(({ slug, image }) => {
+    const p = PRODUCTS.find((x) => x.slug === slug && x.status === "ACTIVE");
+    if (!p) return [];
+    const cat = CATEGORIES.find((c) => p.categoryIds.includes(c.id));
+    return [{ image: image ?? p.images[0]?.url ?? "", href: `/products/${p.slug}`, name: p.name, label: cat?.name ?? "New in", price: p.price, compareAt: p.compareAtPrice, isSample: p.isSample }];
+  }).filter((s) => s.image);
 
-  const marquee = home.marquee.map((text, i) => ({ text, image: i % 2 === 0 ? HERO_ITEMS[(i * 3) % HERO_ITEMS.length].src : undefined }));
+  const marquee = home.marquee.map((text, i) => ({ text, image: i % 2 === 0 ? MARQUEE_IMAGES[(i / 2) % MARQUEE_IMAGES.length] : undefined }));
   const showSample = settings.features.showSampleBadges;
 
   const jsonLd = {
@@ -74,7 +75,7 @@ export default async function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Hero content={home.hero} trust={trust} items={HERO_ITEMS} />
+      <Hero content={home.hero} slides={slides} badge={home.hero.badge} />
 
       <div id="after-hero" className="scroll-mt-24" />
       {sec.marquee && marquee.length > 0 && <VelocityMarquee pieces={marquee} className="border-y border-cocoa/[0.07] py-6 md:py-8" />}
@@ -88,7 +89,7 @@ export default async function Home() {
       {sec.categories && indexCats.length > 0 && (
         <section className="container-kt pb-28 md:pb-40" aria-labelledby="cat-heading">
           <SectionHeader eyebrow="Shop by category" title="Dressed for every *little* stage" link={{ href: "/shop", label: "Shop all" }} />
-          <CategoryIndex categories={indexCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, image: c.image, description: c.description, count: countProductsInCategory(c.id) }))} />
+          <CategoryShowcase categories={indexCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, image: c.image, description: c.description, count: countProductsInCategory(c.id) }))} />
         </section>
       )}
 
@@ -141,9 +142,13 @@ export default async function Home() {
       )}
 
       {sec.benefits && home.benefits.length > 0 && (
-        <section className="container-kt pt-28 md:pt-40">
-          <SectionHeader eyebrow="Why Kinder Thread?" title="Little things, done with *care*" />
-          <Benefits items={home.benefits} />
+        <section className="pt-28 md:pt-40">
+          <div className="mx-2.5 rounded-[2rem] bg-cream-100 px-3 py-16 md:mx-4 md:rounded-[3rem] md:px-0 md:py-28">
+            <div className="container-kt max-md:px-2">
+              <SectionHeader eyebrow="Why Kinder Thread?" title="Little things, done with *care*" body="What you can expect every time you shop with us — from choosing a size to the moment the parcel arrives." />
+              <Benefits items={home.benefits} />
+            </div>
+          </div>
         </section>
       )}
 
