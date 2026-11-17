@@ -9,6 +9,26 @@
 > **Revision 2:** the database will be MongoDB and is not needed yet, so the project is now **frontend-only**:
 > PostgreSQL/Prisma were removed and all pages run on dummy data in `src/data/`. Sections 8, 10 and 11 describe
 > the earlier full-stack plan; see the README for how to connect a backend later.
+>
+> **Revision 3 — "Modern Gallery" (current design):** the client found Revision 1 too plain and asked for a
+> modern, premium site with real 3D and motion. Research into 2026 web-design trends (scroll-driven
+> storytelling, practical WebGL that serves the product, restraint and performance) and award-winning fashion
+> stores led to a minimal, gallery-like direction where **the photographs are the 3D objects** — no cartoons:
+>
+> - **Type:** Bricolage Grotesque (display, tight tracking) + Instrument Serif italic for one accent word +
+>   Inter for UI. Warm paper surfaces with a faint grain, soft-black ink, pill buttons, 1.25–2rem radii.
+> - **3D (Three.js / React Three Fiber / custom GLSL):** hero photographs float in depth around the headline
+>   (mouse parallax, cloth ripple + zoom on hover, camera glides forward on scroll, tap to open); "The Edit"
+>   is a draggable 3D ring of curved photo panels. Devices are tiered (full / lite / still images), canvases
+>   pause off-screen, and reduced-motion users get a still collage. Override for QA with `?kt3d=full|lite|static`.
+> - **Motion (GSAP ScrollTrigger + Motion + Lenis):** first-visit preloader, custom cursor with labels,
+>   magnetic CTAs, scroll-velocity marquee, a statement that "reads itself" with photos opening inside the
+>   sentence, category index with a cursor-following photo, pinned horizontal New Arrivals, a photo that opens
+>   to full screen for the brand story, stacking "why us" cards, parallax gallery columns, page transitions
+>   and a giant footer wordmark.
+> - Homepage order: hero → marquee → statement → categories → New Arrivals → story → 3D ring → shop by age
+>   (bento) → best sellers → banners → why us → gallery → newsletter. Every section can be hidden in
+>   Admin → Homepage & marketing; texts live in `src/lib/settings.ts`.
 
 > Phase 1 deliverable. This document records the decisions behind the build so that
 > future designers and developers can extend the site without diluting the brand.

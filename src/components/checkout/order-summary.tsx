@@ -8,7 +8,7 @@ import { sizeLabel } from "@/lib/sizes";
 import { formatPrice } from "@/lib/utils";
 
 export function Totals({ quote, showPaymentFee = true }: { quote: CartQuote | null; showPaymentFee?: boolean }) {
-  if (!quote) return <div className="h-32 animate-pulse rounded-sm bg-cocoa-50" />;
+  if (!quote) return <div className="h-32 animate-pulse rounded-[1.5rem] bg-cocoa-50" />;
   return (
     <dl className="space-y-2.5 text-[0.92rem]">
       <div className="flex justify-between">
@@ -77,11 +77,11 @@ export function CouponField({ value, onApply, error, applied }: { value: string;
             }
           }}
           placeholder="Discount code"
-          className="h-11 min-w-0 flex-1 rounded-[3px] border border-cocoa-100 bg-cream-50 px-4 text-sm uppercase placeholder:normal-case focus:border-sage-500 focus:outline-none"
+          className="h-11 min-w-0 flex-1 rounded-full border border-cocoa-100 bg-cream-50 px-4 text-sm uppercase placeholder:normal-case focus:border-sage-500 focus:outline-none"
           aria-invalid={!!error}
           aria-describedby="coupon-error"
         />
-        <button type="button" onClick={() => onApply(code.trim())} disabled={!code.trim()} className="h-11 rounded-[3px] bg-cocoa-800 px-5 text-[0.7rem] font-bold tracking-[0.14em] uppercase text-cream-50 transition hover:bg-cocoa-800 disabled:opacity-40">
+        <button type="button" onClick={() => onApply(code.trim())} disabled={!code.trim()} className="h-11 rounded-full bg-cocoa-800 px-5 text-[0.82rem] font-semibold text-cream-50 transition hover:bg-cocoa-800 disabled:opacity-40">
           Apply
         </button>
       </div>
@@ -100,7 +100,7 @@ export function SummaryLines({ quote }: { quote: CartQuote | null }) {
     <ul className="divide-y divide-cocoa-100">
       {quote.lines.map((l) => (
         <li key={l.variantId} className="flex gap-4 py-4">
-          <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-sm bg-cream-100">
+          <div className="relative aspect-[4/5] w-16 shrink-0 overflow-hidden rounded-xl bg-cream-100">
             {l.image && <Image src={l.image} alt="" fill sizes="64px" className="object-cover" />}
             <span className="absolute -top-0 -right-0 grid h-5 min-w-5 place-items-center rounded-bl-lg bg-cocoa px-1 text-[0.65rem] font-bold text-cream-50">{l.quantity}</span>
           </div>

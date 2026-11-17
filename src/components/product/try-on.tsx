@@ -20,7 +20,7 @@ export function TryOnTeaser() {
       <Modal open={open} onClose={() => setOpen(false)} title="Virtual try-on is on its way">
         <div className="space-y-4 text-[0.95rem] leading-relaxed text-cocoa-600">
           <p>We&apos;re working on a way to preview size and fit before you buy — without ever asking you to upload photos of your child.</p>
-          <ul className="list-disc space-y-2 rounded-sm bg-cream-100 py-4 pr-4 pl-8 text-[0.88rem] marker:text-cocoa-300">
+          <ul className="list-disc space-y-2 rounded-[1.5rem] bg-cream-100 py-4 pr-4 pl-8 text-[0.88rem] marker:text-cocoa-300">
             <li>3D garment views of each style</li>
             <li>An age-based fit preview to help choose the right size</li>
             <li>Privacy first: nothing about your little one is stored</li>

@@ -3,8 +3,8 @@ import { cn } from "@/lib/utils";
 
 const tones = {
   sample: "bg-cream-50/90 text-cocoa-500",
-  sale: "bg-cocoa-800 text-cream-50",
-  new: "bg-cream-50/95 text-cocoa-800",
+  sale: "bg-coral text-cocoa-900",
+  new: "bg-cream-50/95 text-cocoa",
   low: "bg-sun-100 text-sun-700",
   out: "bg-cocoa-100 text-cocoa-600",
   neutral: "bg-cocoa-50 text-cocoa-600",
@@ -20,7 +20,7 @@ export function Badge({ tone = "neutral", children, className }: { tone?: BadgeT
   return (
     <span
       className={cn(
-        "inline-flex items-center gap-1 rounded-[2px] px-2 py-1 text-[0.62rem] font-bold uppercase leading-none tracking-[0.16em]",
+        "inline-flex items-center gap-1 rounded-full px-2.5 py-1 text-[0.66rem] font-semibold uppercase leading-none tracking-[0.08em]",
         tones[tone],
         className,
       )}

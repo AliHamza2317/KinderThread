@@ -28,7 +28,7 @@ export function AddressBook({ addresses, defaultName, defaultPhone }: { addresse
   return (
     <div className="flex flex-col gap-4">
       {editing === "new" ? (
-        <section className="rounded-sm border border-cocoa-200 bg-cream-50 p-5 md:p-7" aria-label="New address">
+        <section className="rounded-[1.5rem] border border-cocoa-200 bg-cream-50 p-5 md:p-7" aria-label="New address">
           <h2 className="mb-5 font-display text-xl">New address</h2>
           <AddressForm onDone={closeWithToast} onCancel={close} defaultName={defaultName} defaultPhone={defaultPhone} />
         </section>
@@ -44,12 +44,12 @@ export function AddressBook({ addresses, defaultName, defaultPhone }: { addresse
         <ul className="grid gap-4 md:grid-cols-2">
           {addresses.map((a) =>
             editing === a.id ? (
-              <li key={a.id} className="rounded-sm border border-cocoa-200 bg-cream-50 p-5 md:col-span-2 md:p-7">
+              <li key={a.id} className="rounded-[1.5rem] border border-cocoa-200 bg-cream-50 p-5 md:col-span-2 md:p-7">
                 <h2 className="mb-5 font-display text-xl">Edit address</h2>
                 <AddressForm initial={a} onDone={closeWithToast} onCancel={close} />
               </li>
             ) : (
-              <li key={a.id} className="flex flex-col rounded-sm border border-cocoa-100 bg-cream-50 p-6">
+              <li key={a.id} className="flex flex-col rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-6">
                 <div className="mb-3 flex items-center justify-between gap-3">
                   <p className="flex items-center gap-2 text-sm font-bold">
                     <MapPin className="h-4 w-4 text-coral-600" />

@@ -29,7 +29,7 @@ export default async function AboutPage() {
           </Reveal>
         </div>
         <Reveal className="lg:col-span-6" delay={0.1}>
-          <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-cream-200 lg:aspect-[5/5]">
+          <div className="relative aspect-[4/5] overflow-hidden rounded-[1.5rem] bg-cream-200 lg:aspect-[5/5]">
             <Image src={story.image} alt={story.imageAlt} fill priority sizes="(min-width: 1024px) 45vw, 90vw" className="object-cover" />
           </div>
           {story.imagesAreSamples && <p className="mt-3 text-[0.72rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase">Sample imagery</p>}

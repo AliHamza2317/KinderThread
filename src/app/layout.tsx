@@ -4,22 +4,29 @@ import { Toaster } from "@/components/ui/toaster";
 import { getSettings } from "@/lib/settings";
 import "./globals.css";
 
-const fraunces = localFont({
+const bricolage = localFont({
+  src: [{ path: "../fonts/bricolage.woff2", style: "normal", weight: "200 800" }],
+  variable: "--font-bricolage",
+  display: "swap",
+  fallback: ["system-ui", "sans-serif"],
+});
+
+const instrument = localFont({
   src: [
-    { path: "../fonts/fraunces-soft.woff2", style: "normal", weight: "100 900" },
-    { path: "../fonts/fraunces-soft-italic.woff2", style: "italic", weight: "100 900" },
+    { path: "../fonts/instrument-serif.woff2", style: "normal", weight: "400" },
+    { path: "../fonts/instrument-serif-italic.woff2", style: "italic", weight: "400" },
   ],
-  variable: "--font-fraunces",
+  variable: "--font-instrument",
   display: "swap",
   fallback: ["Georgia", "serif"],
 });
 
-const nunito = localFont({
+const inter = localFont({
   src: [
-    { path: "../fonts/nunito-sans.woff2", style: "normal", weight: "200 1000" },
-    { path: "../fonts/nunito-sans-italic.woff2", style: "italic", weight: "200 1000" },
+    { path: "../fonts/inter.woff2", style: "normal", weight: "100 900" },
+    { path: "../fonts/inter-italic.woff2", style: "italic", weight: "100 900" },
   ],
-  variable: "--font-nunito",
+  variable: "--font-inter",
   display: "swap",
   fallback: ["system-ui", "sans-serif"],
 });
@@ -47,23 +54,23 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export const viewport: Viewport = {
-  themeColor: "#fefbf4",
+  themeColor: "#f5f1ea",
   width: "device-width",
   initialScale: 1,
 };
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${fraunces.variable} ${nunito.variable}`} suppressHydrationWarning>
+    <html lang="en" className={`${bricolage.variable} ${instrument.variable} ${inter.variable}`} suppressHydrationWarning>
       <head>
         <script
-          // marks JS availability for reveal animations; falls back to visible content after 4s
+          // marks JS availability for reveal animations (visible fallback after 4s) and the first-visit intro
           dangerouslySetInnerHTML={{
-            __html: `document.documentElement.classList.add('js');setTimeout(function(){document.documentElement.classList.add('reveal-fallback')},4000);`,
+            __html: `(function(){var d=document.documentElement;d.classList.add('js');setTimeout(function(){d.classList.add('reveal-fallback')},4000);try{var p=location.pathname;if(p.indexOf('/admin')!==0&&p.indexOf('/coming-soon')!==0&&!sessionStorage.getItem('kt-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kt-intro');setTimeout(function(){d.classList.remove('kt-intro')},6000)}}catch(e){}})();`,
           }}
         />
       </head>
-      <body>
+      <body className="grain">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:rounded-full focus:bg-cocoa focus:px-4 focus:py-2 focus:text-cream">
           Skip to content
         </a>

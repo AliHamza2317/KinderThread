@@ -131,12 +131,15 @@ export default async function MarketingPage() {
         </div>
 
         <div id="copy" className="scroll-mt-32">
-          <Card title="Newsletter & gallery text">
+          <Card title="Statement, newsletter & gallery text">
             <SettingsForm
               settingKey="home"
-              initial={{ newsletter: home.newsletter, gallery: home.gallery }}
+              initial={{ statement: home.statement, newsletter: home.newsletter, gallery: home.gallery }}
               submitLabel="Save text"
               fields={[
+                { type: "heading", label: "Brand statement", hint: "Use [[1]] and [[2]] where the small photos sit, and *word* for italics." },
+                { path: "statement.eyebrow", label: "Label", wide: true },
+                { path: "statement.text", label: "Statement", type: "textarea" },
                 { type: "heading", label: "Newsletter section" },
                 { path: "newsletter.heading", label: "Heading", wide: true },
                 { path: "newsletter.body", label: "Text", type: "textarea" },
@@ -156,8 +159,11 @@ export default async function MarketingPage() {
               initial={home.sections}
               submitLabel="Save visibility"
               fields={[
+                { path: "marquee", label: "Moving headline strip", type: "checkbox" },
+                { path: "statement", label: "Brand statement", type: "checkbox" },
                 { path: "categories", label: "Featured categories", type: "checkbox" },
                 { path: "newArrivals", label: "New arrivals", type: "checkbox" },
+                { path: "edit", label: "3D collections ring", type: "checkbox" },
                 { path: "story", label: "Brand story", type: "checkbox" },
                 { path: "shopByAge", label: "Shop by age", type: "checkbox" },
                 { path: "bestSellers", label: "Best sellers", type: "checkbox" },

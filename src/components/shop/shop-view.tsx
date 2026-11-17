@@ -120,7 +120,7 @@ export function ShopView({
                 ))}
               </ul>
             ) : (
-              <div className="stitch-border flex flex-col items-center rounded-sm px-6 py-20 text-center">
+              <div className="stitch-border flex flex-col items-center rounded-[1.5rem] px-6 py-20 text-center">
                 <p className="font-display text-2xl">No styles match these filters</p>
                 <p className="mt-2 max-w-sm text-cocoa-500">Try removing a filter or two — or browse everything we have.</p>
                 <ButtonLink href={emptyAction?.href ?? basePath} variant="secondary" className="mt-6">

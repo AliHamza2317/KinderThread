@@ -75,17 +75,21 @@ export function SplitWords({ text, className, delay = 0, as: Tag = "span", itali
     },
     { scope: ref },
   );
+  // *word* (or a word listed in italicWords) is set in the serif italic accent
   const words = text.split(" ");
   return (
-    <Tag ref={ref} className={className} data-reveal="" aria-label={text}>
-      {words.map((w, i) => (
-        <span key={i} className="inline-block overflow-hidden pb-[0.12em] align-top" aria-hidden>
-          <span data-word className={`inline-block will-change-transform ${italicWords.includes(w.replace(/[.,!]/g, "")) ? "italic" : ""}`}>
-            {w}
-            {i < words.length - 1 ? " " : ""}
+    <Tag ref={ref} className={className} data-reveal="" aria-label={text.replace(/\*/g, "")}>
+      {words.map((w, i) => {
+        const accent = /^\*.+\*[.,!?]?$/.test(w) || italicWords.includes(w.replace(/[.,!?*]/g, ""));
+        return (
+          <span key={i} className="inline-block overflow-hidden pb-[0.12em] align-top" aria-hidden>
+            <span data-word className={`inline-block will-change-transform ${accent ? "font-serif-accent pr-[0.04em] text-sage-700" : ""}`}>
+              {w.replace(/\*/g, "")}
+              {i < words.length - 1 ? "  " : ""}
+            </span>
           </span>
-        </span>
-      ))}
+        );
+      })}
     </Tag>
   );
 }

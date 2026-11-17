@@ -192,7 +192,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
                         <div className="space-y-3 border-t border-cocoa-100 px-4 pt-3 pb-4 text-[0.88rem] text-cocoa-600">
                           <p>{o.instructions}</p>
                           {o.details.length > 0 && (
-                            <dl className="grid gap-1 rounded-sm bg-cream-100 p-3">
+                            <dl className="grid gap-1 rounded-[1.5rem] bg-cream-100 p-3">
                               {o.details.map(([k, v]) => (
                                 <div key={k} className="flex flex-wrap justify-between gap-2">
                                   <dt className="text-cocoa-500">{k}</dt>
@@ -218,7 +218,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
         </div>
 
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 space-y-6 rounded-sm bg-cream-100 p-6 md:p-8">
+          <div className="sticky top-28 space-y-6 rounded-[1.5rem] bg-cream-100 p-6 md:p-8">
             <h2 className="font-display text-2xl">Your order</h2>
             <SummaryLines quote={quote} />
             {hasSamples && (
@@ -230,8 +230,8 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
             <CouponField value={couponCode} onApply={setCoupon} error={quote?.couponError} applied={quote?.coupon?.code} />
             <Totals quote={quote} />
             <div id="checkout-message" aria-live="assertive">
-              {showMsg && <p className="rounded-sm bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">{msg}</p>}
-              {hasIssues && <p className="rounded-sm bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">Some items changed — please review your bag.</p>}
+              {showMsg && <p className="rounded-2xl bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">{msg}</p>}
+              {hasIssues && <p className="rounded-2xl bg-coral-100 px-4 py-3 text-sm font-medium text-coral-800">Some items changed — please review your bag.</p>}
             </div>
             <Button type="submit" size="lg" className="w-full" loading={pending} disabled={loading || hasIssues || !options.length || !quote?.itemCount}>
               {pending ? "Placing order…" : quote ? `Place order · ${formatPrice(quote.total)}` : "Place order"}

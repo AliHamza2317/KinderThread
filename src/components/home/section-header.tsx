@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ArrowRight } from "lucide-react";
+import { ArrowUpRight } from "lucide-react";
 import type { ReactNode } from "react";
 import { Reveal, SplitWords } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils";
@@ -25,9 +25,11 @@ export function SectionHeader({ eyebrow, title, body, link, align = "left", clas
       {(link || children) && (
         <Reveal delay={0.2} className="flex shrink-0 items-center gap-5">
           {link && (
-            <Link href={link.href} className="group inline-flex items-center gap-2 text-[0.92rem] font-bold text-cocoa">
+            <Link href={link.href} className="group inline-flex items-center gap-2 text-[0.9rem] font-semibold text-cocoa">
               <span className="link-underline">{link.label}</span>
-              <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-1" />
+              <span className="grid h-9 w-9 place-items-center rounded-full bg-cocoa text-cream-50 transition-transform duration-500 group-hover:rotate-45">
+                <ArrowUpRight className="h-4 w-4" />
+              </span>
             </Link>
           )}
           {children}

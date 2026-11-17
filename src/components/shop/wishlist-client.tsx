@@ -27,11 +27,11 @@ export function WishlistClient({ showSample }: { showSample: boolean }) {
       {items === null ? (
         <div className="mt-10 grid grid-cols-2 gap-6 lg:grid-cols-4">
           {[0, 1, 2, 3].map((i) => (
-            <div key={i} className="aspect-[4/5] animate-pulse rounded-sm bg-cocoa-50" />
+            <div key={i} className="aspect-[4/5] animate-pulse rounded-[1.5rem] bg-cocoa-50" />
           ))}
         </div>
       ) : items.length === 0 ? (
-        <div className="stitch-border mt-10 flex flex-col items-center rounded-sm px-6 py-20 text-center">
+        <div className="stitch-border mt-10 flex flex-col items-center rounded-[1.5rem] px-6 py-20 text-center">
           <Heart className="h-9 w-9 text-coral-500" />
           <p className="mt-4 font-display text-2xl">Your wishlist is empty</p>
           <p className="mt-2 max-w-sm text-cocoa-500">Tap the heart on any style to save it here for later.</p>

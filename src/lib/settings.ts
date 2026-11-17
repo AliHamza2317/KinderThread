@@ -135,6 +135,19 @@ export const settingSchemas = {
         cta: link.default({ label: "Read our story", href: "/about" }),
       })
       .prefault({}),
+    statement: z
+      .object({
+        eyebrow: z.string().default("The Kinder Thread way"),
+        // [[1]], [[2]] mark where the small photographs sit; *word* is set in italics
+        text: z
+          .string()
+          .default(
+            "Soft, considered clothes for the [[1]] littlest people and their *biggest* [[2]] little adventures — chosen with care and sized by age, from the very first days to five.",
+          ),
+        images: z.array(z.string()).default(["/images/hero/h3.webp", "/images/hero/h8.webp"]),
+      })
+      .prefault({}),
+    marquee: z.array(z.string()).default(["Soft on skin", "Made to play", "Ages 0–5", "Sized by age", "Cash on delivery"]),
     benefits: z
       .array(z.object({ title: z.string(), body: z.string(), icon: z.string() }))
       .default([
@@ -158,8 +171,11 @@ export const settingSchemas = {
       .prefault({}),
     sections: z
       .object({
+        marquee: z.boolean().default(true),
+        statement: z.boolean().default(true),
         categories: z.boolean().default(true),
         newArrivals: z.boolean().default(true),
+        edit: z.boolean().default(true),
         story: z.boolean().default(true),
         shopByAge: z.boolean().default(true),
         bestSellers: z.boolean().default(true),

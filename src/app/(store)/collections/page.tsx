@@ -24,7 +24,7 @@ export default async function CollectionsIndex() {
       <ul className="mt-8 flex flex-wrap gap-2">
         {virtual.map(([slug, v]) => (
           <li key={slug}>
-            <Link href={`/collections/${slug}`} className="inline-block rounded-[3px] border border-cocoa-200 px-5 py-2.5 text-[0.72rem] font-bold tracking-[0.12em] uppercase transition hover:border-cocoa hover:bg-cocoa hover:text-cream-50">
+            <Link href={`/collections/${slug}`} className="inline-block rounded-full border border-cocoa-200 px-5 py-2.5 text-[0.85rem] font-semibold transition hover:border-cocoa hover:bg-cocoa hover:text-cream-50">
               {v.name}
             </Link>
           </li>
@@ -34,7 +34,7 @@ export default async function CollectionsIndex() {
       <Reveal stagger={0.05} className="mt-12 grid grid-cols-2 gap-x-4 gap-y-10 md:grid-cols-3 md:gap-x-6 lg:grid-cols-4">
         {cats.map((c, i) => (
           <Link key={c.id} href={`/collections/${c.slug}`} className="group block">
-            <div className={`relative aspect-[4/5] overflow-hidden rounded-sm ${TONES[i % TONES.length]}`}>
+            <div className={`relative aspect-[4/5] overflow-hidden rounded-[1.5rem] ${TONES[i % TONES.length]}`}>
               {c.image && <Image src={c.image} alt="" fill sizes="(min-width: 1024px) 24vw, 46vw" className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-soft)] group-hover:scale-105" />}
             </div>
             <div className="mt-3 flex items-baseline justify-between gap-2 px-1">

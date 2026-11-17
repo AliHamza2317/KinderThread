@@ -16,7 +16,7 @@ export default async function SizeGuidePage() {
       {guides.map((g) => (
         <section key={g.id} className="mt-12">
           <h2 className="font-display text-2xl">{g.name}</h2>
-          <div className="mt-5 rounded-sm bg-cream-100 p-5 md:p-6">
+          <div className="mt-5 rounded-[1.5rem] bg-cream-100 p-5 md:p-6">
             <SizeGuideTable guide={{ name: g.name, unit: g.unit, rows: g.rows, notes: g.notes }} />
           </div>
           {g.notes && <p className="mt-3 text-[0.82rem] text-cocoa-500">{g.notes}</p>}

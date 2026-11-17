@@ -148,7 +148,7 @@ export function Modal({
               aria-modal="true"
               aria-labelledby={id}
               className={cn(
-                "relative max-h-[92dvh] w-full overflow-y-auto rounded-t-md bg-cream shadow-lift sm:max-w-lg sm:rounded-sm",
+                "relative max-h-[92dvh] w-full overflow-y-auto rounded-t-[1.75rem] bg-cream shadow-lift sm:max-w-lg sm:rounded-[1.75rem]",
                 className,
               )}
               initial={{ opacity: 0, y: 40, scale: 0.98 }}

@@ -77,7 +77,7 @@ export function CartPageClient({ freeThreshold }: { freeThreshold: number }) {
         </ul>
 
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 space-y-6 rounded-sm bg-cream-100 p-6 md:p-8">
+          <div className="sticky top-28 space-y-6 rounded-[1.5rem] bg-cream-100 p-6 md:p-8">
             <h2 className="font-display text-2xl">Order summary</h2>
             <FreeShippingMeter subtotal={(quote?.subtotal ?? 0) - (quote?.discount ?? 0)} threshold={freeThreshold} />
             <CouponField value={couponCode} onApply={setCoupon} error={quote?.couponError} applied={quote?.coupon?.code} />

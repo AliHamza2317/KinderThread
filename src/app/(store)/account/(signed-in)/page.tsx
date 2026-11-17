@@ -43,7 +43,7 @@ export default async function AccountOverview() {
           )}
         </div>
         {orders.length === 0 ? (
-          <div className="stitch-border flex flex-col items-center rounded-sm px-6 py-12 text-center">
+          <div className="stitch-border flex flex-col items-center rounded-[1.5rem] px-6 py-12 text-center">
             <span className="grid h-14 w-14 place-items-center rounded-full bg-cream-200">
               <ShoppingBag className="h-6 w-6 text-cocoa-400" />
             </span>
@@ -57,10 +57,10 @@ export default async function AccountOverview() {
           <ul className="flex flex-col gap-3">
             {orders.map((o) => (
               <li key={o.id}>
-                <Link href={`/account/orders/${o.number}`} className="group flex items-center gap-4 rounded-sm border border-cocoa-100 bg-cream-50 p-4 transition hover:border-cocoa-300 hover:shadow-soft">
+                <Link href={`/account/orders/${o.number}`} className="group flex items-center gap-4 rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-4 transition hover:border-cocoa-300 hover:shadow-soft">
                   <div className="flex -space-x-3">
                     {o.items.map((it, i) => (
-                      <span key={i} className="relative h-14 w-12 overflow-hidden rounded-sm bg-cream-200 ring-2 ring-cream-50">
+                      <span key={i} className="relative h-14 w-12 overflow-hidden rounded-xl bg-cream-200 ring-2 ring-cream-50">
                         {it.image && <Image src={it.image} alt="" fill sizes="48px" className="object-cover" />}
                       </span>
                     ))}
@@ -86,7 +86,7 @@ export default async function AccountOverview() {
       </section>
 
       <div className="grid gap-4 md:grid-cols-2">
-        <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="addr-heading">
+        <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-6" aria-labelledby="addr-heading">
           <div className="flex items-center justify-between">
             <h2 id="addr-heading" className="flex items-center gap-2 font-sans text-base font-bold tracking-normal">
               <MapPin className="h-4 w-4 text-coral-600" /> {address?.isDefault ? "Default address" : "Address"}
@@ -100,7 +100,7 @@ export default async function AccountOverview() {
           </div>
         </section>
 
-        <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-6" aria-label="Quick links">
+        <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-6" aria-label="Quick links">
           <h2 className="font-sans text-base font-bold tracking-normal">Quick links</h2>
           <ul className="mt-3 divide-y divide-cocoa-100">
             {[

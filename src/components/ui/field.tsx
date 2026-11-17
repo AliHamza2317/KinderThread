@@ -48,7 +48,7 @@ export function Field({
   const msg = Array.isArray(error) ? error[0] : error;
   return (
     <div className={cn("flex flex-col gap-1.5", className)}>
-      <label htmlFor={htmlFor} className="text-[0.72rem] font-bold tracking-[0.08em] text-cocoa-600 uppercase">
+      <label htmlFor={htmlFor} className="text-[0.82rem] font-medium text-cocoa-600">
         {label}
         {optional && <span className="ml-1 font-normal tracking-normal text-cocoa-400 normal-case">(optional)</span>}
       </label>
@@ -69,7 +69,7 @@ export function Checkbox({ label, className, ...props }: ComponentProps<"input">
     <label className={cn("inline-flex cursor-pointer items-center gap-3 text-[0.92rem] text-cocoa-600", className)}>
       <input
         type="checkbox"
-        className="kt-checkbox h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-[3px] border border-cocoa-200 bg-cream-50 transition checked:border-sage-600 checked:bg-sage-600"
+        className="kt-checkbox h-5 w-5 shrink-0 cursor-pointer appearance-none rounded-md border border-cocoa-200 bg-cream-50 transition checked:border-cocoa checked:bg-cocoa"
         {...props}
       />
       {label}

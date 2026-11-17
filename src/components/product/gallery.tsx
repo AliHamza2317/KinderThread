@@ -39,7 +39,7 @@ export function ProductGallery({ images, name, activeColorId }: { images: Img[];
     if (i !== index) setIndex(i);
   };
 
-  if (!count) return <div className="aspect-[4/5] rounded-sm bg-cream-100" />;
+  if (!count) return <div className="aspect-[4/5] rounded-[1.5rem] bg-cream-100" />;
 
   return (
     <div className="flex flex-col-reverse gap-4 md:flex-row">
@@ -51,7 +51,7 @@ export function ProductGallery({ images, name, activeColorId }: { images: Img[];
                 onClick={() => go(i)}
                 aria-label={`Show image ${i + 1} of ${count}`}
                 aria-current={i === index}
-                className={cn("relative block aspect-[4/5] w-16 overflow-hidden rounded-sm bg-cream-100 transition md:w-20", i === index ? "ring-2 ring-cocoa ring-offset-2 ring-offset-cream" : "opacity-70 hover:opacity-100")}
+                className={cn("relative block aspect-[4/5] w-16 overflow-hidden rounded-xl bg-cream-100 transition md:w-20", i === index ? "ring-2 ring-cocoa ring-offset-2 ring-offset-cream" : "opacity-70 hover:opacity-100")}
               >
                 <Image src={im.url} alt="" fill sizes="80px" className="object-cover" />
               </button>
@@ -64,7 +64,7 @@ export function ProductGallery({ images, name, activeColorId }: { images: Img[];
         <div
           ref={track}
           onScroll={onScroll}
-          className="scrollbar-none flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto overflow-y-hidden rounded-sm bg-cream-100"
+          className="scrollbar-none flex aspect-[4/5] snap-x snap-mandatory overflow-x-auto overflow-y-hidden rounded-[1.5rem] bg-cream-100"
           role="region"
           aria-roledescription="carousel"
           aria-label={`${name} images`}

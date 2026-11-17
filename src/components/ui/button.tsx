@@ -6,21 +6,21 @@ type Variant = "primary" | "secondary" | "ghost" | "coral" | "light" | "danger";
 type Size = "sm" | "md" | "lg" | "icon";
 
 const base =
-  "group/btn relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-[3px] font-bold uppercase tracking-[0.14em] transition-[background-color,color,box-shadow,border-color] duration-300 ease-[var(--ease-soft)] disabled:pointer-events-none disabled:opacity-50";
+  "group/btn relative inline-flex select-none items-center justify-center gap-2 whitespace-nowrap rounded-full font-semibold tracking-[-0.01em] transition-[background-color,color,box-shadow,border-color,transform] duration-300 ease-[var(--ease-soft)] active:scale-[0.98] disabled:pointer-events-none disabled:opacity-50";
 
 const variants: Record<Variant, string> = {
-  primary: "bg-cocoa-800 text-cream-50 hover:bg-sage-700",
-  secondary: "border border-cocoa-800 bg-transparent text-cocoa-800 hover:bg-cocoa-800 hover:text-cream-50",
+  primary: "bg-cocoa text-cream-50 hover:bg-sage-700",
+  secondary: "border border-cocoa/20 bg-transparent text-cocoa hover:border-cocoa hover:bg-cocoa hover:text-cream-50",
   ghost: "bg-transparent text-cocoa hover:bg-cocoa-50",
-  coral: "bg-cream-50 text-cocoa-800 hover:bg-white",
-  light: "bg-cream-50 text-cocoa-800 hover:bg-white",
+  coral: "bg-coral text-cocoa-900 hover:bg-coral-500",
+  light: "bg-cream-50 text-cocoa hover:bg-white",
   danger: "bg-coral-700 text-white hover:bg-coral-800",
 };
 
 const sizes: Record<Size, string> = {
-  sm: "h-9 px-4 text-[0.66rem]",
-  md: "h-12 px-7 text-[0.72rem]",
-  lg: "h-14 px-9 text-[0.76rem]",
+  sm: "h-9 px-4 text-[0.8rem]",
+  md: "h-12 px-6 text-[0.9rem]",
+  lg: "h-14 px-7 text-[0.95rem]",
   icon: "h-11 w-11",
 };
 

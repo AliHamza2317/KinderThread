@@ -118,7 +118,7 @@ export function CartDrawer({ freeThreshold }: { freeThreshold: number }) {
         <ul className="divide-y divide-cocoa-100 px-6">
           {lines.map((l) => (
             <li key={l.variantId} className="flex gap-4 py-5">
-              <Link href={`/products/${l.slug}`} onClick={() => setOpen(false)} className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-sm bg-cream-100">
+              <Link href={`/products/${l.slug}`} onClick={() => setOpen(false)} className="relative aspect-[4/5] w-20 shrink-0 overflow-hidden rounded-xl bg-cream-100">
                 {l.image && <Image src={l.image} alt="" fill sizes="80px" className="object-cover" />}
               </Link>
               <div className="flex min-w-0 flex-1 flex-col">

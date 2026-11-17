@@ -103,7 +103,7 @@ export function SearchOverlay({ categories }: { categories: NavCategory[] }) {
                   <p className="eyebrow mb-4">Popular</p>
                   <div className="flex flex-wrap gap-2">
                     {categories.slice(0, 7).map((c) => (
-                      <Link key={c.id} href={`/collections/${c.slug}`} onClick={close} className="rounded-[3px] border border-cocoa-100 px-4 py-2 text-sm font-semibold transition hover:border-cocoa hover:bg-cocoa hover:text-cream">
+                      <Link key={c.id} href={`/collections/${c.slug}`} onClick={close} className="rounded-full border border-cocoa-100 px-4 py-2 text-sm font-semibold transition hover:border-cocoa hover:bg-cocoa hover:text-cream">
                         {c.name}
                       </Link>
                     ))}

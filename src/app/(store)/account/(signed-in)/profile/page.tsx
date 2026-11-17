@@ -20,14 +20,14 @@ export default async function ProfilePage() {
         {row && <p className="mt-2 text-cocoa-500">Member since {formatDate(row.createdAt, { month: "long", year: "numeric" })}</p>}
       </header>
 
-      <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-5 md:p-7" aria-labelledby="details-h">
+      <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-5 md:p-7" aria-labelledby="details-h">
         <h2 id="details-h" className="mb-5 font-display text-xl">
           Personal details
         </h2>
         <ProfileForm name={user.name} email={user.email} phone={user.phone} />
       </section>
 
-      <section className="rounded-sm border border-cocoa-100 bg-cream-50 p-5 md:p-7" aria-labelledby="pw-h">
+      <section className="rounded-[1.5rem] border border-cocoa-100 bg-cream-50 p-5 md:p-7" aria-labelledby="pw-h">
         <h2 id="pw-h" className="font-display text-xl">
           Change password
         </h2>
@@ -35,7 +35,7 @@ export default async function ProfilePage() {
         <PasswordForm />
       </section>
 
-      <section className="flex flex-col gap-4 rounded-sm border border-dashed border-cocoa-200 p-5 sm:flex-row sm:items-center sm:justify-between md:p-7" aria-labelledby="sessions-h">
+      <section className="flex flex-col gap-4 rounded-[1.5rem] border border-dashed border-cocoa-200 p-5 sm:flex-row sm:items-center sm:justify-between md:p-7" aria-labelledby="sessions-h">
         <div>
           <h2 id="sessions-h" className="font-sans text-base font-bold tracking-normal">
             Signed-in devices

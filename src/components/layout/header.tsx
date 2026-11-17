@@ -11,7 +11,7 @@ import { useHydrated } from "@/lib/hooks";
 import { cartCount, useCart } from "@/stores/cart";
 import { useUi } from "@/stores/ui";
 import { useWishlist } from "@/stores/wishlist";
-import mark from "../../../public/brand/logo-mark.png";
+import mark from "../../../public/brand/logo-mark-alpha.png";
 import type { NavCategory } from "./types";
 
 type Props = { categories: NavCategory[]; signedIn: boolean };
@@ -51,32 +51,30 @@ export function Header({ categories, signedIn }: Props) {
 
   return (
     <motion.header
-      className={cn(
-        "sticky top-0 z-40 transition-[background-color,box-shadow,border-color] duration-500",
-        scrolled ? "border-b border-cocoa-100/70 bg-cream shadow-[0_8px_30px_-18px_rgb(91_58_38/0.25)]" : "border-b border-transparent bg-cream",
-      )}
-      animate={{ y: hidden ? "-100%" : "0%" }}
-      transition={{ duration: 0.4, ease: [0.22, 1, 0.36, 1] }}
+      className="sticky top-0 z-40 flex h-[72px] items-center px-2.5 md:px-4 lg:h-[84px]"
+      animate={{ y: hidden ? "-110%" : "0%" }}
+      transition={{ duration: 0.45, ease: [0.22, 1, 0.36, 1] }}
       onMouseLeave={() => setOpenMenu(null)}
     >
-      <div className="container-kt flex h-[72px] items-center gap-4 lg:h-[84px]">
+      <div
+        className={cn(
+          "mx-auto flex h-14 w-full items-center gap-3 rounded-full border px-2 transition-[max-width,background-color,border-color,box-shadow,padding] duration-700 ease-[var(--ease-soft)] lg:h-[60px] lg:px-3",
+          scrolled || openMenu
+            ? "max-w-[1180px] border-cocoa/[0.07] bg-cream-50/80 shadow-[0_10px_40px_-20px_rgb(20_16_12/0.35)] backdrop-blur-xl backdrop-saturate-150"
+            : "max-w-[1440px] border-transparent bg-transparent",
+        )}
+      >
         {/* mobile: menu */}
-        <button className="-ml-2 grid h-11 w-11 place-items-center rounded-full hover:bg-cocoa-50 lg:hidden" onClick={() => setMenu(true)} aria-label="Open menu">
+        <button className="grid h-11 w-11 place-items-center rounded-full hover:bg-cocoa/5 lg:hidden" onClick={() => setMenu(true)} aria-label="Open menu">
           <Menu className="h-5 w-5" />
         </button>
 
-        <Link href="/" aria-label="Kinder Thread home" className="absolute left-1/2 -translate-x-1/2 lg:static lg:translate-x-0">
-          <Image
-            src={mark}
-            alt="Kinder Thread"
-            priority
-            sizes="120px"
-            className={cn("h-auto transition-[width] duration-500 ease-[var(--ease-soft)]", scrolled ? "w-[78px] lg:w-[88px]" : "w-[86px] lg:w-[100px]")}
-          />
+        <Link href="/" aria-label="Kinder Thread home" className="absolute left-1/2 -translate-x-1/2 lg:static lg:ml-2 lg:translate-x-0">
+          <Image src={mark} alt="Kinder Thread" priority sizes="100px" className="h-auto w-[74px] lg:w-[82px]" />
         </Link>
 
         <nav className="mx-auto hidden lg:block" aria-label="Main">
-          <ul className="flex items-center gap-1 xl:gap-2">
+          <ul className="flex items-center">
             {nav.map((item) => {
               // the most specific matching link wins, so /collections/baby-girls highlights "Baby Girls" only
               const matches = nav.filter((n) => (n.href === "/" ? pathname === "/" : pathname === n.href || pathname.startsWith(n.href + "/")));
@@ -87,21 +85,16 @@ export function Header({ categories, signedIn }: Props) {
                   <Link
                     href={item.href}
                     className={cn(
-                      "group/nav relative inline-flex h-11 items-center gap-1 rounded-full px-3 text-[0.88rem] font-semibold transition-colors xl:px-4",
+                      "relative inline-flex h-10 items-center gap-1 rounded-full px-3.5 text-[0.85rem] font-medium tracking-[-0.01em] transition-colors xl:px-4",
                       active ? "text-cocoa" : "text-cocoa-500 hover:text-cocoa",
                     )}
                     aria-expanded={item.menu ? openMenu === item.menu : undefined}
                     onFocus={() => setOpenMenu(item.menu ?? null)}
                     onKeyDown={(e) => e.key === "Escape" && setOpenMenu(null)}
                   >
+                    {active && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-cocoa/[0.06]" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
                     {item.label}
                     {item.menu && <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", openMenu === item.menu && "rotate-180")} />}
-                    <span
-                      className={cn(
-                        "absolute inset-x-3 bottom-1.5 h-px origin-left bg-cocoa transition-transform duration-500 ease-[var(--ease-soft)] xl:inset-x-4",
-                        active ? "scale-x-100" : "scale-x-0 group-hover/nav:scale-x-100",
-                      )}
-                    />
                   </Link>
                 </li>
               );
@@ -111,10 +104,10 @@ export function Header({ categories, signedIn }: Props) {
 
         <div className="ml-auto flex items-center gap-0.5 lg:ml-0">
           <IconLink onClick={() => setSearch(true)} label="Search">
-            <Search className="h-[1.15rem] w-[1.15rem]" />
+            <Search className="h-[1.1rem] w-[1.1rem]" />
           </IconLink>
           <IconLink href={signedIn ? "/account" : "/account/login"} label="Account" className="hidden sm:grid">
-            <User className="h-[1.15rem] w-[1.15rem]" />
+            <User className="h-[1.1rem] w-[1.1rem]" />
           </IconLink>
           <WishlistIcon />
           <BagIcon />
@@ -129,10 +122,10 @@ export function Header({ categories, signedIn }: Props) {
             animate={{ opacity: 1, y: 0 }}
             exit={{ opacity: 0, y: -6 }}
             transition={{ duration: 0.28, ease: [0.22, 1, 0.36, 1] }}
-            className="absolute inset-x-0 top-full hidden border-b border-cocoa-100 bg-cream shadow-soft lg:block"
+            className="absolute inset-x-4 top-[calc(100%-6px)] mx-auto hidden max-w-[1180px] overflow-hidden rounded-[2rem] border border-cocoa/[0.07] bg-cream-50/95 shadow-[0_30px_80px_-30px_rgb(20_16_12/0.35)] backdrop-blur-xl lg:block"
             onMouseEnter={() => setOpenMenu(openMenu)}
           >
-            <div className="container-kt grid grid-cols-12 gap-8 py-10">
+            <div className="grid grid-cols-12 gap-8 p-10">
               {openMenu === "shop" ? (
                 <>
                   <MenuColumn title="Shop by category" className="col-span-3">
@@ -160,15 +153,15 @@ export function Header({ categories, signedIn }: Props) {
                     <MenuLink href="/shop?age=little">2–5 years</MenuLink>
                   </MenuColumn>
                   {featured?.image && (
-                    <Link href={`/collections/${featured.slug}`} className="group col-span-4 grid grid-cols-2 items-center gap-6 rounded-sm bg-cream-100 p-4">
-                      <div className="relative aspect-[4/5] overflow-hidden rounded-sm">
+                    <Link href={`/collections/${featured.slug}`} className="group col-span-4 grid grid-cols-2 items-center gap-6 rounded-[1.5rem] bg-cream-100 p-3 pr-5">
+                      <div className="relative aspect-[4/5] overflow-hidden rounded-[1.1rem]">
                         <Image src={featured.image} alt="" fill sizes="200px" className="object-cover transition-transform duration-700 group-hover:scale-105" />
                       </div>
                       <div>
                         <p className="eyebrow">Featured</p>
                         <p className="mt-2 font-display text-2xl">{featured.name}</p>
                         <p className="mt-2 line-clamp-3 text-sm text-cocoa-500">{featured.description}</p>
-                        <span className="mt-4 inline-block text-sm font-bold text-sage-700 link-underline">Shop now</span>
+                        <span className="mt-4 inline-block text-sm font-semibold text-sage-700 link-underline">Shop now</span>
                       </div>
                     </Link>
                   )}
@@ -188,7 +181,7 @@ export function Header({ categories, signedIn }: Props) {
                   <div className="col-span-8 grid grid-cols-3 gap-4">
                     {collections.slice(0, 3).map((c) => (
                       <Link key={c.id} href={`/collections/${c.slug}`} className="group">
-                        <div className="relative aspect-[4/5] overflow-hidden rounded-sm bg-cream-100">
+                        <div className="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-cream-100">
                           {c.image && <Image src={c.image} alt="" fill sizes="240px" className="object-cover transition-transform duration-700 group-hover:scale-105" />}
                         </div>
                         <p className="mt-3 font-display text-lg">{c.name}</p>
@@ -217,7 +210,7 @@ function MenuColumn({ title, children, className }: { title: string; children: R
 function MenuLink({ href, children }: { href: string; children: React.ReactNode }) {
   return (
     <li>
-      <Link href={href} className="font-display text-[1.1rem] text-cocoa transition-colors hover:text-sage-700">
+      <Link href={href} className="inline-block font-display text-[1.08rem] tracking-[-0.02em] text-cocoa transition-[color,transform] duration-300 hover:translate-x-1 hover:text-sage-700">
         {children}
       </Link>
     </li>
@@ -225,7 +218,7 @@ function MenuLink({ href, children }: { href: string; children: React.ReactNode 
 }
 
 function IconLink({ href, onClick, label, children, className }: { href?: string; onClick?: () => void; label: string; children: React.ReactNode; className?: string }) {
-  const cls = cn("relative grid h-11 w-11 place-items-center rounded-full text-cocoa transition-colors hover:bg-cocoa-50", className);
+  const cls = cn("relative grid h-10 w-10 place-items-center rounded-full text-cocoa transition-colors hover:bg-cocoa/5", className);
   return href ? (
     <Link href={href} className={cls} aria-label={label}>
       {children}
@@ -245,7 +238,7 @@ function CountBadge({ n, bump = 0 }: { n: number; bump?: number }) {
       initial={{ scale: 0.4 }}
       animate={{ scale: 1 }}
       transition={{ type: "spring", stiffness: 500, damping: 14 }}
-      className="absolute top-1 right-0.5 grid h-[17px] min-w-[17px] place-items-center rounded-full bg-cocoa-800 px-1 text-[0.6rem] font-bold text-cream-50"
+      className="absolute -top-0.5 -right-0.5 grid h-[17px] min-w-[17px] place-items-center rounded-full bg-coral px-1 text-[0.6rem] font-bold text-cocoa-900 ring-2 ring-cream-50"
     >
       {n > 99 ? "99+" : n}
     </motion.span>
@@ -270,7 +263,7 @@ function BagIcon() {
   const setOpen = useCart((s) => s.setOpen);
   const n = hydrated ? cartCount(lines) : 0;
   return (
-    <button className="relative grid h-11 w-11 place-items-center rounded-full text-cocoa transition-colors hover:bg-cocoa-50" onClick={() => setOpen(true)} aria-label={`Shopping bag${n ? `, ${n} items` : ""}`}>
+    <button className="relative ml-1 grid h-10 w-10 place-items-center rounded-full bg-cocoa text-cream-50 transition-colors hover:bg-sage-700" onClick={() => setOpen(true)} aria-label={`Shopping bag${n ? `, ${n} items` : ""}`}>
       <motion.span key={bump} animate={bump ? { rotate: [0, -14, 10, -6, 0], y: [0, -3, 0] } : undefined} transition={{ duration: 0.6 }}>
         <ShoppingBag className="h-[1.15rem] w-[1.15rem]" />
       </motion.span>

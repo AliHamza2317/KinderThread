@@ -22,8 +22,8 @@ export function ProductCard({ product, priority, showSample = true, className }:
   const off = discountPercent(product.price, product.compareAtPrice);
   return (
     <article className={cn("group/card relative", className)}>
-      <div className="relative overflow-hidden rounded-sm bg-cream-100">
-        <Link href={`/products/${product.slug}`} className="block aspect-[4/5]" aria-label={product.name}>
+      <div className="relative overflow-hidden rounded-[1.25rem] bg-cream-100 [mask-image:radial-gradient(white,black)]">
+        <Link href={`/products/${product.slug}`} className="relative block aspect-[4/5]" aria-label={product.name} data-cursor="View">
           {a && (
             <Image
               src={a.url}
@@ -31,7 +31,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
               fill
               priority={priority}
               sizes="(min-width: 1280px) 22vw, (min-width: 768px) 30vw, 46vw"
-              className={cn("object-cover transition-[opacity,transform] duration-700 ease-[var(--ease-soft)] group-hover/card:scale-[1.04]", b && "group-hover/card:opacity-0")}
+              className={cn("object-cover transition-[opacity,transform] duration-700 ease-[var(--ease-soft)] group-hover/card:scale-[1.06]", b && "group-hover/card:opacity-0")}
             />
           )}
           {b && (
@@ -55,7 +55,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
             <button
               type="button"
               onClick={() => openQuickAdd(product)}
-              className="absolute inset-x-3 bottom-3 hidden h-11 translate-y-3 items-center justify-center gap-2 rounded-[3px] bg-cream-50 text-[0.7rem] font-bold tracking-[0.14em] text-cocoa uppercase opacity-0 transition duration-500 ease-[var(--ease-soft)] group-hover/card:translate-y-0 group-hover/card:opacity-100 hover:bg-cocoa hover:text-cream-50 focus-visible:translate-y-0 focus-visible:opacity-100 md:flex"
+              className="absolute inset-x-3 bottom-3 hidden h-11 translate-y-3 items-center justify-center gap-2 rounded-full bg-cream-50/90 text-[0.8rem] font-semibold text-cocoa opacity-0 backdrop-blur-md transition duration-500 ease-[var(--ease-soft)] group-hover/card:translate-y-0 group-hover/card:opacity-100 hover:bg-cocoa hover:text-cream-50 focus-visible:translate-y-0 focus-visible:opacity-100 md:flex"
             >
               <Plus className="h-4 w-4" /> Quick add
             </button>
@@ -73,7 +73,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
 
       <div className="mt-4 flex items-start justify-between gap-3">
         <div className="min-w-0">
-          <h3 className="font-sans text-[0.95rem] leading-snug font-semibold tracking-normal">
+          <h3 className="font-sans text-[0.95rem] leading-snug font-medium tracking-[-0.01em]">
             <Link href={`/products/${product.slug}`} className="link-underline">
               {product.name}
             </Link>
@@ -92,7 +92,7 @@ export function ProductCard({ product, priority, showSample = true, className }:
         )}
         {product.sizes.length > 0 && <span>Sizes {sizeRange(product.sizes)}</span>}
         {showSample && product.isSample && (
-          <span className="ml-auto text-[0.6rem] font-bold tracking-[0.16em] text-cocoa-400 uppercase" title="Sample listing used while the first collection is prepared">
+          <span className="ml-auto rounded-full border border-cocoa/10 px-2 py-0.5 text-[0.6rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase" title="Sample listing used while the first collection is prepared">
             Sample
           </span>
         )}

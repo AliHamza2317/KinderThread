@@ -21,7 +21,7 @@ export function NewsletterForm({ source = "NEWSLETTER", tone = "dark", cta = "Su
           Company <input name="company" tabIndex={-1} autoComplete="off" />
         </label>
       </div>
-      <div className={cn("flex flex-col gap-2 rounded-[3px] p-1 sm:flex-row", dark ? "bg-cream-50/10 ring-1 ring-cream-50/25 focus-within:ring-cream-50/60" : "bg-cream-50 ring-1 ring-cocoa-100 focus-within:ring-cocoa-400")}>
+      <div className={cn("flex flex-col gap-2 rounded-[1.75rem] p-1.5 sm:flex-row sm:rounded-full", dark ? "bg-cream-50/10 ring-1 ring-cream-50/25 focus-within:ring-cream-50/60" : "bg-cream-50 ring-1 ring-cocoa/10 focus-within:ring-cocoa/40")}>
         <label htmlFor={`nl-${source}`} className="sr-only">
           Email address
         </label>
@@ -36,7 +36,7 @@ export function NewsletterForm({ source = "NEWSLETTER", tone = "dark", cta = "Su
           placeholder="Your email address"
           aria-invalid={state?.ok === false || undefined}
           aria-describedby={`nl-${source}-msg`}
-          className={cn("h-12 min-w-0 flex-1 rounded-[3px] bg-transparent px-4 text-[0.95rem] focus:outline-none", dark ? "text-cream-50 placeholder:text-cream-200/60" : "text-cocoa placeholder:text-cocoa-400")}
+          className={cn("h-12 min-w-0 flex-1 rounded-full bg-transparent px-5 text-[0.95rem] focus:outline-none", dark ? "text-cream-50 placeholder:text-cream-200/60" : "text-cocoa placeholder:text-cocoa-400")}
         />
         <Button type="submit" variant={dark ? "light" : "primary"} loading={pending} className="h-12 shrink-0">
           {cta}
@@ -51,14 +51,20 @@ export function NewsletterForm({ source = "NEWSLETTER", tone = "dark", cta = "Su
 }
 
 export function NewsletterSection({ heading, body }: { heading: string; body: string }) {
+  const words = heading.trim().split(/\s+/);
+  const last = words.pop();
   return (
     <section className="container-kt">
-      <div className="relative overflow-hidden rounded-sm bg-sage-700 px-6 py-16 text-cream-50 md:px-16 md:py-24">
-        <div className="relative max-w-2xl">
-          <p className="eyebrow eyebrow-rule text-cream-200">Newsletter</p>
-          <h2 className="display-lg mt-5 text-cream-50">{heading}</h2>
-          <p className="mt-4 max-w-lg text-[1.05rem] leading-relaxed text-cream-200/85">{body}</p>
-          <NewsletterForm className="mt-8 max-w-xl" />
+      <div className="relative overflow-hidden rounded-[2rem] bg-sage-700 px-6 py-16 text-cream-50 md:rounded-[3rem] md:px-16 md:py-28">
+        <div aria-hidden className="pointer-events-none absolute -top-40 -right-40 h-[28rem] w-[28rem] rounded-full bg-sage-500/40 blur-3xl" />
+        <div aria-hidden className="pointer-events-none absolute -bottom-48 -left-24 h-[24rem] w-[24rem] rounded-full bg-coral/25 blur-3xl" />
+        <div className="relative mx-auto max-w-3xl text-center">
+          <p className="eyebrow eyebrow-rule justify-center text-cream-200">Newsletter</p>
+          <h2 className="display-lg mt-6 text-cream-50">
+            {words.join(" ")} {last && <span className="font-serif-accent text-sun-200">{last}</span>}
+          </h2>
+          <p className="mx-auto mt-5 max-w-lg text-[1.05rem] leading-relaxed text-cream-200/85">{body}</p>
+          <NewsletterForm className="mx-auto mt-9 max-w-xl text-left" />
         </div>
       </div>
     </section>
