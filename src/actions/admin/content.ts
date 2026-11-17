@@ -1,9 +1,9 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { z } from "zod";
-import { db } from "@/lib/db";
+import { BANNERS, GALLERY } from "@/data/content";
 import { assertStaff } from "@/lib/auth";
+import { demoResult } from "@/lib/demo";
 import { getSettings, saveSetting, settingSchemas, type SettingKey } from "@/lib/settings";
 import { fieldErrors, type ActionResult } from "@/lib/action-result";
 
@@ -85,8 +85,7 @@ export async function saveSettingsAction(_prev: ActionResult, formData: FormData
     };
   }
   await saveSetting(key, parsed.data);
-  revalidatePath("/", "layout");
-  return { ok: true, message: "Saved." };
+  return demoResult();
 }
 
 /* ---------------------------------------------------------------------------
@@ -126,8 +125,6 @@ function bannerFromForm(fd: FormData) {
   });
 }
 
-const nullable = (v?: string) => (v ? v : null);
-
 export async function saveBannerAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
   try {
     await assertStaff();
@@ -138,36 +135,14 @@ export async function saveBannerAction(_prev: ActionResult, formData: FormData):
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Please check the form.", errors: fieldErrors(parsed.error.issues) };
   const d = parsed.data;
   if (d.ctaLabel && !d.ctaHref) return { ok: false, message: "Add a link for the button, or clear the button label." };
-  const data = {
-    eyebrow: nullable(d.eyebrow),
-    title: d.title,
-    subtitle: nullable(d.subtitle),
-    image: nullable(d.image),
-    ctaLabel: nullable(d.ctaLabel),
-    ctaHref: nullable(d.ctaHref),
-    tone: d.tone,
-    sortOrder: d.sortOrder,
-    isActive: d.isActive,
-  };
   const id = String(formData.get("id") ?? "");
-  if (id) {
-    const exists = await db.banner.findUnique({ where: { id }, select: { id: true } });
-    if (!exists) return { ok: false, message: "This banner no longer exists." };
-    await db.banner.update({ where: { id }, data });
-  } else {
-    await db.banner.create({ data });
-  }
-  revalidatePath("/");
-  revalidatePath("/admin/marketing");
-  return { ok: true, message: id ? "Banner updated." : "Banner added." };
+  if (id && !BANNERS.some((b) => b.id === id)) return { ok: false, message: "This banner no longer exists." };
+  return demoResult();
 }
 
-export async function deleteBannerAction(formData: FormData) {
+/** Demo build: nothing is deleted (the form simply re-renders). */
+export async function deleteBannerAction(_formData: FormData) {
   await assertStaff();
-  const id = String(formData.get("id") ?? "");
-  if (id) await db.banner.deleteMany({ where: { id } });
-  revalidatePath("/");
-  revalidatePath("/admin/marketing");
 }
 
 /* ---------------------------------------------------------------------------
@@ -182,14 +157,7 @@ export async function addGalleryImagesAction(urls: string[]): Promise<ActionResu
   }
   const clean = z.array(z.string().min(1).max(500)).min(1).max(12).safeParse(urls);
   if (!clean.success) return { ok: false, message: "Nothing to add." };
-  const max = await db.galleryImage.aggregate({ _max: { sortOrder: true } });
-  let order = (max._max.sortOrder ?? -1) + 1;
-  await db.galleryImage.createMany({
-    data: clean.data.map((url) => ({ url, alt: "Kinder Thread", sortOrder: order++, isSample: false })),
-  });
-  revalidatePath("/");
-  revalidatePath("/admin/marketing");
-  return { ok: true, message: `${clean.data.length} image${clean.data.length > 1 ? "s" : ""} added.` };
+  return demoResult();
 }
 
 const galleryUpdateSchema = z.object({
@@ -216,18 +184,11 @@ export async function updateGalleryImageAction(_prev: ActionResult, formData: Fo
     isSample: formData.get("isSample") === "on",
   });
   if (!parsed.success) return { ok: false, message: parsed.error.issues[0]?.message ?? "Please check the form." };
-  const { id, href, ...rest } = parsed.data;
-  const res = await db.galleryImage.updateMany({ where: { id }, data: { ...rest, href: href || null } });
-  if (!res.count) return { ok: false, message: "This image no longer exists." };
-  revalidatePath("/");
-  revalidatePath("/admin/marketing");
-  return { ok: true, message: "Saved." };
+  if (!GALLERY.some((g) => g.id === parsed.data.id)) return { ok: false, message: "This image no longer exists." };
+  return demoResult();
 }
 
-export async function deleteGalleryImageAction(formData: FormData) {
+/** Demo build: nothing is deleted. */
+export async function deleteGalleryImageAction(_formData: FormData) {
   await assertStaff();
-  const id = String(formData.get("id") ?? "");
-  if (id) await db.galleryImage.deleteMany({ where: { id } });
-  revalidatePath("/");
-  revalidatePath("/admin/marketing");
 }

@@ -12,8 +12,9 @@ import { ShopByAge } from "@/components/home/shop-by-age";
 import { ProductCard } from "@/components/product/product-card";
 import { buttonClass } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
-import { getProductsBy } from "@/lib/catalog";
-import { db } from "@/lib/db";
+import { countProductsInCategory, getProductsBy } from "@/lib/catalog";
+import { CATEGORIES } from "@/data/catalog";
+import { BANNERS, GALLERY } from "@/data/content";
 import { getSettings } from "@/lib/settings";
 import { absoluteUrl, formatPrice } from "@/lib/utils";
 
@@ -22,34 +23,15 @@ export default async function Home() {
   const { home } = settings;
   const sec = home.sections;
 
-  const [featuredCats, newArrivals, bestSellers, banners, gallery] = await Promise.all([
-    db.category.findMany({
-      where: { isVisible: true, isFeatured: true },
-      orderBy: { sortOrder: "asc" },
-      take: 4,
-      include: {
-        _count: { select: { products: { where: { status: "ACTIVE" } } } },
-        products: {
-          where: { status: "ACTIVE" },
-          orderBy: [{ isFeatured: "desc" }, { sortOrder: "asc" }],
-          take: 3,
-          select: {
-            id: true,
-            slug: true,
-            name: true,
-            price: true,
-            compareAtPrice: true,
-            images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true } },
-            colors: { orderBy: { sortOrder: "asc" }, select: { name: true, hex: true } },
-          },
-        },
-      },
-    }),
+  const featuredCats = CATEGORIES.filter((c) => c.isVisible && c.isFeatured)
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .slice(0, 4);
+  const [newArrivals, bestSellers] = await Promise.all([
     sec.newArrivals ? getProductsBy("isNewArrival", 10) : Promise.resolve([]),
     sec.bestSellers ? getProductsBy("isBestSeller", 8) : Promise.resolve([]),
-    sec.banners ? db.banner.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, take: 2 }) : Promise.resolve([]),
-    sec.gallery ? db.galleryImage.findMany({ where: { isActive: true }, orderBy: { sortOrder: "asc" }, take: 8 }) : Promise.resolve([]),
   ]);
+  const banners = sec.banners ? BANNERS.filter((b) => b.isActive).sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 2) : [];
+  const gallery = sec.gallery ? GALLERY.filter((g) => g.isActive).sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 8) : [];
 
   const trust = [
     "Ages 0–5",
@@ -84,7 +66,7 @@ export default async function Home() {
       {sec.categories && featuredCats.length > 0 && (
         <section className="container-kt py-24 md:py-32" aria-labelledby="cat-heading">
           <SectionHeader eyebrow="Shop by category" title="Dressed for every little stage" link={{ href: "/shop", label: "Shop all" }} />
-          <FeaturedCategories categories={featuredCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, image: c.image, description: c.description, count: c._count.products }))} />
+          <FeaturedCategories categories={featuredCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, image: c.image, description: c.description, count: countProductsInCategory(c.id) }))} />
         </section>
       )}
 

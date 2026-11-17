@@ -10,7 +10,7 @@ import { ReturnRequestForm } from "@/components/account/return-form";
 import { returnEligibility } from "@/components/account/return-eligibility";
 import { Badge } from "@/components/ui/badge";
 import { requireUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ORDERS, RETURNS } from "@/data/admin";
 import { PAYMENT_LABELS } from "@/lib/pricing";
 import { getSettings } from "@/lib/settings";
 import { sizeLabel } from "@/lib/sizes";
@@ -25,15 +25,13 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
   const { number: raw } = await params;
   const number = decodeURIComponent(raw).slice(0, 40);
   const user = await requireUser(`/account/orders/${number}`);
-  const order = await db.order.findFirst({
-    where: { number, userId: user.id },
-    include: {
-      items: true,
-      events: { orderBy: { createdAt: "asc" } },
-      returnRequests: { orderBy: { createdAt: "desc" } },
-    },
-  });
-  if (!order) notFound();
+  const found = ORDERS.find((o) => o.number === number && o.userId === user.id);
+  if (!found) notFound();
+  const order = {
+    ...found,
+    events: [...found.events].sort((a, b) => a.createdAt.getTime() - b.createdAt.getTime()),
+    returnRequests: RETURNS.filter((r) => r.orderId === found.id).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()),
+  };
 
   const [eligibility, settings] = await Promise.all([returnEligibility(order.id, order.status, order.updatedAt), getSettings()]);
   const publicEvents = order.events.filter((e) => e.isPublic);

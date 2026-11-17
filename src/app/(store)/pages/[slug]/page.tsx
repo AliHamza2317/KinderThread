@@ -3,14 +3,14 @@ import { notFound, redirect } from "next/navigation";
 import { Breadcrumbs } from "@/components/shop/shop-view";
 import { Prose } from "@/components/ui/markdown";
 import { renderTokens } from "@/lib/cms";
-import { db } from "@/lib/db";
+import { PAGES_DATA } from "@/data/content";
 import { getSettings } from "@/lib/settings";
 import { formatDate } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
 async function getPage(slug: string) {
-  return db.page.findFirst({ where: { slug, isPublished: true } });
+  return PAGES_DATA.find((p) => p.slug === slug && p.isPublished) ?? null;
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {

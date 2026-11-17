@@ -9,9 +9,9 @@ import { Badge } from "@/components/ui/badge";
 import { ButtonLink } from "@/components/ui/button";
 import { Input, Select } from "@/components/ui/field";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { CATEGORIES, PRODUCTS } from "@/data/catalog";
+import { DemoNotice } from "@/components/admin/demo-notice";
 import { cn, formatPrice } from "@/lib/utils";
-import type { Prisma } from "@/generated/prisma/client";
 
 export const metadata: Metadata = { title: "Products" };
 
@@ -26,31 +26,21 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
   const category = sp.category || undefined;
   const page = Math.max(1, Number(sp.page) || 1);
 
-  const where: Prisma.ProductWhereInput = {
-    AND: [
-      q ? { OR: [{ name: { contains: q, mode: "insensitive" } }, { slug: { contains: q, mode: "insensitive" } }, { variants: { some: { sku: { contains: q, mode: "insensitive" } } } }] } : {},
-      status ? { status } : {},
-      sample ? { isSample: sample === "sample" } : {},
-      category ? { categories: { some: { id: category } } } : {},
-    ],
-  };
-
-  const [products, total, categories, sampleCount] = await Promise.all([
-    db.product.findMany({
-      where,
-      orderBy: [{ updatedAt: "desc" }],
-      skip: (page - 1) * PER_PAGE,
-      take: PER_PAGE,
-      include: {
-        images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true } },
-        variants: { select: { stock: true, isActive: true } },
-        categories: { select: { name: true } },
-      },
-    }),
-    db.product.count({ where }),
-    db.category.findMany({ orderBy: [{ sortOrder: "asc" }, { name: "asc" }], select: { id: true, name: true } }),
-    db.product.count({ where: { isSample: true } }),
-  ]);
+  const needle = q.toLowerCase();
+  const filtered = PRODUCTS.filter((p) => {
+    if (needle && !(p.name.toLowerCase().includes(needle) || p.slug.includes(needle) || p.variants.some((v) => v.sku.toLowerCase().includes(needle)))) return false;
+    if (status && p.status !== status) return false;
+    if (sample && p.isSample !== (sample === "sample")) return false;
+    if (category && !p.categoryIds.includes(category)) return false;
+    return true;
+  }).sort((a, b) => b.updatedAt.getTime() - a.updatedAt.getTime());
+  const total = filtered.length;
+  const products = filtered.slice((page - 1) * PER_PAGE, page * PER_PAGE).map((p) => ({
+    ...p,
+    categories: CATEGORIES.filter((c) => p.categoryIds.includes(c.id)).map((c) => ({ name: c.name })),
+  }));
+  const categories = [...CATEGORIES].sort((a, b) => a.sortOrder - b.sortOrder || a.name.localeCompare(b.name)).map((c) => ({ id: c.id, name: c.name }));
+  const sampleCount = PRODUCTS.filter((p) => p.isSample).length;
   const pages = Math.max(1, Math.ceil(total / PER_PAGE));
   const qs = (patch: Record<string, string | number | undefined>) => {
     const p = new URLSearchParams();
@@ -72,6 +62,7 @@ export default async function ProductsPage({ searchParams }: { searchParams: Pro
         }
       />
 
+      <DemoNotice show={sp.demo === "1"} />
       {sp.removedSamples && (
         <p className="mb-6 rounded-xl bg-sage-100 px-4 py-3 text-sm font-medium text-sage-800" role="status">
           Removed {sp.removedSamples} sample product{sp.removedSamples === "1" ? "" : "s"}.

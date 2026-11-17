@@ -1,8 +1,30 @@
 "use client";
 
-import { useActionState, useState } from "react";
+import { useState } from "react";
 import { Check, ExternalLink, PackageSearch } from "lucide-react";
-import { trackOrderAction, type TrackResult } from "@/actions/track";
+import { ORDERS } from "@/data/admin";
+import type { OrderStatus } from "@/lib/types";
+import { normalizePhone } from "@/lib/utils";
+import { useDemoOrders } from "@/stores/demo-orders";
+
+type TrackResult =
+  | null
+  | { ok: false; message: string }
+  | {
+      ok: true;
+      order: {
+        number: string;
+        status: OrderStatus;
+        createdAt: string;
+        city: string;
+        total: number;
+        courier: string | null;
+        trackingNumber: string | null;
+        trackingUrl: string | null;
+        items: { name: string; size: string; color: string | null; quantity: number }[];
+        events: { status: OrderStatus | null; message: string; createdAt: string }[];
+      };
+    };
 import { Button } from "@/components/ui/button";
 import { Field, Input } from "@/components/ui/field";
 import { cn, formatDate, formatPrice } from "@/lib/utils";
@@ -12,10 +34,56 @@ const FLOW = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"] as c
 const LABEL: Record<string, string> = { PENDING: "Order placed", CONFIRMED: "Confirmed", PROCESSING: "Being packed", SHIPPED: "Shipped", DELIVERED: "Delivered", CANCELLED: "Cancelled", RETURNED: "Returned" };
 
 export function TrackOrderClient({ initialOrder }: { initialOrder: string }) {
-  const [state, action, pending] = useActionState<TrackResult, FormData>(trackOrderAction, null);
-  // controlled so values survive React 19's automatic form reset after each action
+  const [state, setState] = useState<TrackResult>(null);
   const [orderNo, setOrderNo] = useState(initialOrder);
   const [phone, setPhone] = useState("");
+  const demoOrders = useDemoOrders((s) => s.orders);
+  const pending = false;
+
+  /**
+   * Frontend-only build: looks up orders placed in this browser (demo checkout)
+   * and the dummy orders. Requires the order number AND the phone used at checkout.
+   */
+  const lookup = (e: React.FormEvent) => {
+    e.preventDefault();
+    const number = orderNo.trim().toUpperCase().replace(/\s/g, "");
+    const ph = normalizePhone(phone.trim());
+    if (number.length < 4 || ph.length < 7) return setState({ ok: false, message: "Enter your order number and the phone number used at checkout." });
+    const local = demoOrders.find((o) => o.number === number && normalizePhone(o.phone) === ph);
+    if (local)
+      return setState({
+        ok: true,
+        order: {
+          number: local.number,
+          status: local.status,
+          createdAt: local.createdAt,
+          city: local.city,
+          total: local.total,
+          courier: null,
+          trackingNumber: null,
+          trackingUrl: null,
+          items: local.items.map((i) => ({ name: i.name, size: i.size, color: i.color, quantity: i.quantity })),
+          events: [{ status: "PENDING", message: "Order placed", createdAt: local.createdAt }],
+        },
+      });
+    const o = ORDERS.find((x) => x.number === number && normalizePhone(x.phone) === ph);
+    if (!o) return setState({ ok: false, message: "We couldn't find an order with those details. Please check and try again." });
+    setState({
+      ok: true,
+      order: {
+        number: o.number,
+        status: o.status,
+        createdAt: o.createdAt.toISOString(),
+        city: o.city,
+        total: o.total,
+        courier: o.courier,
+        trackingNumber: o.trackingNumber,
+        trackingUrl: o.trackingUrl,
+        items: o.items.map((i) => ({ name: i.name, size: i.size, color: i.color, quantity: i.quantity })),
+        events: o.events.filter((e) => e.isPublic).map((e) => ({ status: e.status, message: e.message, createdAt: e.createdAt.toISOString() })),
+      },
+    });
+  };
   const order = state?.ok ? state.order : null;
   const step = order ? FLOW.indexOf(order.status as (typeof FLOW)[number]) : -1;
   return (
@@ -23,7 +91,7 @@ export function TrackOrderClient({ initialOrder }: { initialOrder: string }) {
       <PackageSearch className="h-10 w-10 text-sage-600" strokeWidth={1.4} />
       <h1 className="display-lg mt-4">Track your order</h1>
       <p className="mt-3 text-cocoa-500">Enter your order number (e.g. KT2611-12345) and the mobile number you used at checkout.</p>
-      <form action={action} className="mt-8 grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
+      <form onSubmit={lookup} className="mt-8 grid gap-4 sm:grid-cols-[1fr_1fr_auto] sm:items-end">
         <Field label="Order number" htmlFor="order">
           <Input id="order" name="order" value={orderNo} onChange={(e) => setOrderNo(e.target.value)} required autoCapitalize="characters" />
         </Field>

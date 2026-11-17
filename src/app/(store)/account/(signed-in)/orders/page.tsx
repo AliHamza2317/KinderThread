@@ -5,19 +5,14 @@ import { OrderStatusPill } from "@/components/account/order-bits";
 import { ButtonLink } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { requireUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ORDERS } from "@/data/admin";
 import { formatDate, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Orders" };
 
 export default async function OrdersPage() {
   const user = await requireUser("/account/orders");
-  const orders = await db.order.findMany({
-    where: { userId: user.id },
-    orderBy: { createdAt: "desc" },
-    take: 100,
-    select: { id: true, number: true, createdAt: true, status: true, total: true, items: { select: { quantity: true } } },
-  });
+  const orders = ORDERS.filter((o) => o.userId === user.id).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
 
   return (
     <div>

@@ -3,7 +3,7 @@
 import Image from "next/image";
 import { useRef, useState } from "react";
 import { ImagePlus, Loader2 } from "lucide-react";
-import { uploadImagesAction } from "@/actions/admin/upload";
+import { previewFiles, UPLOAD_NOTE } from "@/components/admin/local-upload";
 import { addGalleryImagesAction, deleteGalleryImageAction, updateGalleryImageAction } from "@/actions/admin/content";
 import { ConfirmSubmit, FormMessage } from "@/components/admin/form-bits";
 import { Badge } from "@/components/ui/badge";
@@ -60,25 +60,18 @@ function GalleryItem({ img }: { img: GalleryRow }) {
 
 export function GalleryManager({ images }: { images: GalleryRow[] }) {
   const input = useRef<HTMLInputElement>(null);
-  const [busy, setBusy] = useState(false);
+  const busy = false;
+  const [previews, setPreviews] = useState<string[]>([]);
 
   const onPick = async (files: FileList | null) => {
     if (!files?.length) return;
-    setBusy(true);
-    const fd = new FormData();
-    fd.append("folder", "gallery");
-    Array.from(files)
-      .slice(0, 12)
-      .forEach((f) => fd.append("files", f));
-    const up = await uploadImagesAction(fd);
-    if (!up.ok) {
-      toast({ title: "Upload failed", description: up.message, tone: "error" });
-    } else {
-      const res = await addGalleryImagesAction(up.urls);
-      toast({ title: res?.ok ? "Images added" : "Could not add images", description: res?.message, tone: res?.ok ? "success" : "error" });
-    }
-    setBusy(false);
+    const { urls, skipped } = previewFiles(files, 12);
     if (input.current) input.current.value = "";
+    if (skipped) toast({ title: "Some files were skipped", description: "Use JPG, PNG, WebP or AVIF images up to 10 MB each.", tone: "error" });
+    if (!urls.length) return;
+    setPreviews((p) => [...urls.map((u) => u.url), ...p].slice(0, 12));
+    const res = await addGalleryImagesAction(urls.map((u) => u.url));
+    toast({ title: "Images shown as a preview", description: res?.message ?? UPLOAD_NOTE, tone: "info" });
   };
 
   return (
@@ -91,6 +84,19 @@ export function GalleryManager({ images }: { images: GalleryRow[] }) {
         <p className="text-[0.8rem] text-cocoa-500">JPG, PNG or WebP · up to 12 at once · 10 MB each. Square images work best.</p>
         <input ref={input} type="file" multiple accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" onChange={(e) => onPick(e.target.files)} />
       </div>
+      {previews.length > 0 && (
+        <div className="rounded-2xl border border-dashed border-cocoa-200 p-3">
+          <p className="mb-2 text-[0.78rem] text-cocoa-500">{UPLOAD_NOTE}</p>
+          <ul className="flex flex-wrap gap-2">
+            {previews.map((url) => (
+              <li key={url} className="relative h-20 w-20 overflow-hidden rounded-lg bg-cream-100">
+                {/* eslint-disable-next-line @next/next/no-img-element */}
+                <img src={url} alt="" className="h-full w-full object-cover" />
+              </li>
+            ))}
+          </ul>
+        </div>
+      )}
       {images.length === 0 ? (
         <p className="text-sm text-cocoa-500">No gallery images yet.</p>
       ) : (

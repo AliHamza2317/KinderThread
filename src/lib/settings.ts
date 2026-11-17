@@ -1,7 +1,5 @@
-import "server-only";
 import { cache } from "react";
 import { z } from "zod";
-import { db } from "@/lib/db";
 
 /* -------------------------------------------------------------------------
    Every business-configurable value lives here, stored in the Setting table
@@ -199,23 +197,17 @@ export const settingSchemas = {
 export type SettingKey = keyof typeof settingSchemas;
 export type Settings = { [K in SettingKey]: z.infer<(typeof settingSchemas)[K]> };
 
+/**
+ * Frontend-only build: settings come from the defaults above (edit them here).
+ * When the MongoDB backend is connected, load the saved values and merge them in.
+ */
 export const getSettings = cache(async (): Promise<Settings> => {
-  const rows = await db.setting.findMany();
-  const map = new Map(rows.map((r) => [r.key, r.value]));
   const out = {} as Record<string, unknown>;
-  for (const key of Object.keys(settingSchemas) as SettingKey[]) {
-    const parsed = settingSchemas[key].safeParse(map.get(key) ?? {});
-    out[key] = parsed.success ? parsed.data : settingSchemas[key].parse({});
-  }
+  for (const key of Object.keys(settingSchemas) as SettingKey[]) out[key] = settingSchemas[key].parse({});
   return out as Settings;
 });
 
+/** Validates a settings object. Nothing is persisted in the frontend-only build. */
 export async function saveSetting<K extends SettingKey>(key: K, value: unknown) {
-  const parsed = settingSchemas[key].parse(value) as Settings[K];
-  await db.setting.upsert({
-    where: { key },
-    create: { key, value: parsed as object },
-    update: { value: parsed as object },
-  });
-  return parsed;
+  return settingSchemas[key].parse(value) as Settings[K];
 }

@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 import { AddressBook } from "@/components/account/address-book";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { requireUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ADDRESSES } from "@/data/admin";
 
 export const metadata: Metadata = { title: "Addresses" };
 
 export default async function AddressesPage() {
   const user = await requireUser("/account/addresses");
-  const addresses = await db.address.findMany({ where: { userId: user.id }, orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] });
+  const addresses = ADDRESSES.filter((a) => a.userId === user.id).sort((a, b) => Number(b.isDefault) - Number(a.isDefault) || b.createdAt.getTime() - a.createdAt.getTime());
   return (
     <div>
       <Eyebrow>Addresses</Eyebrow>

@@ -1,11 +1,9 @@
 import type { Metadata } from "next";
-import Link from "next/link";
 import { redirect } from "next/navigation";
 import { Countdown } from "@/components/home/countdown";
 import { NewsletterForm } from "@/components/home/newsletter";
 import { Logo } from "@/components/ui/logo";
 import { FacebookIcon, InstagramIcon, TikTokIcon, WhatsAppIcon } from "@/components/ui/social-icons";
-import { getCurrentUser, isStaff } from "@/lib/auth";
 import { getSettings } from "@/lib/settings";
 import { whatsappLink } from "@/lib/utils";
 import { ComingSoonArt } from "./art";
@@ -16,7 +14,7 @@ export async function generateMetadata(): Promise<Metadata> {
 }
 
 export default async function ComingSoon() {
-  const [s, user] = await Promise.all([getSettings(), getCurrentUser()]);
+  const s = await getSettings();
   if (!s.prelaunch.enabled) redirect("/");
   const { prelaunch, social, store } = s;
   const socials = [
@@ -55,14 +53,6 @@ export default async function ComingSoon() {
           )}
           <p>
             © {new Date().getFullYear()} {store.name}
-            {isStaff(user) && (
-              <>
-                {" · "}
-                <Link href="/" className="font-semibold underline">
-                  Preview store
-                </Link>
-              </>
-            )}
           </p>
         </div>
       </div>

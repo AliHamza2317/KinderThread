@@ -7,23 +7,18 @@ import { OrderStatusPill } from "@/components/account/order-bits";
 import { ButtonLink } from "@/components/ui/button";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { requireUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { ADDRESSES, ORDERS } from "@/data/admin";
 import { formatDate, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Overview" };
 
 export default async function AccountOverview() {
   const user = await requireUser();
-  const [orders, orderCount, address] = await Promise.all([
-    db.order.findMany({
-      where: { userId: user.id },
-      orderBy: { createdAt: "desc" },
-      take: 3,
-      include: { items: { select: { image: true, quantity: true }, take: 3 } },
-    }),
-    db.order.count({ where: { userId: user.id } }),
-    db.address.findFirst({ where: { userId: user.id }, orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] }),
-  ]);
+  const mine = ORDERS.filter((o) => o.userId === user.id).sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime());
+  const orders = mine.slice(0, 3).map((o) => ({ ...o, items: o.items.slice(0, 3) }));
+  const orderCount = mine.length;
+  const address =
+    ADDRESSES.filter((a) => a.userId === user.id).sort((a, b) => Number(b.isDefault) - Number(a.isDefault) || b.createdAt.getTime() - a.createdAt.getTime())[0] ?? null;
   const first = user.name.split(" ")[0];
 
   return (

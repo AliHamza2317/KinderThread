@@ -1,5 +1,5 @@
 import type { BadgeTone } from "@/components/ui/badge";
-import type { CouponType, PaymentStatus, ReturnStatus, ReturnType } from "@/generated/prisma/enums";
+import type { CouponType, PaymentStatus, ReturnStatus, ReturnType } from "@/lib/types";
 
 export const PAYMENT_STATUS_LABEL: Record<PaymentStatus, string> = {
   UNPAID: "Unpaid",

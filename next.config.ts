@@ -16,7 +16,6 @@ const nextConfig: NextConfig = {
   },
   experimental: {
     optimizePackageImports: ["lucide-react"],
-    serverActions: { bodySizeLimit: "12mb" },
   },
   async headers() {
     return [{ source: "/:path*", headers: securityHeaders }];

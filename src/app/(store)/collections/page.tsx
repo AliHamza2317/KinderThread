@@ -3,19 +3,17 @@ import Image from "next/image";
 import Link from "next/link";
 import { Breadcrumbs } from "@/components/shop/shop-view";
 import { Reveal } from "@/components/ui/reveal";
-import { VIRTUAL_COLLECTIONS } from "@/lib/catalog";
-import { db } from "@/lib/db";
+import { countProductsInCategory, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
+import { CATEGORIES } from "@/data/catalog";
 
 export const metadata: Metadata = { title: "Collections", description: "Browse every Kinder Thread category and collection.", alternates: { canonical: "/collections" } };
 
 const TONES = ["bg-sage-100", "bg-coral-100", "bg-sun-100", "bg-bear-100", "bg-teal-100", "bg-cream-200"];
 
 export default async function CollectionsIndex() {
-  const cats = await db.category.findMany({
-    where: { isVisible: true },
-    orderBy: [{ kind: "asc" }, { sortOrder: "asc" }],
-    include: { _count: { select: { products: { where: { status: "ACTIVE" } } } } },
-  });
+  const cats = CATEGORIES.filter((c) => c.isVisible)
+    .sort((a, b) => a.kind.localeCompare(b.kind) || a.sortOrder - b.sortOrder)
+    .map((c) => ({ ...c, _count: { products: countProductsInCategory(c.id) } }));
   const virtual = Object.entries(VIRTUAL_COLLECTIONS);
   return (
     <div className="container-kt pt-8 pb-16 md:pt-12">

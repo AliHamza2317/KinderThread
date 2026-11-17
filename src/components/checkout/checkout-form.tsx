@@ -1,13 +1,15 @@
 "use client";
 
 import Link from "next/link";
-import { useActionState, useEffect, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 import { Lock, Info, ShoppingBag } from "lucide-react";
-import { placeOrderAction } from "@/actions/checkout";
 import { FreeShippingMeter } from "@/components/layout/cart-drawer";
 import { Button, ButtonLink } from "@/components/ui/button";
 import { Checkbox, Field, Input, Textarea } from "@/components/ui/field";
-import type { ActionResult } from "@/lib/action-result";
+import { checkoutSchema } from "@/lib/checkout-schema";
+import { fieldErrors } from "@/lib/action-result";
+import { newOrderNumber, useDemoOrders } from "@/stores/demo-orders";
 import { useHydrated } from "@/lib/hooks";
 import { PK_CITIES } from "@/lib/pk-cities";
 import { cn, formatPrice } from "@/lib/utils";
@@ -19,29 +21,69 @@ export type PaymentOption = { id: string; label: string; instructions: string; f
 
 type Defaults = { name: string; email: string; phone: string; city: string; address: string; postalCode: string };
 
-export function CheckoutForm({ options, defaults, freeThreshold, estimate, signedIn }: { options: PaymentOption[]; defaults: Defaults; freeThreshold: number; estimate: string; signedIn: boolean }) {
+export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { options: PaymentOption[]; defaults: Defaults; freeThreshold: number; estimate: string }) {
   const hydrated = useHydrated();
   const lines = useCart((s) => s.lines);
   const couponCode = useCart((s) => s.couponCode);
   const setCoupon = useCart((s) => s.setCoupon);
   const [payment, setPayment] = useState(options[0]?.id ?? "");
   const { quote, loading } = useQuote(payment);
-  const [state, action, pending] = useActionState<ActionResult, FormData>(placeOrderAction, null);
-  // keep what the customer typed if the server rejects the order
+  const router = useRouter();
+  const addDemoOrder = useDemoOrders((s) => s.add);
+  const clearCart = useCart((s) => s.clear);
+  const [pending, setPending] = useState(false);
   const [values, setValues] = useState<Defaults & { notes: string; paymentReference: string }>({ ...defaults, notes: "", paymentReference: "" });
-  // server errors are copied locally so each one clears as soon as that field is edited
+  // each error clears as soon as that field is edited
   const [errs, setErrs] = useState<Record<string, string[] | undefined>>({});
   const [msg, setMsg] = useState<string | null>(null);
+  const [hadFieldErrors, setHadFieldErrors] = useState(false);
   const err = (k: string) => errs[k];
   const fieldErrorsLeft = Object.values(errs).some((v) => v?.length);
 
-  useEffect(() => {
-    if (state && !state.ok) {
-      setErrs(state.errors ?? {});
-      setMsg(state.message);
-      document.getElementById("checkout-message")?.scrollIntoView({ behavior: "smooth", block: "center" });
-    }
-  }, [state]);
+  const fail = (message: string, errors: Record<string, string[]> = {}) => {
+    setErrs(errors);
+    setMsg(message);
+    setHadFieldErrors(Object.keys(errors).length > 0);
+    requestAnimationFrame(() => document.getElementById("checkout-message")?.scrollIntoView({ behavior: "smooth", block: "center" }));
+  };
+
+  /**
+   * Frontend-only build: validate, then show a demo confirmation. The order is
+   * kept in this browser only — nothing is sent or charged.
+   */
+  const onSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    const parsed = checkoutSchema.safeParse({ ...values, paymentMethod: payment });
+    if (!parsed.success) return fail("Please check the highlighted fields.", fieldErrors(parsed.error.issues));
+    const d = parsed.data;
+    if (d.paymentMethod !== "cod" && !d.paymentReference)
+      return fail("Please enter your transaction reference.", { paymentReference: ["Enter the transaction ID / reference from your transfer."] });
+    if (!quote || !quote.itemCount) return fail("Your bag is empty or out of date. Please review it and try again.");
+    setPending(true);
+    const number = newOrderNumber();
+    addDemoOrder({
+      number,
+      createdAt: new Date().toISOString(),
+      status: "PENDING",
+      customerName: d.name,
+      email: d.email.toLowerCase(),
+      phone: d.phone,
+      city: d.city,
+      address: d.address,
+      postalCode: d.postalCode || null,
+      notes: d.notes || null,
+      paymentMethod: d.paymentMethod,
+      paymentReference: d.paymentReference || null,
+      items: quote.lines.map((l) => ({ name: l.name, size: l.size, color: l.color, image: l.image, quantity: l.quantity, lineTotal: l.lineTotal })),
+      subtotal: quote.subtotal,
+      discount: quote.discount,
+      shippingFee: quote.shippingFee + quote.paymentFee,
+      total: quote.total,
+      couponCode: quote.coupon?.code ?? null,
+    });
+    clearCart();
+    router.push(`/checkout/success/${number}`);
+  };
 
   if (!hydrated) return <div className="container-kt min-h-[60vh] py-16" />;
   if (!lines.length)
@@ -66,7 +108,6 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
       if (errs[k]) setErrs((x) => ({ ...x, [k]: undefined }));
     },
   });
-  const hadFieldErrors = !!(state && !state.ok && state.errors && Object.keys(state.errors).length);
   const showMsg = msg && (!hadFieldErrors || fieldErrorsLeft);
 
   return (
@@ -77,17 +118,11 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate, signe
           <Lock className="h-4 w-4" /> Secure checkout
         </p>
       </div>
-      {!signedIn && (
-        <p className="mt-4 text-sm text-cocoa-500">
-          Have an account?{" "}
-          <Link href="/account/login?next=/checkout" className="font-bold text-sage-700 underline underline-offset-2">
-            Sign in
-          </Link>{" "}
-          for faster checkout and order history — or continue as a guest.
-        </p>
-      )}
+      <p className="mt-4 border-l-2 border-cocoa-200 py-1 pl-3 text-sm text-cocoa-500">
+        Preview mode — placing an order shows a demo confirmation. Nothing is sent or charged yet.
+      </p>
 
-      <form action={action} className="mt-10 grid gap-12 lg:grid-cols-12" noValidate>
+      <form onSubmit={onSubmit} className="mt-10 grid gap-12 lg:grid-cols-12" noValidate>
         <input type="hidden" name="lines" value={JSON.stringify(lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })))} />
         <input type="hidden" name="coupon" value={quote?.coupon?.code ?? ""} />
         <input type="hidden" name="paymentMethod" value={payment} />

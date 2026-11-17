@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUp, ExternalLink, ImagePlus, Loader2, Plus, Trash2, X } from "lucide-react";
 import { useEffect, useMemo, useRef, useState, useTransition } from "react";
 import { saveProductAction, type ProductInput } from "@/actions/admin/catalog";
-import { uploadImagesAction } from "@/actions/admin/upload";
+import { previewFiles, UPLOAD_NOTE } from "@/components/admin/local-upload";
 import { Card } from "@/components/admin/ui";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -109,7 +109,7 @@ export function ProductForm({
 
   // ---------------- images
   const [images, setImages] = useState<ImageState[]>(() => product?.images.map((i) => ({ key: i.id, id: i.id, url: i.url, alt: i.alt, colorKey: i.colorId })) ?? []);
-  const [uploading, setUploading] = useState(false);
+  const uploading = false;
   const fileRef = useRef<HTMLInputElement>(null);
 
   // ---------------- sizes & variants
@@ -198,21 +198,15 @@ export function ProductForm({
     setImages((prev) => prev.map((img) => (img.colorKey === key ? { ...img, colorKey: null } : img)));
   };
 
-  const onUpload = async (files: FileList | null) => {
+  const onUpload = (files: FileList | null) => {
     if (!files?.length) return;
-    setUploading(true);
-    const fd = new FormData();
-    fd.append("folder", "products");
-    Array.from(files).forEach((file) => fd.append("files", file));
-    const res = await uploadImagesAction(fd);
-    setUploading(false);
+    const { urls, skipped } = previewFiles(files, 40);
     if (fileRef.current) fileRef.current.value = "";
-    if (!res.ok) {
-      toast({ title: "Upload failed", description: res.message, tone: "error" });
-      return;
-    }
+    if (skipped) toast({ title: "Some files were skipped", description: "Use JPG, PNG, WebP or AVIF images up to 10 MB each.", tone: "error" });
+    if (!urls.length) return;
     setDirty(true);
-    setImages((prev) => [...prev, ...res.urls.map((url) => ({ key: newKey("i"), url, alt: f.name, colorKey: null }))]);
+    setImages((prev) => [...prev, ...urls.map(({ url }) => ({ key: newKey("i"), url, alt: f.name, colorKey: null }))]);
+    toast({ title: "Images added as a preview", description: UPLOAD_NOTE, tone: "info" });
   };
 
   const moveImage = (i: number, dir: -1 | 1) => {

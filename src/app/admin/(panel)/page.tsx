@@ -5,7 +5,8 @@ import { ArrowRight, Boxes, Megaphone, Plus, Settings, ShoppingCart } from "luci
 import { Card, EmptyState, OrderStatusBadge, PageHeader, StatCard, TableWrap, tableCls, tdCls, thCls } from "@/components/admin/ui";
 import { ButtonLink } from "@/components/ui/button";
 import { requireStaff } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { CUSTOMERS, ORDERS, SUBSCRIBERS } from "@/data/admin";
+import { PRODUCTS } from "@/data/catalog";
 import { cn, formatDate, formatPrice } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Dashboard" };
@@ -17,42 +18,37 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
   const { denied } = await searchParams;
   const since30 = new Date(Date.now() - 30 * 24 * 60 * 60 * 1000);
 
-  const [statusCounts, revenue, revenue30, bestSellers, lowStock, recentCustomers, recentOrders, sampleCount, productCount, subscriberCount] = await Promise.all([
-    db.order.groupBy({ by: ["status"], _count: { _all: true } }),
-    db.order.aggregate({ where: { status: { notIn: [...EXCLUDED] } }, _sum: { total: true } }),
-    db.order.aggregate({ where: { status: { notIn: [...EXCLUDED] }, createdAt: { gte: since30 } }, _sum: { total: true }, _count: { _all: true } }),
-    db.orderItem.groupBy({
-      by: ["productId", "name"],
-      where: { order: { status: { notIn: [...EXCLUDED] } } },
-      _sum: { quantity: true, lineTotal: true },
-      orderBy: { _sum: { quantity: "desc" } },
-      take: 5,
-    }),
-    db.productVariant.findMany({
-      where: { stock: { lte: 3 }, isActive: true, product: { status: "ACTIVE" } },
-      orderBy: [{ stock: "asc" }],
-      take: 8,
-      include: { product: { select: { id: true, name: true } }, color: { select: { name: true } } },
-    }),
-    db.user.findMany({
-      where: { role: "CUSTOMER" },
-      orderBy: { createdAt: "desc" },
-      take: 5,
-      select: { id: true, name: true, email: true, createdAt: true, _count: { select: { orders: true } } },
-    }),
-    db.order.findMany({ orderBy: { createdAt: "desc" }, take: 6, select: { id: true, number: true, customerName: true, total: true, status: true, createdAt: true, city: true } }),
-    db.product.count({ where: { isSample: true } }),
-    db.product.count({ where: { status: "ACTIVE" } }),
-    db.subscriber.count({ where: { isActive: true } }),
-  ]);
+  // everything below is computed from the dummy data in src/data
+  const counted = ORDERS.filter((o) => !(EXCLUDED as readonly string[]).includes(o.status));
+  const sum = (list: typeof ORDERS) => list.reduce((n, o) => n + o.total, 0);
+  const last30 = counted.filter((o) => o.createdAt >= since30);
+  const count = (s: string) => ORDERS.filter((o) => o.status === s).length;
+  const totalOrders = ORDERS.length;
 
-  const count = (s: string) => statusCounts.find((c) => c.status === s)?._count._all ?? 0;
-  const totalOrders = statusCounts.reduce((n, c) => n + c._count._all, 0);
-  const productIds = bestSellers.map((b) => b.productId).filter((x): x is string => !!x);
-  const bestProducts = productIds.length
-    ? await db.product.findMany({ where: { id: { in: productIds } }, select: { id: true, images: { orderBy: { sortOrder: "asc" }, take: 1, select: { url: true } } } })
-    : [];
-  const imageFor = (id: string | null) => bestProducts.find((p) => p.id === id)?.images[0]?.url;
+  const sales = new Map<string, { productId: string | null; name: string; quantity: number; lineTotal: number }>();
+  for (const it of counted.flatMap((o) => o.items)) {
+    const key = `${it.productId}-${it.name}`;
+    const row = sales.get(key) ?? { productId: it.productId, name: it.name, quantity: 0, lineTotal: 0 };
+    row.quantity += it.quantity;
+    row.lineTotal += it.lineTotal;
+    sales.set(key, row);
+  }
+  const bestSellers = [...sales.values()].sort((a, b) => b.quantity - a.quantity).slice(0, 5);
+  const imageFor = (id: string | null) => PRODUCTS.find((p) => p.id === id)?.images[0]?.url;
+
+  const lowStock = PRODUCTS.filter((p) => p.status === "ACTIVE")
+    .flatMap((p) => p.variants.filter((v) => v.isActive && v.stock <= 3).map((v) => ({ ...v, product: { id: p.id, name: p.name }, color: p.colors.find((c) => c.id === v.colorId) ?? null })))
+    .sort((a, b) => a.stock - b.stock)
+    .slice(0, 8);
+
+  const recentCustomers = [...CUSTOMERS]
+    .sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime())
+    .slice(0, 5)
+    .map((c) => ({ ...c, orderCount: ORDERS.filter((o) => o.userId === c.id).length }));
+  const recentOrders = [...ORDERS].sort((a, b) => b.createdAt.getTime() - a.createdAt.getTime()).slice(0, 6);
+  const sampleCount = PRODUCTS.filter((p) => p.isSample).length;
+  const productCount = PRODUCTS.filter((p) => p.status === "ACTIVE").length;
+  const subscriberCount = SUBSCRIBERS.filter((x) => x.isActive).length;
   const hour = new Date().getHours();
   const greeting = hour < 12 ? "Good morning" : hour < 17 ? "Good afternoon" : "Good evening";
 
@@ -82,7 +78,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       {sampleCount > 0 && (
         <div className="mb-6 flex flex-col gap-3 rounded-2xl border border-sun-200 bg-sun-50 px-5 py-4 sm:flex-row sm:items-center sm:justify-between">
           <p className="text-sm text-cocoa-700">
-            <strong>{sampleCount} sample product{sampleCount === 1 ? "" : "s"}</strong> are live for preview. Upload your real products, then remove the samples.
+            <strong>{sampleCount} sample product{sampleCount === 1 ? "" : "s"}</strong> are shown for preview. Once the database is connected, upload your real products and remove the samples.
           </p>
           <Link href="/admin/products?sample=sample" className="inline-flex items-center gap-1 text-sm font-bold text-cocoa hover:underline">
             Review samples <ArrowRight className="h-4 w-4" />
@@ -91,8 +87,8 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
       )}
 
       <div className="grid gap-4 sm:grid-cols-2 xl:grid-cols-5 [&>*]:min-w-0">
-        <StatCard label="Total orders" value={totalOrders.toLocaleString("en-PK")} hint={`${revenue30._count._all} in the last 30 days`} href="/admin/orders" />
-        <StatCard label="Revenue" value={formatPrice(revenue._sum.total ?? 0)} hint={`${formatPrice(revenue30._sum.total ?? 0)} last 30 days`} tone="sage" />
+        <StatCard label="Total orders" value={totalOrders.toLocaleString("en-PK")} hint={`${last30.length} in the last 30 days`} href="/admin/orders" />
+        <StatCard label="Revenue" value={formatPrice(sum(counted))} hint={`${formatPrice(sum(last30))} last 30 days`} tone="sage" />
         <StatCard label="Pending" value={count("PENDING")} hint="Awaiting confirmation" tone="sun" href="/admin/orders?status=PENDING" />
         <StatCard label="Delivered" value={count("DELIVERED")} tone="sage" href="/admin/orders?status=DELIVERED" />
         <StatCard label="Cancelled" value={count("CANCELLED")} tone="coral" href="/admin/orders?status=CANCELLED" />
@@ -159,9 +155,9 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
                     <span className="relative h-12 w-10 shrink-0 overflow-hidden rounded-lg bg-cream-100">{img && <Image src={img} alt="" fill sizes="40px" className="object-cover" />}</span>
                     <span className="min-w-0 flex-1">
                       <span className="block truncate text-sm font-semibold">{b.name}</span>
-                      <span className="text-xs text-cocoa-500">{formatPrice(b._sum.lineTotal ?? 0)}</span>
+                      <span className="text-xs text-cocoa-500">{formatPrice(b.lineTotal)}</span>
                     </span>
-                    <span className="text-sm font-bold tabular-nums">{b._sum.quantity ?? 0}</span>
+                    <span className="text-sm font-bold tabular-nums">{b.quantity}</span>
                   </>
                 );
                 return (
@@ -229,7 +225,7 @@ export default async function AdminDashboard({ searchParams }: { searchParams: P
                       <span className="block truncate text-xs text-cocoa-500">{c.email}</span>
                     </span>
                     <span className="shrink-0 text-right text-xs text-cocoa-500">
-                      {c._count.orders} order{c._count.orders === 1 ? "" : "s"}
+                      {c.orderCount} order{c.orderCount === 1 ? "" : "s"}
                       <span className="block">{formatDate(c.createdAt)}</span>
                     </span>
                   </Link>

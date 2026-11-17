@@ -3,31 +3,29 @@
 import Image from "next/image";
 import { ImagePlus, Loader2, X } from "lucide-react";
 import { useRef, useState } from "react";
-import { uploadImagesAction } from "@/actions/admin/upload";
+import { previewFiles, UPLOAD_NOTE } from "@/components/admin/local-upload";
 import { cn } from "@/lib/utils";
 
 /**
- * Single-image picker for admin forms. Uploads immediately and stores the
- * resulting URL in a hidden input called `name`.
+ * Single-image picker for admin forms. In the frontend-only build the chosen
+ * image is shown as a local preview (no upload); its URL goes in a hidden input
+ * called `name`.
  */
-export function ImageInput({ name, defaultValue, folder = "misc", label = "Image", aspect = "aspect-[4/5]", className }: { name: string; defaultValue?: string | null; folder?: string; label?: string; aspect?: string; className?: string }) {
+export function ImageInput({ name, defaultValue, label = "Image", aspect = "aspect-[4/5]", className }: { name: string; defaultValue?: string | null; /** kept for API compatibility */ folder?: string; label?: string; aspect?: string; className?: string }) {
   const [url, setUrl] = useState(defaultValue ?? "");
-  const [busy, setBusy] = useState(false);
+  const busy = false;
+  const [preview, setPreview] = useState(false);
   const [error, setError] = useState("");
   const input = useRef<HTMLInputElement>(null);
 
-  const onPick = async (files: FileList | null) => {
+  const onPick = (files: FileList | null) => {
     if (!files?.length) return;
-    setBusy(true);
     setError("");
-    const fd = new FormData();
-    fd.append("folder", folder);
-    fd.append("files", files[0]);
-    const res = await uploadImagesAction(fd);
-    setBusy(false);
-    if (res.ok) setUrl(res.urls[0]);
-    else setError(res.message);
+    const { urls } = previewFiles(files, 1);
     if (input.current) input.current.value = "";
+    if (!urls.length) return setError("Use a JPG, PNG, WebP or AVIF image up to 10 MB.");
+    setUrl(urls[0].url);
+    setPreview(true);
   };
 
   return (
@@ -56,6 +54,7 @@ export function ImageInput({ name, defaultValue, folder = "misc", label = "Image
       )}
       <input ref={input} type="file" accept="image/jpeg,image/png,image/webp,image/avif" className="sr-only" onChange={(e) => onPick(e.target.files)} />
       {error && <p className="text-[0.8rem] font-medium text-coral-700">{error}</p>}
+      {preview && !error && <p className="max-w-[220px] text-[0.75rem] text-cocoa-500">{UPLOAD_NOTE}</p>}
     </div>
   );
 }

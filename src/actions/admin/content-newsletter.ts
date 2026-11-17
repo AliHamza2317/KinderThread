@@ -1,20 +1,16 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
-import { db } from "@/lib/db";
 import { assertStaff } from "@/lib/auth";
 
-export async function setSubscriberActiveAction(formData: FormData) {
+/*
+ * Frontend-only build: subscriber changes aren't saved. These keep the same
+ * signatures as the real actions so the forms work unchanged; the page shows
+ * a demo notice instead.
+ */
+export async function setSubscriberActiveAction(_formData: FormData) {
   await assertStaff();
-  const id = String(formData.get("id") ?? "");
-  const active = formData.get("active") === "true";
-  if (id) await db.subscriber.updateMany({ where: { id }, data: { isActive: active } });
-  revalidatePath("/admin/newsletter");
 }
 
-export async function deleteSubscriberAction(formData: FormData) {
+export async function deleteSubscriberAction(_formData: FormData) {
   await assertStaff();
-  const id = String(formData.get("id") ?? "");
-  if (id) await db.subscriber.deleteMany({ where: { id } });
-  revalidatePath("/admin/newsletter");
 }

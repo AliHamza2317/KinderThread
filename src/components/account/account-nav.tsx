@@ -3,7 +3,6 @@
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Heart, LayoutGrid, LogOut, MapPin, Package, UserRound } from "lucide-react";
-import { logoutAction } from "@/actions/session";
 import { cn } from "@/lib/utils";
 
 const ITEMS = [
@@ -37,12 +36,9 @@ export function AccountNav() {
           </li>
         ))}
         <li className="shrink-0">
-          <form action={logoutAction}>
-            <input type="hidden" name="redirectTo" value="/" />
-            <button className="inline-flex h-10 items-center gap-2 rounded-full border border-cocoa-100 bg-cream-50 px-4 text-sm font-semibold text-cocoa-600 hover:border-cocoa-300">
-              <LogOut className="h-4 w-4" /> Sign out
-            </button>
-          </form>
+          <Link href="/" className="inline-flex h-10 items-center gap-2 rounded-full border border-cocoa-100 bg-cream-50 px-4 text-sm font-semibold text-cocoa-600 hover:border-cocoa-300">
+            <LogOut className="h-4 w-4" /> Sign out
+          </Link>
         </li>
       </ul>
 
@@ -64,12 +60,9 @@ export function AccountNav() {
           </li>
         ))}
         <li className="mt-3 border-t border-cocoa-100 pt-3">
-          <form action={logoutAction}>
-            <input type="hidden" name="redirectTo" value="/" />
-            <button className="flex w-full items-center gap-3 rounded-md px-4 py-3 text-[0.95rem] font-semibold text-cocoa-500 transition hover:bg-cream-100 hover:text-cocoa">
-              <LogOut className="h-[1.1rem] w-[1.1rem] text-cocoa-400" /> Sign out
-            </button>
-          </form>
+          <Link href="/" className="flex w-full items-center gap-3 rounded-md px-4 py-3 text-[0.95rem] font-semibold text-cocoa-500 transition hover:bg-cream-100 hover:text-cocoa">
+            <LogOut className="h-[1.1rem] w-[1.1rem] text-cocoa-400" /> Sign out
+          </Link>
         </li>
       </ul>
     </nav>

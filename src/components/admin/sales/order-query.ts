@@ -1,6 +1,4 @@
-import "server-only";
-import type { Prisma } from "@/generated/prisma/client";
-import { OrderStatus, PaymentStatus } from "@/generated/prisma/enums";
+import { ORDER_STATUSES, PAYMENT_STATUSES, type Order, type OrderStatus, type PaymentStatus } from "@/lib/types";
 
 export type OrderFilters = {
   status?: OrderStatus;
@@ -22,8 +20,8 @@ export function parseOrderFilters(sp: Record<string, string | string[] | undefin
   const to = one(sp.to);
   const page = Number(one(sp.page));
   return {
-    status: status && status in OrderStatus ? (status as OrderStatus) : undefined,
-    pay: pay && pay in PaymentStatus ? (pay as PaymentStatus) : undefined,
+    status: status && (ORDER_STATUSES as readonly string[]).includes(status) ? (status as OrderStatus) : undefined,
+    pay: pay && (PAYMENT_STATUSES as readonly string[]).includes(pay) ? (pay as PaymentStatus) : undefined,
     method: one(sp.method)?.slice(0, 20),
     q: one(sp.q)?.slice(0, 80),
     from: isDate(from) ? from : undefined,
@@ -32,30 +30,26 @@ export function parseOrderFilters(sp: Record<string, string | string[] | undefin
   };
 }
 
-export function orderWhere(f: OrderFilters): Prisma.OrderWhereInput {
-  const and: Prisma.OrderWhereInput[] = [];
-  if (f.status) and.push({ status: f.status });
-  if (f.pay) and.push({ paymentStatus: f.pay });
-  if (f.method) and.push({ paymentMethod: f.method });
-  if (f.from) and.push({ createdAt: { gte: new Date(`${f.from}T00:00:00`) } });
-  if (f.to) and.push({ createdAt: { lte: new Date(`${f.to}T23:59:59.999`) } });
-  if (f.q) {
-    const q = f.q;
-    const digits = q.replace(/\D/g, "");
-    const or: Prisma.OrderWhereInput[] = [
-      { number: { contains: q, mode: "insensitive" } },
-      { customerName: { contains: q, mode: "insensitive" } },
-      { email: { contains: q, mode: "insensitive" } },
-      { city: { contains: q, mode: "insensitive" } },
-    ];
-    if (digits.length >= 4) {
-      // match phone numbers regardless of +92 / 0 prefix
-      const tail = digits.replace(/^92/, "").replace(/^0/, "");
-      or.push({ phone: { contains: tail } });
+/** Filter (dummy) orders in memory. `ignoreStatus` is used for the status tab counts. */
+export function filterOrders(orders: Order[], f: OrderFilters, opts: { ignoreStatus?: boolean } = {}) {
+  const from = f.from ? new Date(`${f.from}T00:00:00`) : null;
+  const to = f.to ? new Date(`${f.to}T23:59:59.999`) : null;
+  const q = f.q?.toLowerCase();
+  const digits = f.q?.replace(/\D/g, "") ?? "";
+  // match phone numbers regardless of +92 / 0 prefix
+  const tail = digits.length >= 4 ? digits.replace(/^92/, "").replace(/^0/, "") : "";
+  return orders.filter((o) => {
+    if (!opts.ignoreStatus && f.status && o.status !== f.status) return false;
+    if (f.pay && o.paymentStatus !== f.pay) return false;
+    if (f.method && o.paymentMethod !== f.method) return false;
+    if (from && o.createdAt < from) return false;
+    if (to && o.createdAt > to) return false;
+    if (q) {
+      const text = [o.number, o.customerName, o.email, o.city].join(" ").toLowerCase();
+      if (!text.includes(q) && !(tail && o.phone.includes(tail))) return false;
     }
-    and.push({ OR: or });
-  }
-  return and.length ? { AND: and } : {};
+    return true;
+  });
 }
 
 /** Query string for the given filters (used for pagination & CSV export links). */

@@ -1,15 +1,16 @@
 /**
- * SAMPLE catalogue used during development and pre-launch.
+ * DUMMY catalogue for the frontend-only build (no database yet).
  *
- * Products created from this file are flagged `isSample = true` and show a
- * discreet "Sample" note in the store. Photos are free-licence stock photography
- * (Unsplash Licence, see public/images/CREDITS.md) used as placeholders — they
- * are NOT photos of Kinder Thread products. Remove the samples from
- * /admin/products once your real stock is photographed and uploaded.
+ * Products here are sample listings (`isSample: true`) shown with a discreet
+ * "Sample" note. Photos are free-licence stock photography (Unsplash Licence,
+ * see public/images/CREDITS.md) used as placeholders — they are NOT photos of
+ * Kinder Thread products. When the MongoDB backend is added, this file is
+ * replaced by real data from the database.
  */
+import type { Category, Product, SizeGuide } from "@/lib/types";
 
-export type SampleColor = { name: string; hex: string; images: string[] };
-export type SampleProduct = {
+type SampleColor = { name: string; hex: string; images: string[] };
+type SampleProduct = {
   slug: string;
   code: string;
   name: string;
@@ -30,7 +31,7 @@ const ALL = ["0-3M", "3-6M", "6-9M", "9-12M", "12-18M", "18-24M", "2-3Y", "3-4Y"
 const from = (start: string, end = "4-5Y") => ALL.slice(ALL.indexOf(start), ALL.indexOf(end) + 1);
 const img = (name: string) => `/images/products/${name}.webp`;
 
-export const SAMPLE_CATEGORIES = [
+const CATEGORY_DEFS = [
   { slug: "baby-boys", name: "Baby Boys", kind: "category", featured: true, image: "/images/editorial/cat-baby-boys.webp", description: "Easy, considered pieces for little boys — soft shirts, knits and everyday tees." },
   { slug: "baby-girls", name: "Baby Girls", kind: "category", featured: true, image: "/images/editorial/cat-baby-girls.webp", description: "Dresses, blouses and knits for little girls, in soft and timeless colours." },
   { slug: "newborn", name: "Newborn", kind: "category", featured: true, image: "/images/editorial/cat-newborn.webp", description: "Gentle first pieces for the very first days — bodysuits, knits and booties." },
@@ -40,7 +41,7 @@ export const SAMPLE_CATEGORIES = [
   { slug: "seasonal", name: "Seasonal Collection", kind: "collection", featured: false, image: "/images/editorial/cat-seasonal.webp", description: "Knits and layers for cooler days." },
 ] as const;
 
-export const SAMPLE_PRODUCTS: SampleProduct[] = [
+const PRODUCT_DEFS: SampleProduct[] = [
   {
     slug: "linen-grandad-shirt",
     code: "LGS",
@@ -233,34 +234,93 @@ export const SAMPLE_PRODUCTS: SampleProduct[] = [
   },
 ];
 
-export const SAMPLE_BANNERS = [
+const SIZE_ROWS = [
+  { size: "0-3M", age: "0–3 months", height: "56–62", chest: "41", waist: "41", length: "35" },
+  { size: "3-6M", age: "3–6 months", height: "62–68", chest: "43", waist: "43", length: "37" },
+  { size: "6-9M", age: "6–9 months", height: "68–74", chest: "45", waist: "45", length: "39" },
+  { size: "9-12M", age: "9–12 months", height: "74–80", chest: "47", waist: "46", length: "41" },
+  { size: "12-18M", age: "12–18 months", height: "80–86", chest: "49", waist: "47", length: "43" },
+  { size: "18-24M", age: "18–24 months", height: "86–92", chest: "51", waist: "48", length: "45" },
+  { size: "2-3Y", age: "2–3 years", height: "92–98", chest: "53", waist: "49", length: "47" },
+  { size: "3-4Y", age: "3–4 years", height: "98–104", chest: "55", waist: "50", length: "50" },
+  { size: "4-5Y", age: "4–5 years", height: "104–110", chest: "57", waist: "51", length: "53" },
+];
+
+// Fixed reference date keeps server and client renders identical (no hydration drift).
+const BASE = new Date("2026-11-01T10:00:00+05:00").getTime();
+const DAY = 864e5;
+
+export const SIZE_GUIDES: SizeGuide[] = [
   {
-    eyebrow: "Seasonal",
-    title: "Knits for cooler days",
-    subtitle: "Cardigans, sweaters and soft layers.",
-    image: "/images/editorial/banner-knitwear.webp",
-    ctaLabel: "Shop knitwear",
-    ctaHref: "/collections/seasonal",
-    tone: "cream",
-  },
-  {
-    eyebrow: "First days",
-    title: "Newborn essentials",
-    subtitle: "Bodysuits, booties and gentle first pieces.",
-    image: "/images/editorial/nursery.webp",
-    ctaLabel: "Shop newborn",
-    ctaHref: "/collections/newborn",
-    tone: "cream",
+    id: "sg_standard",
+    name: "Kinder Thread standard (0–5 years)",
+    unit: "cm",
+    isDefault: true,
+    rows: SIZE_ROWS,
+    notes: "Sample measurements — replace with the measurements from your supplier's size chart.",
+    updatedAt: new Date(BASE),
   },
 ];
 
-export const SAMPLE_GALLERY = [
-  { url: "/images/gallery/g1.webp", alt: "A toddler in a tulle skirt walking across a sunny lawn" },
-  { url: "/images/gallery/g2.webp", alt: "Soft baby clothes bundled on a woven rug" },
-  { url: "/images/gallery/g3.webp", alt: "Tiny toes on a soft white blanket" },
-  { url: "/images/gallery/g4.webp", alt: "A calm wooden nursery" },
-  { url: "/images/gallery/g5.webp", alt: "Close-up of a patterned knit" },
-  { url: "/images/gallery/g6.webp", alt: "A little foot on a striped sheet" },
-  { url: "/images/gallery/g7.webp", alt: "Baby clothes hanging on a rail" },
-  { url: "/images/gallery/g8.webp", alt: "A white clothing rail with wooden hangers" },
-];
+export const CATEGORIES: Category[] = CATEGORY_DEFS.map((c, i) => ({
+  id: `cat_${c.slug}`,
+  name: c.name,
+  slug: c.slug,
+  description: c.description,
+  image: c.image,
+  kind: c.kind,
+  sortOrder: i,
+  isVisible: true,
+  showInNav: true,
+  isFeatured: c.featured,
+  seoTitle: null,
+  seoDescription: null,
+  createdAt: new Date(BASE - 30 * DAY),
+  updatedAt: new Date(BASE - 30 * DAY),
+}));
+
+// deterministic pseudo-random stock levels
+let seed = 42;
+const rand = () => ((seed = (seed * 16807) % 2147483647) - 1) / 2147483646;
+
+export const PRODUCTS: Product[] = PRODUCT_DEFS.map((p, pi) => {
+  const colors = p.colors.map((c, ci) => ({ id: `${p.code.toLowerCase()}_c${ci}`, name: c.name, hex: c.hex, sortOrder: ci }));
+  let sort = 0;
+  const images = p.colors.flatMap((c, ci) => c.images.map((url) => ({ id: `${p.code.toLowerCase()}_i${sort}`, url, alt: `${p.name} in ${c.name}`, sortOrder: sort++, colorId: colors[ci].id })));
+  const variants = p.colors.flatMap((c, ci) => {
+    const code = c.name.replace(/[^A-Za-z]/g, "").slice(0, 3).toUpperCase();
+    return p.sizes.map((size) => {
+      const r = rand();
+      const stock = r < 0.08 ? 0 : r < 0.18 ? 2 : Math.floor(4 + rand() * 18);
+      const sku = `KT-${p.code}-${code}-${size}`;
+      return { id: `v_${sku}`, sku, size, colorId: colors[ci].id, price: null, stock, isActive: true };
+    });
+  });
+  const created = new Date(BASE - (PRODUCT_DEFS.length - pi) * 7 * 36e5);
+  return {
+    id: `prod_${p.slug}`,
+    name: p.name,
+    slug: p.slug,
+    description: p.description,
+    fabric: p.fabric,
+    care: "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    price: p.price,
+    compareAtPrice: p.compareAtPrice ?? null,
+    status: "ACTIVE",
+    gender: p.gender,
+    isSample: true,
+    isFeatured: !!p.featured,
+    isNewArrival: !!p.newArrival,
+    isBestSeller: !!p.bestSeller,
+    sortOrder: pi,
+    seoTitle: null,
+    seoDescription: null,
+    sizeGuideId: SIZE_GUIDES[0].id,
+    categoryIds: p.categories.map((slug) => `cat_${slug}`),
+    images,
+    colors,
+    variants,
+    createdAt: created,
+    updatedAt: created,
+  } satisfies Product;
+});

@@ -1,6 +1,6 @@
 "use client";
 
-import { useCallback, useState } from "react";
+import { useCallback, useState, useTransition } from "react";
 import { MapPin, Pencil, Plus, Star, Trash2 } from "lucide-react";
 import { deleteAddressAction, setDefaultAddressAction } from "@/actions/account";
 import { Badge } from "@/components/ui/badge";
@@ -14,17 +14,23 @@ type Addr = Required<Pick<AddressValues, "id">> & AddressValues;
 export function AddressBook({ addresses, defaultName, defaultPhone }: { addresses: Addr[]; defaultName: string; defaultPhone: string | null }) {
   const [editing, setEditing] = useState<string | "new" | null>(addresses.length === 0 ? "new" : null);
   const close = useCallback(() => setEditing(null), []);
-  const closeWithToast = useCallback((msg: string) => {
+  const closeWithToast = useCallback((msg?: string) => {
     setEditing(null);
-    toast({ title: msg });
+    if (msg) toast({ title: "Not saved", description: msg, tone: "info" });
   }, []);
+  const [busy, start] = useTransition();
+  const run = (fn: (id: string) => Promise<{ ok: boolean; message?: string } | null>, id: string) =>
+    start(async () => {
+      const res = await fn(id);
+      if (res?.message) toast({ title: res.ok ? "Not saved" : "Something went wrong", description: res.message, tone: res.ok ? "info" : "error" });
+    });
 
   return (
     <div className="flex flex-col gap-4">
       {editing === "new" ? (
         <section className="rounded-sm border border-cocoa-200 bg-cream-50 p-5 md:p-7" aria-label="New address">
           <h2 className="mb-5 font-display text-xl">New address</h2>
-          <AddressForm onDone={() => (addresses.length ? closeWithToast("Address saved") : close())} defaultName={defaultName} defaultPhone={defaultPhone} />
+          <AddressForm onDone={closeWithToast} onCancel={close} defaultName={defaultName} defaultPhone={defaultPhone} />
         </section>
       ) : (
         <div>
@@ -40,7 +46,7 @@ export function AddressBook({ addresses, defaultName, defaultPhone }: { addresse
             editing === a.id ? (
               <li key={a.id} className="rounded-sm border border-cocoa-200 bg-cream-50 p-5 md:col-span-2 md:p-7">
                 <h2 className="mb-5 font-display text-xl">Edit address</h2>
-                <AddressForm initial={a} onDone={() => closeWithToast("Address updated")} />
+                <AddressForm initial={a} onDone={closeWithToast} onCancel={close} />
               </li>
             ) : (
               <li key={a.id} className="flex flex-col rounded-sm border border-cocoa-100 bg-cream-50 p-6">
@@ -57,25 +63,21 @@ export function AddressBook({ addresses, defaultName, defaultPhone }: { addresse
                     <Pencil className="h-3.5 w-3.5" /> Edit
                   </Button>
                   {!a.isDefault && (
-                    <form action={setDefaultAddressAction}>
-                      <input type="hidden" name="id" value={a.id} />
-                      <Button variant="ghost" size="sm" type="submit">
-                        <Star className="h-3.5 w-3.5" /> Make default
-                      </Button>
-                    </form>
-                  )}
-                  <form
-                    action={deleteAddressAction}
-                    onSubmit={(e) => {
-                      if (!confirm("Delete this address?")) e.preventDefault();
-                    }}
-                    className="ml-auto"
-                  >
-                    <input type="hidden" name="id" value={a.id} />
-                    <Button variant="ghost" size="sm" type="submit" className="text-coral-700 hover:bg-coral-50">
-                      <Trash2 className="h-3.5 w-3.5" /> Delete
+                    <Button variant="ghost" size="sm" disabled={busy} onClick={() => run(setDefaultAddressAction, a.id)}>
+                      <Star className="h-3.5 w-3.5" /> Make default
                     </Button>
-                  </form>
+                  )}
+                  <Button
+                    variant="ghost"
+                    size="sm"
+                    disabled={busy}
+                    className="ml-auto text-coral-700 hover:bg-coral-50"
+                    onClick={() => {
+                      if (confirm("Delete this address?")) run(deleteAddressAction, a.id);
+                    }}
+                  >
+                    <Trash2 className="h-3.5 w-3.5" /> Delete
+                  </Button>
                 </div>
               </li>
             ),

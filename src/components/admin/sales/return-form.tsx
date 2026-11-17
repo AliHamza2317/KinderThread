@@ -4,7 +4,7 @@ import { useState } from "react";
 import { updateReturnAction } from "@/actions/admin/sales";
 import { SubmitButton } from "@/components/admin/form-bits";
 import { Checkbox, Field, Select, Textarea } from "@/components/ui/field";
-import type { ReturnStatus, ReturnType } from "@/generated/prisma/enums";
+import type { ReturnStatus, ReturnType } from "@/lib/types";
 import { ActionForm } from "./action-form";
 import { RETURN_NEXT, RETURN_STATUS_LABEL } from "./labels";
 

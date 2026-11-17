@@ -14,7 +14,7 @@ import {
 import { ConfirmSubmit, SubmitButton } from "@/components/admin/form-bits";
 import { Button } from "@/components/ui/button";
 import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/field";
-import type { OrderStatus, PaymentStatus } from "@/generated/prisma/enums";
+import type { OrderStatus, PaymentStatus } from "@/lib/types";
 import { ActionForm } from "./action-form";
 import { COURIERS } from "./labels";
 

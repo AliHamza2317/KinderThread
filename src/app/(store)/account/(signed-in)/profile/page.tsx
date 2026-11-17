@@ -3,17 +3,15 @@ import { PasswordForm, ProfileForm } from "@/components/account/profile-forms";
 import { SignOutEverywhere } from "@/components/account/sign-out-everywhere";
 import { Eyebrow } from "@/components/ui/eyebrow";
 import { requireUser } from "@/lib/auth";
-import { db } from "@/lib/db";
+import { CUSTOMERS } from "@/data/admin";
 import { formatDate } from "@/lib/utils";
 
 export const metadata: Metadata = { title: "Profile" };
 
 export default async function ProfilePage() {
   const user = await requireUser("/account/profile");
-  const [row, sessions] = await Promise.all([
-    db.user.findUnique({ where: { id: user.id }, select: { createdAt: true } }),
-    db.session.count({ where: { userId: user.id, expiresAt: { gt: new Date() } } }),
-  ]);
+  const row = CUSTOMERS.find((c) => c.id === user.id) ?? null;
+  const sessions = 1;
   return (
     <div className="flex flex-col gap-8">
       <header>

@@ -1,10 +1,10 @@
 "use server";
 
-import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 import { z } from "zod";
-import { db } from "@/lib/db";
+import { PAGES_DATA } from "@/data/content";
 import { assertStaff } from "@/lib/auth";
+import { demoResult } from "@/lib/demo";
 import { renderTokens } from "@/lib/cms";
 import { getSettings } from "@/lib/settings";
 import { fieldErrors, type ActionResult } from "@/lib/action-result";
@@ -29,10 +29,6 @@ const schema = z.object({
   showInFooter: z.boolean(),
 });
 
-function storefrontPath(slug: string) {
-  return slug === "about" ? "/about" : `/pages/${slug}`;
-}
-
 export async function savePageAction(_prev: ActionResult, formData: FormData): Promise<ActionResult> {
   try {
     await assertStaff();
@@ -52,36 +48,20 @@ export async function savePageAction(_prev: ActionResult, formData: FormData): P
   const d = parsed.data;
   if (RESERVED.includes(d.slug)) return { ok: false, message: "That URL is reserved by the store. Choose another slug.", errors: { slug: ["Reserved"] } };
 
-  const existing = id ? await db.page.findUnique({ where: { id } }) : null;
+  const existing = id ? PAGES_DATA.find((p) => p.id === id) ?? null : null;
   if (id && !existing) return { ok: false, message: "This page no longer exists." };
   if (existing && CORE_SLUGS.includes(existing.slug) && d.slug !== existing.slug) {
     return { ok: false, message: "The URL of this core page can't be changed because the store links to it.", errors: { slug: ["Locked"] } };
   }
-  const clash = await db.page.findUnique({ where: { slug: d.slug }, select: { id: true } });
+  const clash = PAGES_DATA.find((p) => p.slug === d.slug);
   if (clash && clash.id !== id) return { ok: false, message: "Another page already uses this URL.", errors: { slug: ["Already in use"] } };
-
-  const data = { ...d, seoDescription: d.seoDescription || null };
-  const page = existing ? await db.page.update({ where: { id }, data }) : await db.page.create({ data });
-
-  revalidatePath("/", "layout");
-  revalidatePath(storefrontPath(page.slug));
-  if (existing && existing.slug !== page.slug) revalidatePath(storefrontPath(existing.slug));
-  revalidatePath("/admin/pages");
-  if (!existing) redirect(`/admin/pages/${page.id}?created=1`);
-  return { ok: true, message: "Page saved." };
+  return demoResult();
 }
 
-export async function deletePageAction(formData: FormData) {
+/** Demo build: nothing is deleted — return to the list with a notice. */
+export async function deletePageAction(_formData: FormData) {
   await assertStaff();
-  const id = String(formData.get("id") ?? "");
-  const page = await db.page.findUnique({ where: { id } });
-  if (page && !CORE_SLUGS.includes(page.slug)) {
-    await db.page.delete({ where: { id } });
-    revalidatePath("/", "layout");
-    revalidatePath(storefrontPath(page.slug));
-  }
-  revalidatePath("/admin/pages");
-  redirect("/admin/pages");
+  redirect("/admin/pages?demo=1");
 }
 
 /** Render {{tokens}} with live settings so the preview matches the storefront. */

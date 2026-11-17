@@ -19,14 +19,14 @@ export type AddressValues = {
   isDefault?: boolean;
 };
 
-export function AddressForm({ initial, onDone, defaultName, defaultPhone }: { initial?: AddressValues; onDone: () => void; defaultName?: string; defaultPhone?: string | null }) {
+export function AddressForm({ initial, onDone, onCancel, defaultName, defaultPhone }: { initial?: AddressValues; onDone: (message?: string) => void; onCancel: () => void; defaultName?: string; defaultPhone?: string | null }) {
   const { state, pending, formProps } = useActionForm(saveAddressAction);
   const uid = useId();
   const listId = `${uid}-cities`;
   const err = (k: string) => errorOf(state, k);
 
   useEffect(() => {
-    if (state?.ok) onDone();
+    if (state?.ok) onDone(state.message);
   }, [state, onDone]);
 
   return (
@@ -64,7 +64,7 @@ export function AddressForm({ initial, onDone, defaultName, defaultPhone }: { in
       {state && !state.ok && <Notice state={state} />}
       <div className="flex flex-wrap gap-3 pt-1">
         <Submit pending={pending}>{initial?.id ? "Save changes" : "Save address"}</Submit>
-        <Button type="button" variant="ghost" onClick={onDone}>
+        <Button type="button" variant="ghost" onClick={onCancel}>
           Cancel
         </Button>
       </div>

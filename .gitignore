@@ -4,8 +4,6 @@ out
 build
 .env
 .env*.local
-src/generated
-uploads
 *.tsbuildinfo
 next-env.d.ts
 .DS_Store

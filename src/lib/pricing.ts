@@ -1,7 +1,7 @@
-import "server-only";
-import { db } from "@/lib/db";
+import { COUPONS } from "@/data/admin";
+import { PRODUCTS } from "@/data/catalog";
 import { getSettings } from "@/lib/settings";
-import type { Coupon } from "@/generated/prisma/client";
+import type { Coupon } from "@/lib/types";
 
 export type CartLineInput = { variantId: string; quantity: number };
 
@@ -61,15 +61,14 @@ export async function quoteCart(
     const q = Math.max(0, Math.min(MAX_QTY_PER_LINE, Math.floor(Number(l.quantity) || 0)));
     if (q > 0) merged.set(l.variantId, Math.min(MAX_QTY_PER_LINE, (merged.get(l.variantId) ?? 0) + q));
   }
-  const variants = merged.size
-    ? await db.productVariant.findMany({
-        where: { id: { in: [...merged.keys()] } },
-        include: {
-          color: true,
-          product: { include: { images: { orderBy: { sortOrder: "asc" }, select: { url: true, colorId: true } } } },
-        },
-      })
-    : [];
+  // look up each variant (and its product) in the dummy catalogue
+  const variants = [...merged.keys()]
+    .map((id) => {
+      const product = PRODUCTS.find((p) => p.variants.some((v) => v.id === id));
+      const v = product?.variants.find((x) => x.id === id);
+      return product && v ? { ...v, productId: product.id, product, color: product.colors.find((c) => c.id === v.colorId) ?? null } : null;
+    })
+    .filter((x): x is NonNullable<typeof x> => !!x);
 
   const lines: PricedLine[] = [];
   for (const v of variants) {
@@ -111,7 +110,7 @@ export async function quoteCart(
   let couponError: string | undefined;
   const code = opts.couponCode?.trim().toUpperCase();
   if (code) {
-    const c = await db.coupon.findUnique({ where: { code } });
+    const c = COUPONS.find((x) => x.code === code) ?? null;
     const err = validateCoupon(c, subtotal);
     if (err || !c) couponError = err ?? "This code isn't valid.";
     else {

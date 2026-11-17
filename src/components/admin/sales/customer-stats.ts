@@ -1,5 +1,4 @@
-import "server-only";
-import { db } from "@/lib/db";
+import { ORDERS } from "@/data/admin";
 import { segmentFor, type Segment } from "./labels";
 
 export type CustomerStats = { orders: number; spend: number; lastOrder: Date | null; segment: Segment };
@@ -7,21 +6,11 @@ export type CustomerStats = { orders: number; spend: number; lastOrder: Date | n
 /** Order count, spend and last order for the given users (cancelled orders excluded). */
 export async function statsForUsers(userIds: string[]) {
   const map = new Map<string, CustomerStats>();
-  if (!userIds.length) return map;
-  const rows = await db.order.groupBy({
-    by: ["userId"],
-    where: { userId: { in: userIds }, status: { not: "CANCELLED" } },
-    _count: { _all: true },
-    _sum: { total: true },
-    _max: { createdAt: true },
-  });
-  for (const r of rows) {
-    if (!r.userId) continue;
-    const orders = r._count._all;
-    const spend = r._sum.total ?? 0;
-    const lastOrder = r._max.createdAt ?? null;
-    map.set(r.userId, { orders, spend, lastOrder, segment: segmentFor(orders, spend, lastOrder) });
+  for (const id of userIds) {
+    const orders = ORDERS.filter((o) => o.userId === id && o.status !== "CANCELLED");
+    const spend = orders.reduce((s, o) => s + o.total, 0);
+    const lastOrder = orders.reduce<Date | null>((d, o) => (!d || o.createdAt > d ? o.createdAt : d), null);
+    map.set(id, { orders: orders.length, spend, lastOrder, segment: segmentFor(orders.length, spend, lastOrder) });
   }
-  for (const id of userIds) if (!map.has(id)) map.set(id, { orders: 0, spend: 0, lastOrder: null, segment: "PROSPECT" });
   return map;
 }

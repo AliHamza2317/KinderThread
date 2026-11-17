@@ -2,7 +2,6 @@
 
 import { Heart } from "lucide-react";
 import { motion } from "motion/react";
-import { setWishlistItemAction } from "@/actions/storefront";
 import { cn } from "@/lib/utils";
 import { useHydrated } from "@/lib/hooks";
 import { toast } from "@/stores/toast";
@@ -20,7 +19,6 @@ export function WishlistButton({ productId, name, className, variant = "floating
         e.preventDefault();
         e.stopPropagation();
         const now = toggle(productId);
-        setWishlistItemAction(productId, now).catch(() => {});
         toast({ title: now ? "Saved to wishlist" : "Removed from wishlist", description: name, action: now ? { label: "View", href: "/wishlist" } : undefined });
       }}
       aria-pressed={active}

@@ -1,15 +1,12 @@
 import type { Metadata } from "next";
 import { CheckoutForm, type PaymentOption } from "@/components/checkout/checkout-form";
-import { getCurrentUser } from "@/lib/auth";
-import { db } from "@/lib/db";
 import { PAYMENT_LABELS } from "@/lib/pricing";
 import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = { title: "Checkout", robots: { index: false } };
 
 export default async function CheckoutPage() {
-  const [settings, user] = await Promise.all([getSettings(), getCurrentUser()]);
-  const address = user ? await db.address.findFirst({ where: { userId: user.id }, orderBy: [{ isDefault: "desc" }, { createdAt: "desc" }] }) : null;
+  const settings = await getSettings();
   const p = settings.payments;
   const options: PaymentOption[] = [];
   if (p.cod.enabled) options.push({ id: "cod", label: PAYMENT_LABELS.cod, instructions: p.cod.instructions, fee: p.cod.fee, details: [] });
@@ -44,15 +41,7 @@ export default async function CheckoutPage() {
       options={options}
       freeThreshold={settings.shipping.freeThreshold}
       estimate={settings.shipping.estimate}
-      defaults={{
-        name: address?.fullName ?? user?.name ?? "",
-        email: user?.email ?? "",
-        phone: address?.phone ?? user?.phone ?? "",
-        city: address?.city ?? "",
-        address: address ? [address.line1, address.line2].filter(Boolean).join(", ") : "",
-        postalCode: address?.postalCode ?? "",
-      }}
-      signedIn={!!user}
+      defaults={{ name: "", email: "", phone: "", city: "", address: "", postalCode: "" }}
     />
   );
 }

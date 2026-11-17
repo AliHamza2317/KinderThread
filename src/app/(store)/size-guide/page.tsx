@@ -1,12 +1,12 @@
 import type { Metadata } from "next";
 import { SizeGuideTable, type SizeGuideData } from "@/components/product/size-guide";
 import { Breadcrumbs } from "@/components/shop/shop-view";
-import { db } from "@/lib/db";
+import { SIZE_GUIDES } from "@/data/catalog";
 
 export const metadata: Metadata = { title: "Size guide", description: "Kinder Thread size guide for ages 0–5 with height and chest measurements.", alternates: { canonical: "/size-guide" } };
 
 export default async function SizeGuidePage() {
-  const guides = await db.sizeGuide.findMany({ orderBy: [{ isDefault: "desc" }, { name: "asc" }] });
+  const guides = [...SIZE_GUIDES].sort((a, b) => Number(b.isDefault) - Number(a.isDefault) || a.name.localeCompare(b.name));
   return (
     <div className="container-kt max-w-4xl py-10 md:py-16">
       <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Size guide" }]} />
@@ -17,7 +17,7 @@ export default async function SizeGuidePage() {
         <section key={g.id} className="mt-12">
           <h2 className="font-display text-2xl">{g.name}</h2>
           <div className="mt-5 rounded-sm bg-cream-100 p-5 md:p-6">
-            <SizeGuideTable guide={{ name: g.name, unit: g.unit, rows: g.rows as SizeGuideData["rows"], notes: g.notes }} />
+            <SizeGuideTable guide={{ name: g.name, unit: g.unit, rows: g.rows, notes: g.notes }} />
           </div>
           {g.notes && <p className="mt-3 text-[0.82rem] text-cocoa-500">{g.notes}</p>}
         </section>

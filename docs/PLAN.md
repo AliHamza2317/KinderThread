@@ -5,6 +5,10 @@
 > no cartoon elements, so the storefront is now **photography-led**: an editorial photo hero, crisper serif
 > typography, refined rectangular buttons, quiet badges, and no 3D scenes or decorative glyphs. Sections 1, 4,
 > 5 and 6 below describe the original concept and are kept for reference; the 3D code was removed.
+>
+> **Revision 2:** the database will be MongoDB and is not needed yet, so the project is now **frontend-only**:
+> PostgreSQL/Prisma were removed and all pages run on dummy data in `src/data/`. Sections 8, 10 and 11 describe
+> the earlier full-stack plan; see the README for how to connect a backend later.
 
 > Phase 1 deliverable. This document records the decisions behind the build so that
 > future designers and developers can extend the site without diluting the brand.

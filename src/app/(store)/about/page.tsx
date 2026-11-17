@@ -4,16 +4,17 @@ import { ButtonLink } from "@/components/ui/button";
 import { Prose } from "@/components/ui/markdown";
 import { Reveal, SplitWords } from "@/components/ui/reveal";
 import { renderTokens } from "@/lib/cms";
-import { db } from "@/lib/db";
+import { PAGES_DATA } from "@/data/content";
 import { getSettings } from "@/lib/settings";
 
 export async function generateMetadata(): Promise<Metadata> {
-  const page = await db.page.findUnique({ where: { slug: "about" } });
+  const page = PAGES_DATA.find((p) => p.slug === "about");
   return { title: page?.title ?? "Our Story", description: page?.seoDescription ?? undefined, alternates: { canonical: "/about" } };
 }
 
 export default async function AboutPage() {
-  const [page, settings] = await Promise.all([db.page.findUnique({ where: { slug: "about" } }), getSettings()]);
+  const page = PAGES_DATA.find((p) => p.slug === "about");
+  const settings = await getSettings();
   const story = settings.home.story;
   return (
     <>

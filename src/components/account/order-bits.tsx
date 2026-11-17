@@ -2,7 +2,7 @@ import { Check, PackageX, RotateCcw } from "lucide-react";
 import { Badge, type BadgeTone } from "@/components/ui/badge";
 import { ORDER_FLOW, ORDER_STATUS_LABEL } from "@/lib/orders";
 import { cn, formatDate } from "@/lib/utils";
-import type { OrderStatus } from "@/generated/prisma/enums";
+import type { OrderStatus } from "@/lib/types";
 
 const TONE: Record<OrderStatus, BadgeTone> = {
   PENDING: "warning",

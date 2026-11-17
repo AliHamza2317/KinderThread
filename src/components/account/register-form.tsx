@@ -34,6 +34,7 @@ export function RegisterForm({ next }: { next: string }) {
       <Submit pending={pending} size="lg" className="w-full">
         Create account
       </Submit>
+      <p className="text-center text-[0.8rem] text-cocoa-400">Demo mode — sign-in isn&apos;t connected yet; you&apos;ll see a sample account.</p>
       <p className="text-center text-[0.8rem] text-cocoa-500">
         By creating an account you agree to our{" "}
         <a href="/pages/terms" className="underline underline-offset-2">

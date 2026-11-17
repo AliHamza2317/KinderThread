@@ -26,6 +26,7 @@ export function LoginForm({ next }: { next: string }) {
       <Submit pending={pending} size="lg" className="w-full">
         Sign in
       </Submit>
+      <p className="text-center text-[0.8rem] text-cocoa-400">Demo mode — sign-in isn&apos;t connected yet; you&apos;ll see a sample account.</p>
     </form>
   );
 }
