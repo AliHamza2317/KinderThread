@@ -51,4 +51,4 @@ Unsplash licence note: stock photos don't come with model or property releases. 
 `cutouts/*.webp` are the same credited photos with the background removed locally (for the hero slider):
 girl-tulle-dress ← editorial/hero-tulle, nordic-cardigan ← products/nordic-cardigan-rose, booties-in-hands ←
 products/crochet-booties-cream, lace-dress ← products/lace-dress-ivory, linen-shirt ← products/linen-shirt-sky,
-knit-hat-mittens ← products/hat-mittens-snow, crochet-booties ← products/crochet-booties-coral.
+beanie-berry ← products/ribbed-beanie-berry, crochet-booties ← products/crochet-booties-coral.

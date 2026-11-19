@@ -177,7 +177,7 @@ export const settingSchemas = {
     shopSlider: z
       .object({
         slide1: slide({ eyebrow: "Just in", title: "New *Arrivals*", body: "Fresh pieces for the new season — soft colours, easy fits.", ctaLabel: "Shop new arrivals", ctaHref: "/collections/new-arrivals", image: "/images/products/linen-shirt-sky.webp", imageAlt: "A sky-blue linen shirt hanging from a branch", cutout: "/images/cutouts/linen-shirt.webp", align: "center", tone: "sun" }),
-        slide2: slide({ eyebrow: "The winter edit", title: "Warm *Knits*", body: "Cardigans, bloomers and beanies for chilly mornings.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/products/hat-mittens-snow.webp", imageAlt: "A white knitted hat and mittens", cutout: "/images/cutouts/knit-hat-mittens.webp", align: "center", tone: "forest" }),
+        slide2: slide({ eyebrow: "The winter edit", title: "Warm *Knits*", body: "Cardigans, bloomers and beanies for chilly mornings.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/products/ribbed-beanie-berry.webp", imageAlt: "A berry-pink ribbed knit beanie", cutout: "/images/cutouts/beanie-berry.webp", align: "center", tone: "forest" }),
         slide3: slide({ eyebrow: "Loved by little ones", title: "Best *Sellers*", body: "The styles parents come back for.", ctaLabel: "Shop best sellers", ctaHref: "/collections/best-sellers", image: "/images/products/crochet-booties-coral.webp", imageAlt: "Coral hand-crochet baby booties", cutout: "/images/cutouts/crochet-booties.webp", align: "center", tone: "cocoa" }),
       })
       .prefault({}),

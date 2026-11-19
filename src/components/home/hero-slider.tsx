@@ -47,38 +47,46 @@ function titleLines(title: string) {
   return stop >= 0 && stop < words.length - 1 ? [words.slice(0, stop + 1).join(" "), words.slice(stop + 1).join(" ")] : [title];
 }
 
-/** One slide's content: colour field, copy on the left, the subject (cut-out or full photo) on the right. */
+/** One slide's content: colour field, copy aligned to the page grid on the left, the subject (cut-out or full photo) filling the right. */
 function SlideFace({ slide, active, size, heading, priority, controls = true, children }: { slide: Slide; active: boolean; size: "home" | "page"; heading: "h1" | "h2"; priority: boolean; controls?: boolean; children?: ReactNode }) {
   const t = TONES[slide.tone];
-  const enter = cn("transition-[opacity,transform] duration-700 ease-[var(--ease-soft)] motion-reduce:transition-none", active ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0");
+  const enter = cn("transition-[opacity,transform] duration-700 ease-[var(--ease-soft)] motion-reduce:transition-none", active ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0");
   const Heading = heading;
+  const cut = Boolean(slide.cutout);
   return (
-    <div className={cn("relative isolate grid h-full overflow-hidden lg:grid-cols-2", t.bg, t.text)}>
-      {/* soft shape behind the subject (like the circles on brand banners) */}
-      <div aria-hidden className={cn("pointer-events-none absolute -z-10 aspect-square rounded-full", t.shape, size === "home" ? "top-[8%] right-[2%] h-[95%] max-lg:top-[2%] max-lg:right-[-25%] max-lg:h-[55%]" : "top-[6%] right-[4%] h-[100%] max-lg:h-[60%] max-lg:right-[-20%]")} />
-
-      {/* photograph: a cut-out on the colour field, or the full photo filling the right half */}
-      <div className={cn("relative order-1 lg:order-2", size === "home" ? "h-[17rem] sm:h-[22rem] lg:h-full" : "h-[15rem] sm:h-[20rem] lg:h-full")}>
-        {slide.cutout ? (
-          <div
-            className={cn(
-              "absolute transition-[opacity,transform] duration-[1.1s] ease-[var(--ease-soft)] motion-reduce:transition-none",
-              slide.align === "bottom" ? "inset-x-4 top-4 bottom-0 lg:inset-x-10 lg:top-[7%]" : slide.align === "right" ? "inset-y-[10%] right-0 left-4 lg:left-10" : "inset-[8%] lg:inset-[9%]",
-              active ? "translate-x-0 opacity-100" : "translate-x-10 opacity-0",
-            )}
-          >
-            <Image
-              src={slide.cutout}
-              alt={slide.imageAlt}
-              fill
-              priority={priority}
-              sizes="(min-width: 1024px) 45vw, 100vw"
+    <div className={cn("relative isolate flex h-full flex-col overflow-hidden lg:block", t.bg, t.text)}>
+      {/* subject: a cut-out on the colour field, or the full photo filling the right half */}
+      <div className={cn("relative shrink-0 lg:absolute lg:inset-y-0 lg:right-0 lg:h-auto", cut ? "lg:w-[56%]" : "lg:w-1/2", size === "home" ? "h-[16rem] sm:h-[21rem]" : "h-[13rem] sm:h-[18rem]")}>
+        {cut ? (
+          <>
+            {/* soft studio light behind the subject */}
+            <div
+              aria-hidden
               className={cn(
-                "object-contain",
-                slide.align === "bottom" ? "object-bottom" : slide.align === "right" ? "object-right" : "object-center drop-shadow-[0_34px_34px_rgb(20_16_12/0.28)]",
+                "pointer-events-none absolute top-1/2 left-1/2 -z-10 aspect-square h-[125%] -translate-x-1/2 -translate-y-1/2",
+                t.dark ? "bg-[radial-gradient(closest-side,rgb(255_255_255/0.09),transparent)]" : "bg-[radial-gradient(closest-side,rgb(255_255_255/0.6),transparent)]",
               )}
             />
-          </div>
+            <div
+              className={cn(
+                "absolute transition-[opacity,transform] duration-[1.1s] ease-[var(--ease-soft)] motion-reduce:transition-none",
+                slide.align === "bottom" ? "inset-x-0 top-[5%] bottom-0" : slide.align === "right" ? "inset-y-[10%] right-0 left-[6%]" : "inset-x-[4%] inset-y-[6%]",
+                active ? "translate-x-0 opacity-100" : "translate-x-8 opacity-0",
+              )}
+            >
+              <Image
+                src={slide.cutout!}
+                alt={slide.imageAlt}
+                fill
+                priority={priority}
+                sizes="(min-width: 1024px) 50vw, 100vw"
+                className={cn(
+                  "object-contain",
+                  slide.align === "bottom" ? "object-bottom" : slide.align === "right" ? "object-right" : "object-center drop-shadow-[0_28px_28px_rgb(20_16_12/0.24)]",
+                )}
+              />
+            </div>
+          </>
         ) : (
           <Image
             src={slide.image}
@@ -94,22 +102,18 @@ function SlideFace({ slide, active, size, heading, priority, controls = true, ch
             href={slide.product.href}
             tabIndex={active ? undefined : -1}
             className={cn(
-              "group absolute top-8 right-8 z-10 hidden w-[19rem] items-center gap-3 rounded-[1.25rem] border border-white/50 bg-cream-50/90 p-2.5 pr-3 text-cocoa shadow-[0_24px_50px_-24px_rgb(20_16_12/0.5)] backdrop-blur-md transition-[opacity,transform] delay-300 duration-700 lg:flex xl:right-14",
-              active ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
+              "group absolute top-7 right-7 z-10 hidden items-center gap-3 rounded-full bg-cream-50/85 py-1.5 pr-1.5 pl-1.5 text-cocoa shadow-[0_18px_40px_-22px_rgb(20_16_12/0.45)] backdrop-blur-md transition-[opacity,transform] delay-300 duration-700 lg:flex xl:right-12",
+              active ? "translate-y-0 opacity-100" : "translate-y-3 opacity-0",
             )}
           >
-            <span className="relative h-16 w-12 shrink-0 overflow-hidden rounded-[0.8rem] bg-cream-200">
-              <Image src={slide.product.image} alt="" fill sizes="48px" className="object-cover" />
+            <span className="relative h-11 w-11 shrink-0 overflow-hidden rounded-full bg-cream-200">
+              <Image src={slide.product.image} alt="" fill sizes="44px" className="object-cover" />
             </span>
-            <span className="min-w-0 flex-1">
-              <span className="flex items-center gap-2 text-[0.64rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase">
-                {slide.product.label}
-                {slide.product.isSample && <span className="rounded-full border border-cocoa/10 px-1.5 text-[0.56rem]">Sample</span>}
-              </span>
-              <span className="block truncate text-[0.9rem] font-semibold">{slide.product.name}</span>
-              <span className="flex items-baseline gap-2 text-[0.8rem]">
-                <span className="font-semibold">{formatPrice(slide.product.price)}</span>
-                {slide.product.compareAt && slide.product.compareAt > slide.product.price && <span className="text-cocoa-400 line-through">{formatPrice(slide.product.compareAt)}</span>}
+            <span className="min-w-0 pr-1 leading-tight">
+              <span className="block text-[0.84rem] font-semibold">{slide.product.name}</span>
+              <span className="flex items-baseline gap-2 text-[0.76rem] text-cocoa-500">
+                {formatPrice(slide.product.price)}
+                {slide.product.isSample && <span className="text-[0.62rem] font-semibold tracking-[0.1em] text-cocoa-400 uppercase">Sample</span>}
               </span>
             </span>
             <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cocoa text-cream-50 transition-transform duration-500 group-hover:rotate-45">
@@ -119,38 +123,40 @@ function SlideFace({ slide, active, size, heading, priority, controls = true, ch
         )}
       </div>
 
-      {/* copy */}
-      <div className={cn("relative order-2 flex flex-col justify-center px-6 pt-5 lg:order-1 lg:px-14 lg:pt-0 xl:px-20", controls ? "pb-20 lg:pb-24" : "pb-10 lg:pb-0", t.accent)}>
-        {children}
-        <p className={cn("eyebrow eyebrow-rule", t.muted, enter)}>{slide.eyebrow}</p>
-        <Heading className={cn("mt-4 font-display font-medium tracking-[-0.055em] delay-75", size === "home" ? "text-[clamp(2.6rem,0.8rem+5vw,6.4rem)]" : "text-[clamp(2.4rem,1rem+3.2vw,4.6rem)]", "leading-[0.95]", enter)}>
-          {titleLines(slide.title).map((line, i) => (
-            <SplitWords key={i} text={line} className="block" />
-          ))}
-        </Heading>
-        {slide.body && <p className={cn("mt-5 max-w-md text-[0.98rem] leading-relaxed delay-150 md:text-[1.06rem] [@media(max-height:760px)_and_(max-width:639px)]:hidden", t.muted, enter)}>{slide.body}</p>}
-        <div className={cn("mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 delay-200 lg:mt-7", enter)}>
-          {slide.ctaLabel && slide.ctaHref && (
-            <Link
-              href={slide.ctaHref}
-              tabIndex={active ? undefined : -1}
-              className={cn(
-                "group inline-flex h-14 items-center gap-2 rounded-full pr-2 pl-6 text-[0.95rem] font-semibold transition-colors",
-                t.dark ? "bg-sun-300 text-cocoa hover:bg-sun-200" : "bg-cocoa text-cream-50 hover:bg-sage-700",
-              )}
-            >
-              {slide.ctaLabel}
-              <span className={cn("grid h-10 w-10 place-items-center rounded-full transition-transform duration-500 group-hover:rotate-45", t.dark ? "bg-cocoa text-cream-50" : "bg-cream-50 text-cocoa")}>
-                <ArrowUpRight className="h-4 w-4" />
-              </span>
-            </Link>
-          )}
-          {slide.secondaryLabel && slide.secondaryHref && (
-            <Link href={slide.secondaryHref} tabIndex={active ? undefined : -1} className="group inline-flex items-center gap-2 text-[0.95rem] font-semibold">
-              <span className="link-underline">{slide.secondaryLabel}</span>
-              <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
-            </Link>
-          )}
+      {/* copy, aligned with the header logo and the page grid */}
+      <div className="container-kt pointer-events-none relative flex flex-1 items-center lg:h-full">
+        <div className={cn("pointer-events-auto w-full max-w-[34rem] pt-5 lg:pt-0", controls ? "pb-[4.5rem] lg:pb-8" : "pb-9 lg:pb-0", t.accent)}>
+          {children}
+          <p className={cn("eyebrow eyebrow-rule", t.muted, enter)}>{slide.eyebrow}</p>
+          <Heading className={cn("mt-3 font-display font-medium tracking-[-0.05em] delay-75", size === "home" ? "text-[clamp(2.5rem,1.2rem+3.4vw,4.9rem)]" : "text-[clamp(2.2rem,1.2rem+2.3vw,3.6rem)]", "leading-[0.98]", enter)}>
+            {titleLines(slide.title).map((line, i) => (
+              <SplitWords key={i} text={line} className="block" />
+            ))}
+          </Heading>
+          {slide.body && <p className={cn("mt-4 hidden max-w-sm text-[0.98rem] leading-relaxed delay-150 sm:block", t.muted, enter)}>{slide.body}</p>}
+          <div className={cn("mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 delay-200 lg:mt-8", enter)}>
+            {slide.ctaLabel && slide.ctaHref && (
+              <Link
+                href={slide.ctaHref}
+                tabIndex={active ? undefined : -1}
+                className={cn(
+                  "group inline-flex h-12 items-center gap-2 rounded-full pr-1.5 pl-5 text-[0.92rem] font-semibold transition-colors",
+                  t.dark ? "bg-cream-50 text-cocoa hover:bg-sun-200" : "bg-cocoa text-cream-50 hover:bg-sage-700",
+                )}
+              >
+                {slide.ctaLabel}
+                <span className={cn("grid h-9 w-9 place-items-center rounded-full transition-transform duration-500 group-hover:rotate-45", t.dark ? "bg-cocoa text-cream-50" : "bg-cream-50 text-cocoa")}>
+                  <ArrowUpRight className="h-4 w-4" />
+                </span>
+              </Link>
+            )}
+            {slide.secondaryLabel && slide.secondaryHref && (
+              <Link href={slide.secondaryHref} tabIndex={active ? undefined : -1} className="group inline-flex items-center gap-2 text-[0.92rem] font-semibold">
+                <span className="link-underline">{slide.secondaryLabel}</span>
+                <ArrowRight className="h-4 w-4 transition-transform duration-300 group-hover:translate-x-1" />
+              </Link>
+            )}
+          </div>
         </div>
       </div>
     </div>
@@ -202,7 +208,7 @@ export function HeroSlider({ slides, size = "home", interval = 6500, label = "Fe
       }}
     >
       <div
-        className={cn("relative overflow-hidden", size === "home" ? "lg:h-[min(calc(100svh-8.5rem),780px)] lg:min-h-[580px]" : "lg:h-[min(62svh,560px)] lg:min-h-[440px]")}
+        className={cn("relative overflow-hidden", size === "home" ? "lg:h-[clamp(500px,calc(100svh-11rem),600px)]" : "lg:h-[420px]")}
         style={{ touchAction: "pan-y" }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
@@ -235,43 +241,51 @@ export function HeroSlider({ slides, size = "home", interval = 6500, label = "Fe
           ))}
         </div>
 
-        {/* controls */}
+        {/* controls, aligned with the copy */}
         {n > 1 && (
-          <div className={cn("absolute bottom-5 left-6 z-20 flex items-center gap-3 lg:bottom-8 lg:left-14 xl:left-20", dark ? "text-cream-50" : "text-cocoa")}>
-            <span className="font-display text-[0.9rem] font-medium tabular-nums">{String(index + 1).padStart(2, "0")}</span>
-            <div className="flex w-28 gap-1.5 sm:w-40">
-              {slides.map((s, i) => (
-                <button key={i} type="button" onClick={() => go(i)} className="relative h-6 flex-1" aria-label={`Show slide ${i + 1}: ${s.title.replace(/\*/g, "")}`} aria-current={i === index}>
-                  <span className={cn("absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 overflow-hidden rounded-full", dark ? "bg-cream-50/25" : "bg-cocoa/15")}>
-                    {i < index && <span className="absolute inset-0 bg-current" />}
-                    {i === index &&
-                      (autoplay ? (
-                        <span
-                          key={`${index}`}
-                          className="absolute inset-0 origin-left bg-current"
-                          style={{ animation: `kt-progress ${interval}ms linear forwards`, animationPlayState: paused ? "paused" : "running" }}
-                          onAnimationEnd={() => go(index + 1)}
-                        />
-                      ) : (
-                        <span className="absolute inset-0 bg-current" />
-                      ))}
-                  </span>
-                </button>
-              ))}
-            </div>
-            <span className={cn("font-display text-[0.9rem] font-medium tabular-nums", dark ? "text-cream-50/60" : "text-cocoa-400")}>{String(n).padStart(2, "0")}</span>
-            <div className="ml-1 flex gap-1.5">
-              <button type="button" onClick={() => go(index - 1)} className={cn("grid h-10 w-10 place-items-center rounded-full border transition-colors", dark ? "border-cream-50/25 hover:bg-cream-50 hover:text-cocoa" : "border-cocoa/15 hover:bg-cocoa hover:text-cream-50")} aria-label="Previous slide">
-                <ArrowLeft className="h-4 w-4" />
-              </button>
-              <button type="button" onClick={() => go(index + 1)} className={cn("grid h-10 w-10 place-items-center rounded-full border transition-colors", dark ? "border-cream-50/25 hover:bg-cream-50 hover:text-cocoa" : "border-cocoa/15 hover:bg-cocoa hover:text-cream-50")} aria-label="Next slide">
-                <ArrowRight className="h-4 w-4" />
-              </button>
-              {autoplay && (
-                <button type="button" onClick={() => setUserPaused((v) => !v)} className={cn("grid h-10 w-10 place-items-center rounded-full border transition-colors", dark ? "border-cream-50/25 hover:bg-cream-50 hover:text-cocoa" : "border-cocoa/15 hover:bg-cocoa hover:text-cream-50")} aria-label={userPaused ? "Play slideshow" : "Pause slideshow"}>
-                  {userPaused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" />}
-                </button>
-              )}
+          <div className="pointer-events-none absolute inset-x-0 bottom-0 z-20">
+            <div className={cn("container-kt flex items-center gap-3 pb-5 lg:pb-7", dark ? "text-cream-50" : "text-cocoa")}>
+              <div className="pointer-events-auto flex items-center gap-3">
+                <span className="font-display text-[0.85rem] font-medium tabular-nums">{String(index + 1).padStart(2, "0")}</span>
+                <div className="flex w-24 gap-1.5 sm:w-32">
+                  {slides.map((s, i) => (
+                    <button key={i} type="button" onClick={() => go(i)} className="relative h-6 flex-1" aria-label={`Show slide ${i + 1}: ${s.title.replace(/\*/g, "")}`} aria-current={i === index}>
+                      <span className={cn("absolute inset-x-0 top-1/2 h-[2px] -translate-y-1/2 overflow-hidden rounded-full", dark ? "bg-cream-50/25" : "bg-cocoa/15")}>
+                        {i < index && <span className="absolute inset-0 bg-current" />}
+                        {i === index &&
+                          (autoplay ? (
+                            <span
+                              key={`${index}`}
+                              className="absolute inset-0 origin-left bg-current"
+                              style={{ animation: `kt-progress ${interval}ms linear forwards`, animationPlayState: paused ? "paused" : "running" }}
+                              onAnimationEnd={() => go(index + 1)}
+                            />
+                          ) : (
+                            <span className="absolute inset-0 bg-current" />
+                          ))}
+                      </span>
+                    </button>
+                  ))}
+                </div>
+                <span className={cn("font-display text-[0.85rem] font-medium tabular-nums", dark ? "text-cream-50/55" : "text-cocoa-400")}>{String(n).padStart(2, "0")}</span>
+                <div className="ml-2 flex gap-1">
+                  {[
+                    { label: "Previous slide", onClick: () => go(index - 1), icon: <ArrowLeft className="h-4 w-4" /> },
+                    { label: "Next slide", onClick: () => go(index + 1), icon: <ArrowRight className="h-4 w-4" /> },
+                    ...(autoplay ? [{ label: userPaused ? "Play slideshow" : "Pause slideshow", onClick: () => setUserPaused((v) => !v), icon: userPaused ? <Play className="h-3.5 w-3.5" /> : <Pause className="h-3.5 w-3.5" /> }] : []),
+                  ].map((b) => (
+                    <button
+                      key={b.label}
+                      type="button"
+                      onClick={b.onClick}
+                      aria-label={b.label}
+                      className={cn("grid h-9 w-9 place-items-center rounded-full transition-colors", dark ? "hover:bg-cream-50/12" : "hover:bg-cocoa/8")}
+                    >
+                      {b.icon}
+                    </button>
+                  ))}
+                </div>
+              </div>
             </div>
           </div>
         )}
@@ -284,7 +298,7 @@ export function HeroSlider({ slides, size = "home", interval = 6500, label = "Fe
 export function SlideBanner({ slide, top }: { slide: Slide; top?: ReactNode }) {
   return (
     <section>
-      <div className="relative overflow-hidden lg:h-[min(56svh,500px)] lg:min-h-[420px]">
+      <div className="relative overflow-hidden lg:h-[400px]">
         <SlideFace slide={slide} active size="page" heading="h1" priority controls={false}>
           {top}
         </SlideFace>
