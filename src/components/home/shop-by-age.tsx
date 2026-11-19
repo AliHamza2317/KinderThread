@@ -14,13 +14,13 @@ const AGES = [
 /** Bento of age ranges; the photograph slides in on hover. */
 export function ShopByAge() {
   return (
-    <Reveal stagger={0.08} className="grid auto-rows-[minmax(13rem,auto)] grid-cols-2 gap-3 md:grid-cols-12 md:gap-4">
+    <Reveal stagger={0.08} className="grid auto-rows-[minmax(11rem,auto)] grid-cols-2 md:auto-rows-[minmax(13rem,auto)] gap-3 md:grid-cols-12 md:gap-4">
       {AGES.map((a, i) => (
         <Link
           key={a.id}
           href={`/shop?age=${a.id}`}
           data-cursor="Shop"
-          className={cn("group relative flex flex-col justify-between overflow-hidden rounded-[1.5rem] p-5 md:rounded-[2rem] md:p-8", a.tone, a.span, i === 0 && "col-span-2 min-h-[22rem] md:col-span-6 md:min-h-[34rem]", i === 1 && "col-span-2")}
+          className={cn("group relative flex flex-col justify-between overflow-hidden rounded-[1.5rem] p-5 md:rounded-[2rem] md:p-8", a.tone, a.span, i === 0 && "col-span-2 min-h-[15rem] md:col-span-6 md:min-h-[34rem]", i === 1 && "col-span-2")}
         >
           <Image
             src={a.image}

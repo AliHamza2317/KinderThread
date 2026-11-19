@@ -65,12 +65,17 @@ export default async function MarketingPage() {
               root="hero"
               initial={home.hero}
               submitLabel="Save hero"
-              images={[{ path: "image", label: "Hero photograph", aspect: "aspect-[4/5]" }]}
+              images={[
+                { path: "image", label: "Hero photograph", aspect: "aspect-[4/5]" },
+                { path: "secondaryImage", label: "Second photograph (desktop)", aspect: "aspect-[4/5]" },
+              ]}
               fields={[
-                { path: "eyebrow", label: "Eyebrow", hint: "Short label above the heading" },
+                { path: "eyebrow", label: "Eyebrow", hint: "Short label above the heading, e.g. the season" },
                 { path: "heading", label: "Heading", wide: true },
                 { path: "subheading", label: "Supporting text", type: "textarea" },
                 { path: "imageAlt", label: "Photograph description (alt text)", wide: true },
+                { path: "productSlug", label: "Product shown on the photograph", hint: "Product URL name, e.g. tulle-party-dress. Leave empty to hide the card." },
+                { path: "badge", label: "Round badge text", hint: "Runs around the round badge, e.g. New season · Ages 0–5 ·" },
                 { type: "heading", label: "Buttons" },
                 { path: "primary.label", label: "Primary button label" },
                 { path: "primary.href", label: "Primary button link", placeholder: "/shop" },
@@ -131,21 +136,39 @@ export default async function MarketingPage() {
         </div>
 
         <div id="copy" className="scroll-mt-32">
-          <Card title="Statement, newsletter & gallery text">
+          <Card title="Newsletter & gallery text">
             <SettingsForm
               settingKey="home"
-              initial={{ statement: home.statement, newsletter: home.newsletter, gallery: home.gallery }}
+              initial={{ newsletter: home.newsletter, gallery: home.gallery }}
               submitLabel="Save text"
               fields={[
-                { type: "heading", label: "Brand statement", hint: "Use [[1]] and [[2]] where the small photos sit, and *word* for italics." },
-                { path: "statement.eyebrow", label: "Label", wide: true },
-                { path: "statement.text", label: "Statement", type: "textarea" },
                 { type: "heading", label: "Newsletter section" },
                 { path: "newsletter.heading", label: "Heading", wide: true },
                 { path: "newsletter.body", label: "Text", type: "textarea" },
                 { type: "heading", label: "Gallery section", hint: "The Instagram link and handle are set in Settings → Social." },
                 { path: "gallery.heading", label: "Heading", wide: true },
                 { path: "gallery.body", label: "Text", type: "textarea", rows: 2 },
+              ]}
+            />
+          </Card>
+        </div>
+
+        <div id="promo" className="scroll-mt-32">
+          <Card title="Campaign / sale banner" description="A large banner for Eid, 11.11 or a seasonal sale, with an optional countdown. Only switch it on when the offer is real.">
+            <SettingsForm
+              settingKey="home"
+              root="promo"
+              initial={home.promo}
+              submitLabel="Save campaign banner"
+              images={[{ path: "image", label: "Banner photograph", aspect: "aspect-[4/3]" }]}
+              fields={[
+                { path: "enabled", label: "Show the campaign banner on the homepage", type: "checkbox", wide: true },
+                { path: "eyebrow", label: "Label", hint: "e.g. Eid edit · 11.11" },
+                { path: "title", label: "Heading", wide: true },
+                { path: "body", label: "Text", type: "textarea", rows: 2 },
+                { path: "ctaLabel", label: "Button label" },
+                { path: "ctaHref", label: "Button link", placeholder: "/collections/sale" },
+                { path: "endsAt", label: "Countdown ends (optional)", type: "date", hint: "Leave empty for no countdown" },
               ]}
             />
           </Card>
@@ -159,15 +182,13 @@ export default async function MarketingPage() {
               initial={home.sections}
               submitLabel="Save visibility"
               fields={[
-                { path: "marquee", label: "Moving headline strip", type: "checkbox" },
-                { path: "statement", label: "Brand statement", type: "checkbox" },
-                { path: "categories", label: "Featured categories", type: "checkbox" },
+                { path: "trust", label: "Trust strip (COD, delivery, exchanges)", type: "checkbox" },
                 { path: "newArrivals", label: "New arrivals", type: "checkbox" },
-                { path: "edit", label: "3D collections ring", type: "checkbox" },
+                { path: "categories", label: "Shop by category", type: "checkbox" },
                 { path: "story", label: "Brand story", type: "checkbox" },
                 { path: "shopByAge", label: "Shop by age", type: "checkbox" },
                 { path: "bestSellers", label: "Best sellers", type: "checkbox" },
-                { path: "banners", label: "Promotional banners", type: "checkbox" },
+                { path: "banners", label: "Two photo banners", type: "checkbox" },
                 { path: "benefits", label: "Why Kinder Thread", type: "checkbox" },
                 { path: "gallery", label: "Instagram gallery", type: "checkbox" },
                 { path: "newsletter", label: "Newsletter sign-up", type: "checkbox" },

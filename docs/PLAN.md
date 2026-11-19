@@ -10,7 +10,24 @@
 > PostgreSQL/Prisma were removed and all pages run on dummy data in `src/data/`. Sections 8, 10 and 11 describe
 > the earlier full-stack plan; see the README for how to connect a backend later.
 >
-> **Revision 3 — "Modern Gallery" (current design):** the client found Revision 1 too plain and asked for a
+> **Revision 4 — "Quiet premium, built for phones" (current design, Nov 2026):** research into how kidswear
+> brands build their shops (first-hand look at 13 homepages incl. Bonpoint, Liewood, Konges Sløjd, Bobo Choses,
+> Jamie Kay, Primary, Minnie Minors, Bachaa Party, Baby Planet) found none using WebGL, GSAP or
+> preloaders; premium comes from art direction, and parents navigate by age. Our own Lighthouse tests showed the
+> 3D layer tripled the homepage weight. So Revision 4 keeps the Revision 3 look (cream/cocoa, Bricolage +
+> Instrument Serif accent, arched photography, rounded pills) and removes the heavy layer:
+>
+> - **Removed:** three.js hero and 3D ring, GSAP/ScrollTrigger, preloader, custom cursor, page-transition wrapper
+>   that hid every page until JavaScript loaded, velocity marquee, scroll-scrubbed statement, pinned horizontal scroll.
+> - **Added:** campaign hero (one strong photo, headline, CTA, age chips, product card) with CSS-only entrance;
+>   age-first header menu; trust strip (COD, free delivery, exchanges, help/WhatsApp); optional Eid/sale banner with
+>   countdown (off by default); floating WhatsApp button when a number is set; CSS scroll-driven reveals.
+> - **Homepage order:** hero → trust strip → New Arrivals row → shop by category → (campaign banner) → shop by age →
+>   brand story → best sellers → why Kinder Thread → newsletter. Phone page length 14,210 px → ~8,450 px.
+> - **Measured (Lighthouse mobile, real throttling, local build):** homepage score 33 → 56–66, LCP 10–17.5 s →
+>   3.4–4.6 s, blocking time 4.6 s → 0.75 s, download 2.9 MB → 0.77 MB; shop page LCP 6.5 s → 2.7–3.0 s.
+>
+> **Revision 3 — "Modern Gallery" (superseded by Revision 4):** the client found Revision 1 too plain and asked for a
 > modern, premium site with real 3D and motion. Research into 2026 web-design trends (scroll-driven
 > storytelling, practical WebGL that serves the product, restraint and performance) and award-winning fashion
 > stores led to a minimal, gallery-like direction where **the photographs are the 3D objects** — no cartoons:

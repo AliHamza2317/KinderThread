@@ -6,8 +6,7 @@ import { Header } from "@/components/layout/header";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { SearchOverlay } from "@/components/layout/search-overlay";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
-import { CustomCursor } from "@/components/motion/cursor";
-import { Preloader } from "@/components/motion/preloader";
+import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
 import { QuickAddModal } from "@/components/product/quick-add";
 import { getNavCategories } from "@/lib/catalog";
 import { PAGES_DATA } from "@/data/content";
@@ -32,8 +31,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <CartDrawer freeThreshold={settings.shipping.freeThreshold} />
       <QuickAddModal />
       <SmoothScroll enabled={settings.features.smoothScroll} />
-      <CustomCursor />
-      <Preloader />
+      <WhatsAppFloat number={settings.store.whatsapp} />
     </>
   );
 }

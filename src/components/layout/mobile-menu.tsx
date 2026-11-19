@@ -18,11 +18,17 @@ export function MobileMenu({ categories, signedIn }: { categories: NavCategory[]
 
   const links = [
     { label: "Home", href: "/" },
-    { label: "Baby Boys", href: "/collections/baby-boys" },
-    { label: "Baby Girls", href: "/collections/baby-girls" },
-    { label: "New Arrivals", href: "/collections/new-arrivals" },
+    { label: "New In", href: "/collections/new-arrivals" },
+    { label: "Girls", href: "/collections/baby-girls" },
+    { label: "Boys", href: "/collections/baby-boys" },
     { label: "Collections", href: "/collections" },
-    { label: "About Us", href: "/about" },
+    { label: "Our Story", href: "/about" },
+  ];
+  const ages = [
+    { label: "Newborn", sub: "0–6M", href: "/shop?age=newborn" },
+    { label: "Baby", sub: "6–12M", href: "/shop?age=baby" },
+    { label: "Toddler", sub: "1–2Y", href: "/shop?age=toddler" },
+    { label: "Little ones", sub: "2–5Y", href: "/shop?age=little" },
   ];
 
   return (
@@ -60,19 +66,32 @@ export function MobileMenu({ categories, signedIn }: { categories: NavCategory[]
             )}
           </AnimatePresence>
         </div>
+        <div className="border-b border-cocoa-100 py-5">
+          <p className="text-[0.72rem] font-semibold tracking-[0.14em] text-cocoa-400 uppercase">Shop by age</p>
+          <ul className="mt-3 grid grid-cols-2 gap-2">
+            {ages.map((a) => (
+              <li key={a.href}>
+                <Link href={a.href} className="flex flex-col rounded-2xl bg-cream-100 px-4 py-3 transition-colors hover:bg-cocoa hover:text-cream-50">
+                  <span className="font-display text-[1.15rem] leading-tight">{a.label}</span>
+                  <span className="text-[0.78rem] opacity-70">{a.sub}</span>
+                </Link>
+              </li>
+            ))}
+          </ul>
+        </div>
         {links.slice(1).map((l) => (
           <Link key={l.href} href={l.href} className="border-b border-cocoa-100 py-4 font-display text-[1.7rem]">
             {l.label}
           </Link>
         ))}
         <div className="mt-6 grid grid-cols-3 gap-3 text-center text-[0.8rem] font-semibold">
-          <Link href={signedIn ? "/account" : "/account/login"} className="flex flex-col items-center gap-2 rounded-md bg-cream-100 py-4">
+          <Link href={signedIn ? "/account" : "/account/login"} className="flex flex-col items-center gap-2 rounded-2xl bg-cream-100 py-4">
             <User className="h-5 w-5" /> Account
           </Link>
-          <Link href="/wishlist" className="flex flex-col items-center gap-2 rounded-md bg-cream-100 py-4">
+          <Link href="/wishlist" className="flex flex-col items-center gap-2 rounded-2xl bg-cream-100 py-4">
             <Heart className="h-5 w-5" /> Wishlist
           </Link>
-          <Link href="/track-order" className="flex flex-col items-center gap-2 rounded-md bg-cream-100 py-4">
+          <Link href="/track-order" className="flex flex-col items-center gap-2 rounded-2xl bg-cream-100 py-4">
             <PackageSearch className="h-5 w-5" /> Track order
           </Link>
         </div>

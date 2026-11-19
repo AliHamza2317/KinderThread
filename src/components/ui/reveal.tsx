@@ -1,92 +1,43 @@
-"use client";
-
-import { useRef, type ElementType, type ReactNode } from "react";
-import { gsap } from "gsap";
-import { ScrollTrigger } from "gsap/ScrollTrigger";
-import { useGSAP } from "@gsap/react";
-
-gsap.registerPlugin(ScrollTrigger, useGSAP);
+import type { ElementType, ReactNode } from "react";
 
 type Props = {
   children: ReactNode;
   as?: ElementType;
   className?: string;
+  /** kept for API compatibility; the reveal follows scroll position, not time */
   delay?: number;
   y?: number;
-  /** animate direct children one after another */
+  /** reveal direct children one after another instead of the wrapper as a whole */
   stagger?: number;
   start?: string;
 };
 
-/** Scroll-triggered fade/rise. Content is visible without JS and with reduced motion. */
-export function Reveal({ children, as: Tag = "div", className, delay = 0, y = 36, stagger, start = "top 88%" }: Props) {
-  const ref = useRef<HTMLElement>(null);
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
-      const targets = stagger ? Array.from(el.children) : [el];
-      el.setAttribute("data-reveal-ready", "");
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(targets, { opacity: 1, y: 0 });
-        return;
-      }
-      gsap.fromTo(
-        targets,
-        { opacity: 0, y },
-        {
-          opacity: 1,
-          y: 0,
-          duration: 1,
-          delay,
-          ease: "expo.out",
-          stagger: stagger ?? 0,
-          scrollTrigger: { trigger: el, start, once: true },
-        },
-      );
-    },
-    { scope: ref },
-  );
+/**
+ * Gentle rise-in as content scrolls into view, done entirely in CSS
+ * (scroll-driven animations — see `[data-reveal]` in globals.css).
+ * Content is always visible without JavaScript, in browsers without
+ * scroll-driven animation support, and for people who prefer reduced motion.
+ */
+export function Reveal({ children, as: Tag = "div", className, stagger }: Props) {
   return (
-    <Tag ref={ref} className={className} data-reveal="">
+    <Tag className={className} data-reveal={stagger ? "children" : "self"}>
       {children}
     </Tag>
   );
 }
 
-/** Split a heading into words that rise in sequence. */
-export function SplitWords({ text, className, delay = 0, as: Tag = "span", italicWords = [] }: { text: string; className?: string; delay?: number; as?: ElementType; italicWords?: string[] }) {
-  const ref = useRef<HTMLElement>(null);
-  useGSAP(
-    () => {
-      const el = ref.current;
-      if (!el) return;
-      el.setAttribute("data-reveal-ready", "");
-      const words = el.querySelectorAll("[data-word]");
-      if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) {
-        gsap.set(words, { yPercent: 0, opacity: 1 });
-        return;
-      }
-      gsap.fromTo(
-        words,
-        { yPercent: 110, opacity: 0 },
-        { yPercent: 0, opacity: 1, duration: 1.1, ease: "expo.out", stagger: 0.07, delay, scrollTrigger: { trigger: el, start: "top 90%", once: true } },
-      );
-    },
-    { scope: ref },
-  );
-  // *word* (or a word listed in italicWords) is set in the serif italic accent
+/** Heading text where *word* (or a word listed in italicWords) is set in the serif italic accent. */
+export function SplitWords({ text, className, as: Tag = "span", italicWords = [] }: { text: string; className?: string; delay?: number; as?: ElementType; italicWords?: string[] }) {
   const words = text.split(" ");
   return (
-    <Tag ref={ref} className={className} data-reveal="" aria-label={text.replace(/\*/g, "")}>
+    <Tag className={className}>
       {words.map((w, i) => {
         const accent = /^\*.+\*[.,!?]?$/.test(w) || italicWords.includes(w.replace(/[.,!?*]/g, ""));
+        const word = w.replace(/\*/g, "");
         return (
-          <span key={i} className="inline-block overflow-hidden pb-[0.12em] align-top" aria-hidden>
-            <span data-word className={`inline-block will-change-transform ${accent ? "font-serif-accent pr-[0.04em] text-sage-700" : ""}`}>
-              {w.replace(/\*/g, "")}
-              {i < words.length - 1 ? "  " : ""}
-            </span>
+          <span key={i}>
+            {accent ? <span className="font-serif-accent pr-[0.04em] text-sage-700">{word}</span> : word}
+            {i < words.length - 1 ? " " : ""}
           </span>
         );
       })}

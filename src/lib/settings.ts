@@ -114,7 +114,11 @@ export const settingSchemas = {
           ),
         image: z.string().default("/images/editorial/hero-tulle.webp"),
         imageAlt: z.string().default("A toddler in a mint tulle dress sitting by a sunny window"),
-        // text that runs around the rotating badge on the hero photo
+        // a second, smaller photograph layered beside the main one (desktop)
+        secondaryImage: z.string().default("/images/products/nordic-cardigan-rose.webp"),
+        // product shown on the hero photograph (its live name and price are used)
+        productSlug: z.string().default("tulle-party-dress"),
+        // text that runs around the round badge on the hero photo
         badge: z.string().default("New season · Ages 0–5 · Kinder Thread · "),
         primary: link.default({ label: "Explore Collection", href: "/shop" }),
         secondary: link.default({ label: "Our Story", href: "/about" }),
@@ -137,19 +141,19 @@ export const settingSchemas = {
         cta: link.default({ label: "Read our story", href: "/about" }),
       })
       .prefault({}),
-    statement: z
+    // seasonal campaign / sale slot (Eid, 11.11, winter sale…) — off until you switch it on
+    promo: z
       .object({
-        eyebrow: z.string().default("The Kinder Thread way"),
-        // [[1]], [[2]] mark where the small photographs sit; *word* is set in italics
-        text: z
-          .string()
-          .default(
-            "Soft, considered clothes for the [[1]] littlest people and their *biggest* [[2]] little adventures — chosen with care and sized by age, from the very first days to five.",
-          ),
-        images: z.array(z.string()).default(["/images/hero/h3.webp", "/images/hero/h8.webp"]),
+        enabled: z.boolean().default(false),
+        eyebrow: z.string().default("Eid edit"),
+        title: z.string().default("Dressed for Eid"),
+        body: z.string().default("Festive outfits for little ones, ready to ship across Pakistan."),
+        ctaLabel: z.string().default("Shop the edit"),
+        ctaHref: z.string().default("/collections/new-arrivals"),
+        endsAt: z.string().default(""),
+        image: z.string().default("/images/editorial/cat-baby-girls.webp"),
       })
       .prefault({}),
-    marquee: z.array(z.string()).default(["Soft on skin", "Made to play", "Ages 0–5", "Sized by age", "Cash on delivery"]),
     benefits: z
       .array(z.object({ title: z.string(), body: z.string(), icon: z.string(), image: z.string().default("") }))
       .default([
@@ -173,17 +177,15 @@ export const settingSchemas = {
       .prefault({}),
     sections: z
       .object({
-        marquee: z.boolean().default(true),
-        statement: z.boolean().default(true),
+        trust: z.boolean().default(true),
         categories: z.boolean().default(true),
         newArrivals: z.boolean().default(true),
-        edit: z.boolean().default(true),
         story: z.boolean().default(true),
         shopByAge: z.boolean().default(true),
         bestSellers: z.boolean().default(true),
-        banners: z.boolean().default(true),
+        banners: z.boolean().default(false),
         benefits: z.boolean().default(true),
-        gallery: z.boolean().default(true),
+        gallery: z.boolean().default(false),
         newsletter: z.boolean().default(true),
       })
       .prefault({}),

@@ -11,21 +11,17 @@ const bricolage = localFont({
   fallback: ["system-ui", "sans-serif"],
 });
 
+// the serif is only used for single italic accent words, so it is not preloaded
 const instrument = localFont({
-  src: [
-    { path: "../fonts/instrument-serif.woff2", style: "normal", weight: "400" },
-    { path: "../fonts/instrument-serif-italic.woff2", style: "italic", weight: "400" },
-  ],
+  src: [{ path: "../fonts/instrument-serif-italic.woff2", style: "italic", weight: "400" }],
   variable: "--font-instrument",
   display: "swap",
+  preload: false,
   fallback: ["Georgia", "serif"],
 });
 
 const inter = localFont({
-  src: [
-    { path: "../fonts/inter.woff2", style: "normal", weight: "100 900" },
-    { path: "../fonts/inter-italic.woff2", style: "italic", weight: "100 900" },
-  ],
+  src: [{ path: "../fonts/inter.woff2", style: "normal", weight: "100 900" }],
   variable: "--font-inter",
   display: "swap",
   fallback: ["system-ui", "sans-serif"],
@@ -62,14 +58,6 @@ export const viewport: Viewport = {
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     <html lang="en" className={`${bricolage.variable} ${instrument.variable} ${inter.variable}`} suppressHydrationWarning>
-      <head>
-        <script
-          // marks JS availability for reveal animations (visible fallback after 4s) and the first-visit intro
-          dangerouslySetInnerHTML={{
-            __html: `(function(){var d=document.documentElement;d.classList.add('js');setTimeout(function(){d.classList.add('reveal-fallback')},4000);try{var p=location.pathname;if(p.indexOf('/admin')!==0&&p.indexOf('/coming-soon')!==0&&!sessionStorage.getItem('kt-intro')&&!matchMedia('(prefers-reduced-motion: reduce)').matches){d.classList.add('kt-intro');setTimeout(function(){d.classList.remove('kt-intro')},6000)}}catch(e){}})();`,
-          }}
-        />
-      </head>
       <body className="grain">
         <a href="#main" className="sr-only focus:not-sr-only focus:fixed focus:top-3 focus:left-3 focus:z-[200] focus:rounded-full focus:bg-cocoa focus:px-4 focus:py-2 focus:text-cream">
           Skip to content

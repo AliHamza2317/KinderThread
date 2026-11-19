@@ -53,7 +53,7 @@ export function Benefits({ items }: { items: Benefit[] }) {
           <div className="sticky top-28">
             <div className="relative aspect-[4/5] overflow-hidden rounded-[2rem] bg-cream-200 shadow-[0_40px_80px_-40px_rgb(20_16_12/0.45)]">
               {items.map((b, i) =>
-                b.image && (near || i === 0) ? (
+                b.image && near ? (
                   <div
                     key={b.title}
                     className="absolute inset-0 transition-[clip-path] duration-[1100ms] ease-[cubic-bezier(0.76,0,0.24,1)]"
@@ -87,7 +87,7 @@ export function Benefits({ items }: { items: Benefit[] }) {
         </div>
       )}
 
-      <ol className={cn(withImages ? "lg:col-span-7" : "", "flex flex-col gap-5 lg:gap-0")}>
+      <ol className={cn(withImages ? "lg:col-span-7" : "", "flex flex-col gap-3 lg:gap-0")}>
         {items.map((b, i) => {
           const Icon = ICONS[b.icon] ?? Sparkles;
           const on = i === active;
@@ -99,24 +99,21 @@ export function Benefits({ items }: { items: Benefit[] }) {
               }}
               data-i={i}
               className={cn(
-                "overflow-hidden rounded-[1.75rem] bg-cream-50 lg:flex lg:min-h-[52vh] lg:flex-col lg:justify-center lg:overflow-visible lg:rounded-none lg:border-t lg:border-cocoa/10 lg:bg-transparent lg:py-14 lg:transition-opacity lg:duration-700",
+                "overflow-hidden rounded-[1.75rem] bg-cream-50 lg:flex lg:min-h-[44vh] lg:flex-col lg:justify-center lg:overflow-visible lg:rounded-none lg:border-t lg:border-cocoa/10 lg:bg-transparent lg:py-14 lg:transition-opacity lg:duration-700",
                 !on && "lg:opacity-30",
               )}
             >
-              {b.image && (
-                <div className="relative aspect-[16/11] lg:hidden">
-                  <Image src={b.image} alt="" fill sizes="100vw" className="object-cover" />
-                </div>
-              )}
-              <div className="p-6 lg:p-0">
-                <div className="flex items-center gap-4">
-                  <span className={cn("grid h-12 w-12 place-items-center rounded-full lg:h-14 lg:w-14", TONES[i % TONES.length])}>
+              <div className="flex gap-4 p-5 lg:block lg:p-0">
+                <div className="flex shrink-0 items-center gap-4">
+                  <span className={cn("grid h-11 w-11 place-items-center rounded-full lg:h-14 lg:w-14", TONES[i % TONES.length])}>
                     <Icon className="h-5 w-5 lg:h-6 lg:w-6" strokeWidth={1.6} />
                   </span>
-                  <span className="font-display text-[0.95rem] font-medium text-cocoa-400 tabular-nums">{String(i + 1).padStart(2, "0")}</span>
+                  <span className="hidden font-display text-[0.95rem] font-medium text-cocoa-400 tabular-nums lg:inline">{String(i + 1).padStart(2, "0")}</span>
                 </div>
-                <h3 className="mt-5 font-display text-[clamp(1.8rem,1.1rem+2.4vw,3.6rem)] leading-[0.98] font-medium tracking-[-0.045em] text-cocoa lg:mt-7">{b.title}</h3>
-                <p className="mt-3 max-w-lg text-[1rem] leading-relaxed text-cocoa-500 lg:mt-5 lg:text-[1.1rem]">{b.body}</p>
+                <div className="min-w-0">
+                  <h3 className="font-display text-[clamp(1.3rem,0.9rem+2.4vw,3.6rem)] leading-[1.02] font-medium tracking-[-0.04em] text-cocoa lg:mt-7 lg:leading-[0.98]">{b.title}</h3>
+                  <p className="mt-1.5 max-w-lg text-[0.92rem] leading-relaxed text-cocoa-500 lg:mt-5 lg:text-[1.1rem]">{b.body}</p>
+                </div>
               </div>
             </li>
           );

@@ -4,7 +4,7 @@ import type { ReactNode } from "react";
 import { Reveal, SplitWords } from "@/components/ui/reveal";
 import { cn } from "@/lib/utils";
 
-export function SectionHeader({ eyebrow, title, body, link, align = "left", className, children }: { eyebrow?: string; title: string; body?: string; link?: { href: string; label: string }; align?: "left" | "center"; className?: string; children?: ReactNode }) {
+export function SectionHeader({ id, eyebrow, title, body, link, align = "left", className, children }: { id?: string; eyebrow?: string; title: string; body?: string; link?: { href: string; label: string }; align?: "left" | "center"; className?: string; children?: ReactNode }) {
   return (
     <div className={cn("mb-10 flex flex-col gap-6 md:mb-14", align === "center" ? "items-center text-center" : "md:flex-row md:items-end md:justify-between", className)}>
       <div className={cn("max-w-2xl", align === "center" && "flex flex-col items-center")}>
@@ -13,7 +13,7 @@ export function SectionHeader({ eyebrow, title, body, link, align = "left", clas
             <p className="eyebrow eyebrow-rule">{eyebrow}</p>
           </Reveal>
         )}
-        <h2 className="display-lg mt-4">
+        <h2 id={id} className="display-lg mt-4">
           <SplitWords text={title} />
         </h2>
         {body && (

@@ -39,14 +39,16 @@ export function Header({ categories, signedIn }: Props) {
   const collections = categories.filter((c) => c.kind === "collection");
   const featured = categories.find((c) => c.isFeatured && c.image) ?? categories[0];
 
-  const nav = [
-    { label: "Home", href: "/" },
+  // age first, like the brands parents already shop with (ranges shown on wide screens)
+  const nav: { label: string; href: string; menu?: string; sub?: string }[] = [
     { label: "Shop", href: "/shop", menu: "shop" },
-    { label: "Baby Boys", href: "/collections/baby-boys" },
-    { label: "Baby Girls", href: "/collections/baby-girls" },
-    { label: "New Arrivals", href: "/collections/new-arrivals" },
-    { label: "Collections", href: "/collections", menu: "collections" },
-    { label: "About Us", href: "/about" },
+    { label: "New In", href: "/collections/new-arrivals" },
+    { label: "Newborn", sub: "0–6M", href: "/shop?age=newborn" },
+    { label: "Baby", sub: "6–12M", href: "/shop?age=baby" },
+    { label: "Toddler", sub: "1–5Y", href: "/shop?age=toddler,little" },
+    { label: "Girls", href: "/collections/baby-girls" },
+    { label: "Boys", href: "/collections/baby-boys" },
+    { label: "Our Story", href: "/about" },
   ];
 
   return (
@@ -94,6 +96,7 @@ export function Header({ categories, signedIn }: Props) {
                   >
                     {active && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-cocoa/[0.06]" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
                     {item.label}
+                    {item.sub && <span className="hidden text-[0.72rem] font-normal text-cocoa-400 xl:inline">{item.sub}</span>}
                     {item.menu && <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", openMenu === item.menu && "rotate-180")} />}
                   </Link>
                 </li>
@@ -126,7 +129,7 @@ export function Header({ categories, signedIn }: Props) {
             onMouseEnter={() => setOpenMenu(openMenu)}
           >
             <div className="grid grid-cols-12 gap-8 p-10">
-              {openMenu === "shop" ? (
+              {openMenu === "shop" && (
                 <>
                   <MenuColumn title="Shop by category" className="col-span-3">
                     <MenuLink href="/shop">All products</MenuLink>
@@ -165,29 +168,6 @@ export function Header({ categories, signedIn }: Props) {
                       </div>
                     </Link>
                   )}
-                </>
-              ) : (
-                <>
-                  <MenuColumn title="Collections" className="col-span-4">
-                    <MenuLink href="/collections/new-arrivals">New Arrivals</MenuLink>
-                    <MenuLink href="/collections/best-sellers">Best Sellers</MenuLink>
-                    {collections.map((c) => (
-                      <MenuLink key={c.id} href={`/collections/${c.slug}`}>
-                        {c.name}
-                      </MenuLink>
-                    ))}
-                    <MenuLink href="/collections">View all collections</MenuLink>
-                  </MenuColumn>
-                  <div className="col-span-8 grid grid-cols-3 gap-4">
-                    {collections.slice(0, 3).map((c) => (
-                      <Link key={c.id} href={`/collections/${c.slug}`} className="group">
-                        <div className="relative aspect-[4/5] overflow-hidden rounded-[1.25rem] bg-cream-100">
-                          {c.image && <Image src={c.image} alt="" fill sizes="240px" className="object-cover transition-transform duration-700 group-hover:scale-105" />}
-                        </div>
-                        <p className="mt-3 font-display text-lg">{c.name}</p>
-                      </Link>
-                    ))}
-                  </div>
                 </>
               )}
             </div>

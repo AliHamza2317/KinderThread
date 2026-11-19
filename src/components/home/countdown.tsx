@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-export function Countdown({ to }: { to: string }) {
+export function Countdown({ to, label = "Time until launch" }: { to: string; label?: string }) {
   const target = new Date(to).getTime();
   const [now, setNow] = useState<number | null>(null);
   useEffect(() => {
@@ -20,7 +20,7 @@ export function Countdown({ to }: { to: string }) {
     ["seconds", Math.floor(diff / 1e3) % 60],
   ] as const;
   return (
-    <dl className="mt-8 flex gap-3" aria-label="Time until launch">
+    <dl className="mt-8 flex gap-3" aria-label={label}>
       {parts.map(([k, v]) => (
         <div key={k} className="min-w-[4.5rem] rounded-md bg-cream-100 px-3 py-3 text-center">
           <dd className="font-display text-3xl tabular-nums">{String(v).padStart(2, "0")}</dd>

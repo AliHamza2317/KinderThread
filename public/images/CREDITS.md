@@ -47,8 +47,3 @@ Unsplash licence note: stock photos don't come with model or property releases. 
 | `products/sleepsuit-set.webp` | https://images.unsplash.com/photo-1569974641446-22542de88536 |
 | `products/rainbow-socks.webp` | https://images.unsplash.com/photo-1542355581-caf7454785ca |
 | `products/linen-romper-set.webp` | https://images.unsplash.com/photo-1777397660834-67c6d0eabe15 |
-
-`hero/h1–h10.webp` and `ring/*.webp` are smaller crops of the photos above (used by the marquee, the statement and the 3D ring)
-(hero: hero-tulle, linen-shirt-sky, cat-newborn, nordic-cardigan-rose, crochet-booties-coral,
-dot-smock-dress-lilac, knit-bloomers-moss, gallery/g1, chunky-sweater-rust, lace-dress-ivory;
-ring: the category images plus gallery/g1, nordic-cardigan-rose and crochet-booties-cream).
