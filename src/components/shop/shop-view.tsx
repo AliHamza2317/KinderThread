@@ -3,7 +3,6 @@ import { Suspense, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { HeroSlider, SlideBanner, type Slide } from "@/components/home/hero-slider";
 import { Breadcrumbs, PageHero, PillNav, type Crumb } from "@/components/layout/page-hero";
-import { SplitWords } from "@/components/ui/reveal";
 import { ProductCard } from "@/components/product/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import type { ProductCardData } from "@/lib/catalog";
@@ -72,14 +71,9 @@ export function ShopView({
     <ShopProvider>
       {slider && slider.length > 0 ? (
         <>
+          {/* the slider is the visual header here; the page title stays for screen readers and search */}
+          <h1 className="sr-only">{title.replace(/\*/g, "")}</h1>
           <HeroSlider slides={slider} size="page" label="Shop highlights" />
-          <div className="container-kt mt-8 text-center md:mt-10">
-            <Breadcrumbs items={breadcrumb} align="center" />
-            <h1 className="display-md mt-3">
-              <SplitWords text={title} />
-            </h1>
-            {description && <p className="mx-auto mt-2 max-w-xl text-[0.98rem] text-cocoa-500">{description}</p>}
-          </div>
         </>
       ) : banner ? (
         <SlideBanner slide={banner} top={<Breadcrumbs items={breadcrumb} className="mb-6 [&_*]:!text-current [&_*]:opacity-80" />} />
