@@ -1,34 +1,14 @@
 import Link from "next/link";
-import { Suspense } from "react";
+import { Suspense, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
+import { PageHero, PillNav, type Crumb } from "@/components/layout/page-hero";
 import { ProductCard } from "@/components/product/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import type { ProductCardData } from "@/lib/catalog";
 import { cn } from "@/lib/utils";
-import { ActiveFilters, FilterPanel, MobileFilters, PendingGrid, ShopProvider, SortSelect, type Facets } from "./filters";
+import { ActiveFilters, AgePills, FilterDrawer, PendingGrid, ShopProvider, SortSelect, type Facets } from "./filters";
 
-export function Breadcrumbs({ items }: { items: { label: string; href?: string }[] }) {
-  return (
-    <nav aria-label="Breadcrumb" className="text-[0.8rem] text-cocoa-500">
-      <ol className="flex flex-wrap items-center gap-1.5">
-        {items.map((it, i) => (
-          <li key={i} className="flex items-center gap-1.5">
-            {i > 0 && <span aria-hidden>/</span>}
-            {it.href ? (
-              <Link href={it.href} className="hover:text-cocoa hover:underline">
-                {it.label}
-              </Link>
-            ) : (
-              <span aria-current="page" className="text-cocoa">
-                {it.label}
-              </span>
-            )}
-          </li>
-        ))}
-      </ol>
-    </nav>
-  );
-}
+export { Breadcrumbs } from "@/components/layout/page-hero";
 
 function pageHref(basePath: string, sp: Record<string, string | string[] | undefined>, page: number) {
   const p = new URLSearchParams();
@@ -38,11 +18,18 @@ function pageHref(basePath: string, sp: Record<string, string | string[] | undef
   return qs ? `${basePath}?${qs}` : basePath;
 }
 
+/**
+ * Collection / shop listing in the style of brand stores: a title band (with the
+ * collection photo when there is one), collection pills, a slim toolbar with the
+ * product count, quick age filters and a "Filter & sort" drawer, then a full-width grid.
+ */
 export function ShopView({
   eyebrow,
   title,
   description,
   breadcrumb,
+  image,
+  pills,
   products,
   total,
   page,
@@ -53,11 +40,14 @@ export function ShopView({
   hideGender,
   showSample,
   emptyAction,
+  heroChildren,
 }: {
   eyebrow?: string;
   title: string;
   description?: string | null;
-  breadcrumb: { label: string; href?: string }[];
+  breadcrumb: Crumb[];
+  image?: string | null;
+  pills?: { label: string; href: string; active?: boolean }[];
   products: ProductCardData[];
   total: number;
   page: number;
@@ -68,88 +58,94 @@ export function ShopView({
   hideGender?: boolean;
   showSample: boolean;
   emptyAction?: { href: string; label: string };
+  heroChildren?: ReactNode;
 }) {
   return (
     <ShopProvider>
-      <div className="container-kt pt-8 pb-10 md:pt-12">
-        <Breadcrumbs items={breadcrumb} />
-        <div className="mt-6 flex flex-col gap-4 md:flex-row md:items-end md:justify-between">
-          <div className="max-w-2xl">
-            {eyebrow && <p className="eyebrow eyebrow-rule">{eyebrow}</p>}
-            <h1 className="display-lg mt-3">{title}</h1>
-            {description && <p className="mt-3 text-[1.02rem] leading-relaxed text-cocoa-500">{description}</p>}
-          </div>
-          <p className="text-[0.85rem] text-cocoa-500" aria-live="polite">
-            {total} {total === 1 ? "style" : "styles"}
+      <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
+        {heroChildren}
+      </PageHero>
+
+      {pills && pills.length > 0 && <PillNav items={pills} label="Collections" className="mt-6" />}
+
+      <div className="container-kt mt-8 md:mt-10">
+        <div className="flex items-center gap-3 border-y border-cocoa/10 py-3">
+          <p className="shrink-0 text-[0.85rem] text-cocoa-500" aria-live="polite">
+            <span className="font-semibold text-cocoa">{total}</span> {total === 1 ? "style" : "styles"}
           </p>
+          <div className="mx-auto hidden lg:block">
+            <Suspense>
+              <AgePills />
+            </Suspense>
+          </div>
+          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+            <Suspense>
+              <div className="hidden md:block">
+                <SortSelect />
+              </div>
+              <FilterDrawer facets={facets} total={total} hideGender={hideGender} />
+            </Suspense>
+          </div>
+        </div>
+        <div className="mt-3 lg:hidden">
+          <Suspense>
+            <div className="scrollbar-none -mx-5 overflow-x-auto px-5 [&>div]:flex-nowrap">
+              <AgePills />
+            </div>
+          </Suspense>
+        </div>
+        <div className="mt-4">
+          <Suspense>
+            <ActiveFilters />
+          </Suspense>
         </div>
       </div>
 
-      <div className="container-kt grid gap-10 pb-10 lg:grid-cols-[250px_1fr]">
-        <aside className="hidden lg:block" aria-label="Filters">
-          <div className="sticky top-28 max-h-[calc(100dvh-8rem)] overflow-y-auto pr-2" data-lenis-prevent>
-            <Suspense>
-              <FilterPanel facets={facets} hideGender={hideGender} />
-            </Suspense>
-          </div>
-        </aside>
-        <div className="min-w-0">
-          <div className="mb-6 flex flex-wrap items-center justify-between gap-3 border-b border-cocoa-100 pb-4">
-            <Suspense>
-              <MobileFilters facets={facets} total={total} hideGender={hideGender} />
-              <div className="hidden lg:block">
-                <ActiveFilters />
-              </div>
-              <div className="ml-auto">
-                <SortSelect />
-              </div>
-            </Suspense>
-          </div>
-          <div className="mb-4 lg:hidden">
-            <Suspense>
-              <ActiveFilters />
-            </Suspense>
-          </div>
-          <PendingGrid>
-            {products.length ? (
-              <ul className="grid grid-cols-2 gap-x-4 gap-y-12 md:gap-x-6 xl:grid-cols-3">
-                {products.map((p, i) => (
-                  <li key={p.id}>
-                    <ProductCard product={p} priority={i < 3} showSample={showSample} />
-                  </li>
-                ))}
-              </ul>
-            ) : (
-              <div className="stitch-border flex flex-col items-center rounded-[1.5rem] px-6 py-20 text-center">
-                <p className="font-display text-2xl">No styles match these filters</p>
-                <p className="mt-2 max-w-sm text-cocoa-500">Try removing a filter or two — or browse everything we have.</p>
-                <ButtonLink href={emptyAction?.href ?? basePath} variant="secondary" className="mt-6">
-                  {emptyAction?.label ?? "Clear filters"}
-                </ButtonLink>
-              </div>
-            )}
-          </PendingGrid>
-
-          {pages > 1 && (
-            <nav className="mt-16 flex items-center justify-center gap-2" aria-label="Pagination">
-              {page > 1 && (
-                <Link href={pageHref(basePath, searchParams, page - 1)} className="grid h-11 w-11 place-items-center rounded-full border border-cocoa-100 hover:border-cocoa" aria-label="Previous page">
-                  <ChevronLeft className="h-4 w-4" />
-                </Link>
-              )}
-              {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
-                <Link key={n} href={pageHref(basePath, searchParams, n)} aria-current={n === page ? "page" : undefined} className={cn("grid h-11 min-w-11 place-items-center rounded-full px-3 text-sm font-bold", n === page ? "bg-cocoa text-cream-50" : "hover:bg-cocoa-50")}>
-                  {n}
-                </Link>
+      <div className="container-kt pt-6 pb-10">
+        <PendingGrid>
+          {products.length ? (
+            <ul className="grid grid-cols-2 gap-x-3 gap-y-10 md:gap-x-5 md:gap-y-14 lg:grid-cols-3 xl:grid-cols-4">
+              {products.map((p, i) => (
+                <li key={p.id}>
+                  <ProductCard product={p} priority={i < 2} showSample={showSample} />
+                </li>
               ))}
-              {page < pages && (
-                <Link href={pageHref(basePath, searchParams, page + 1)} className="grid h-11 w-11 place-items-center rounded-full border border-cocoa-100 hover:border-cocoa" aria-label="Next page">
-                  <ChevronRight className="h-4 w-4" />
-                </Link>
-              )}
-            </nav>
+            </ul>
+          ) : (
+            <div className="flex flex-col items-center rounded-[2rem] bg-cream-100 px-6 py-20 text-center">
+              <p className="font-display text-2xl tracking-[-0.03em]">No styles match these filters</p>
+              <p className="mt-2 max-w-sm text-cocoa-500">Try removing a filter or two — or browse everything we have.</p>
+              <ButtonLink href={emptyAction?.href ?? basePath} variant="secondary" className="mt-6">
+                {emptyAction?.label ?? "Clear filters"}
+              </ButtonLink>
+            </div>
           )}
-        </div>
+        </PendingGrid>
+
+        {pages > 1 && (
+          <nav className="mt-16 flex items-center justify-center gap-2" aria-label="Pagination">
+            {page > 1 && (
+              <Link href={pageHref(basePath, searchParams, page - 1)} className="grid h-11 w-11 place-items-center rounded-full border border-cocoa/12 hover:border-cocoa" aria-label="Previous page">
+                <ChevronLeft className="h-4 w-4" />
+              </Link>
+            )}
+            {Array.from({ length: pages }, (_, i) => i + 1).map((n) => (
+              <Link
+                key={n}
+                href={pageHref(basePath, searchParams, n)}
+                aria-current={n === page ? "page" : undefined}
+                className={cn("grid h-11 min-w-11 place-items-center rounded-full px-3 text-sm font-semibold", n === page ? "bg-cocoa text-cream-50" : "hover:bg-cocoa/5")}
+              >
+                {n}
+              </Link>
+            ))}
+            {page < pages && (
+              <Link href={pageHref(basePath, searchParams, page + 1)} className="grid h-11 w-11 place-items-center rounded-full border border-cocoa/12 hover:border-cocoa" aria-label="Next page">
+                <ChevronRight className="h-4 w-4" />
+              </Link>
+            )}
+          </nav>
+        )}
       </div>
     </ShopProvider>
   );

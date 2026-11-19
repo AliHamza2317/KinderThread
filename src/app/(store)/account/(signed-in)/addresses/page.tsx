@@ -12,7 +12,7 @@ export default async function AddressesPage() {
   return (
     <div>
       <Eyebrow>Addresses</Eyebrow>
-      <h1 className="display-md mt-3">Delivery addresses</h1>
+      <h2 className="display-md mt-3">Delivery addresses</h2>
       <p className="mt-2 mb-8 text-cocoa-500">Your default address is filled in automatically at checkout.</p>
       <AddressBook addresses={addresses} defaultName={user.name} defaultPhone={user.phone} />
     </div>

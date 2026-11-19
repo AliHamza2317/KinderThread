@@ -65,7 +65,7 @@ function useParamsUpdater() {
 function Group({ title, children }: { title: string; children: ReactNode }) {
   return (
     <fieldset className="border-b border-cocoa-100 py-6 first:pt-0">
-      <legend className="float-left mb-4 w-full text-[0.72rem] font-bold tracking-[0.18em] text-cocoa-500 uppercase">{title}</legend>
+      <legend className="float-left mb-4 w-full text-[0.7rem] font-semibold tracking-[0.16em] text-cocoa-400 uppercase">{title}</legend>
       <div className="clear-left">{children}</div>
     </fieldset>
   );
@@ -74,18 +74,34 @@ function Group({ title, children }: { title: string; children: ReactNode }) {
 function CheckRow({ checked, onChange, children }: { checked: boolean; onChange: () => void; children: ReactNode }) {
   return (
     <label className="flex cursor-pointer items-center gap-3 py-1.5 text-[0.92rem] text-cocoa-600 hover:text-cocoa">
-      <input type="checkbox" checked={checked} onChange={onChange} className="kt-checkbox h-5 w-5 shrink-0 appearance-none rounded-md border border-cocoa-200 bg-cream-50 transition checked:border-sage-600 checked:bg-sage-600" />
+      <input type="checkbox" checked={checked} onChange={onChange} className="kt-checkbox h-5 w-5 shrink-0 appearance-none rounded-md border border-cocoa-200 bg-cream-50 transition checked:border-cocoa checked:bg-cocoa" />
       {children}
     </label>
   );
 }
 
-export function FilterPanel({ facets, hideGender }: { facets: Facets; hideGender?: boolean }) {
-  const { sp, list, toggle, push } = useParamsUpdater();
+export function FilterPanel({ facets, hideGender, withSort }: { facets: Facets; hideGender?: boolean; withSort?: boolean }) {
+  const { sp, list, toggle, push, set } = useParamsUpdater();
   const min = Number(sp.get("min") ?? 0);
   const max = Number(sp.get("max") ?? 0);
   return (
     <div>
+      {withSort && (
+        <Group title="Sort by">
+          {SORTS.map((o) => (
+            <label key={o.value || "featured"} className="flex cursor-pointer items-center gap-3 py-1.5 text-[0.92rem] text-cocoa-600 hover:text-cocoa">
+              <input
+                type="radio"
+                name="sort"
+                checked={(sp.get("sort") ?? "") === o.value}
+                onChange={() => set("sort", o.value || null)}
+                className="h-5 w-5 shrink-0 appearance-none rounded-full border border-cocoa-200 bg-cream-50 transition checked:border-[6px] checked:border-cocoa"
+              />
+              {o.label}
+            </label>
+          ))}
+        </Group>
+      )}
       <Group title="Age">
         {AGE_GROUPS.map((a) => (
           <CheckRow key={a.id} checked={list("age").includes(a.id)} onChange={() => toggle("age", a.id)}>
@@ -151,7 +167,7 @@ export function FilterPanel({ facets, hideGender }: { facets: Facets; hideGender
                   })
                 }
                 onClick={() => on && push((q) => (q.delete("min"), q.delete("max")))}
-                className="h-5 w-5 shrink-0 appearance-none rounded-full border border-cocoa-200 bg-cream-50 transition checked:border-[6px] checked:border-sage-600"
+                className="h-5 w-5 shrink-0 appearance-none rounded-full border border-cocoa-200 bg-cream-50 transition checked:border-[6px] checked:border-cocoa"
               />
               {p.label}
             </label>
@@ -190,11 +206,11 @@ export function ActiveFilters() {
   return (
     <div className="flex flex-wrap items-center gap-2">
       {chips.map((c) => (
-        <button key={c.label} onClick={c.remove} className="inline-flex items-center gap-1.5 rounded-full bg-cocoa-50 py-1.5 pr-2.5 pl-3.5 text-[0.8rem] font-semibold text-cocoa-600 transition hover:bg-cocoa-100" aria-label={`Remove filter ${c.label}`}>
+        <button key={c.label} onClick={c.remove} className="inline-flex items-center gap-1.5 rounded-full border border-cocoa/10 bg-cream-50 py-1.5 pr-2.5 pl-3.5 text-[0.8rem] font-medium text-cocoa-600 transition hover:border-cocoa" aria-label={`Remove filter ${c.label}`}>
           {c.label} <X className="h-3.5 w-3.5" />
         </button>
       ))}
-      <button onClick={() => push((q) => KEYS.forEach((k) => q.delete(k)))} className="px-2 text-[0.8rem] font-bold text-sage-700 hover:underline">
+      <button onClick={() => push((q) => KEYS.forEach((k) => q.delete(k)))} className="px-2 text-[0.8rem] font-semibold text-cocoa underline underline-offset-4 hover:text-sage-700">
         Clear all
       </button>
     </div>
@@ -205,8 +221,8 @@ export function SortSelect() {
   const { sp, set } = useParamsUpdater();
   return (
     <label className="flex items-center gap-2 text-[0.85rem] text-cocoa-500">
-      <span className="hidden sm:inline">Sort by</span>
-      <select value={sp.get("sort") ?? ""} onChange={(e) => set("sort", e.target.value || null)} className="h-10 cursor-pointer rounded-full border border-cocoa-100 bg-cream-50 pr-8 pl-4 text-[0.85rem] font-semibold text-cocoa focus:border-sage-500 focus:outline-none" aria-label="Sort products">
+      <span className="hidden xl:inline">Sort by</span>
+      <select value={sp.get("sort") ?? ""} onChange={(e) => set("sort", e.target.value || null)} className="h-10 cursor-pointer rounded-full border border-cocoa/12 bg-cream-50 pr-8 pl-4 text-[0.85rem] font-medium text-cocoa focus:border-cocoa focus:outline-none" aria-label="Sort products">
         {SORTS.map((s) => (
           <option key={s.value} value={s.value}>
             {s.label}
@@ -217,18 +233,46 @@ export function SortSelect() {
   );
 }
 
-export function MobileFilters({ facets, total, hideGender }: { facets: Facets; total: number; hideGender?: boolean }) {
+/** Quick age filters shown in the toolbar (the most-used filter for parents). */
+export function AgePills() {
+  const { list, toggle } = useParamsUpdater();
+  const on = list("age");
+  return (
+    <div className="flex flex-wrap gap-1.5" role="group" aria-label="Filter by age">
+      {AGE_GROUPS.map((a) => {
+        const active = on.includes(a.id);
+        const [name, range] = a.label.split(" · ");
+        return (
+          <button
+            key={a.id}
+            type="button"
+            onClick={() => toggle("age", a.id)}
+            aria-pressed={active}
+            className={cn("inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[0.82rem] font-medium whitespace-nowrap transition-colors", active ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa/12 text-cocoa-600 hover:border-cocoa hover:text-cocoa")}
+          >
+            {name}
+            <span className={cn("text-[0.74rem]", active ? "text-cream-200" : "text-cocoa-400")}>{range}</span>
+          </button>
+        );
+      })}
+    </div>
+  );
+}
+
+/** "Filter & sort" button + drawer (all screen sizes, like most brand stores). */
+export function FilterDrawer({ facets, total, hideGender }: { facets: Facets; total: number; hideGender?: boolean }) {
   const [open, setOpen] = useState(false);
   const { sp } = useParamsUpdater();
   const count = KEYS.filter((k) => sp.get(k)).length;
   return (
     <>
-      <button onClick={() => setOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-full border border-cocoa-100 px-4 text-[0.85rem] font-semibold lg:hidden">
-        <SlidersHorizontal className="h-4 w-4" /> Filters {count > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-cocoa px-1 text-[0.65rem] text-cream-50">{count}</span>}
+      <button onClick={() => setOpen(true)} className="inline-flex h-10 items-center gap-2 rounded-full bg-cocoa px-4 text-[0.85rem] font-medium text-cream-50 transition-colors hover:bg-sage-700">
+        <SlidersHorizontal className="h-4 w-4" /> Filter <span className="hidden sm:inline">& sort</span>
+        {count > 0 && <span className="grid h-5 min-w-5 place-items-center rounded-full bg-cream-50 px-1 text-[0.65rem] font-semibold text-cocoa">{count}</span>}
       </button>
-      <Drawer open={open} onClose={() => setOpen(false)} side="left" title="Filters" footer={<Button className="w-full" onClick={() => setOpen(false)}>Show {total} {total === 1 ? "product" : "products"}</Button>}>
+      <Drawer open={open} onClose={() => setOpen(false)} side="right" title="Filter & sort" footer={<Button className="w-full" onClick={() => setOpen(false)}>Show {total} {total === 1 ? "product" : "products"}</Button>}>
         <div className="px-6 py-6">
-          <FilterPanel facets={facets} hideGender={hideGender} />
+          <FilterPanel facets={facets} hideGender={hideGender} withSort />
         </div>
       </Drawer>
     </>

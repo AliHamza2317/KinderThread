@@ -2,12 +2,14 @@
 
 import { AnimatePresence, motion } from "motion/react";
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { X } from "lucide-react";
 import { useEffect, useState } from "react";
 
 type Msg = { text: string; href?: string };
 
 export function AnnouncementBar({ messages }: { messages: Msg[] }) {
+  const pathname = usePathname();
   const [i, setI] = useState(0);
   const [hidden, setHidden] = useState(false);
   const [paused, setPaused] = useState(false);
@@ -24,7 +26,7 @@ export function AnnouncementBar({ messages }: { messages: Msg[] }) {
     return () => clearInterval(t);
   }, [messages.length, paused]);
 
-  if (hidden || !messages.length) return null;
+  if (hidden || !messages.length || pathname === "/checkout") return null;
   const m = messages[i % messages.length];
 
   return (

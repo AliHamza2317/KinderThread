@@ -1,18 +1,18 @@
 import type { Metadata } from "next";
 import Link from "next/link";
 import { notFound } from "next/navigation";
-import { Info } from "lucide-react";
 import { GalleryBridge } from "@/components/product/pdp-gallery-bridge";
 import { ProductCard } from "@/components/product/product-card";
 import { PurchasePanel } from "@/components/product/purchase-panel";
 import { RecentlyViewed } from "@/components/product/recently-viewed";
 import type { SizeGuideData } from "@/components/product/size-guide";
-import { Breadcrumbs } from "@/components/shop/shop-view";
+import { Breadcrumbs } from "@/components/layout/page-hero";
+import { SectionHeader } from "@/components/home/section-header";
 import { AccordionItem } from "@/components/ui/accordion";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 import { sortSizes } from "@/lib/sizes";
-import { absoluteUrl, formatPrice } from "@/lib/utils";
+import { absoluteUrl, cn, formatPrice } from "@/lib/utils";
 
 type Props = { params: Promise<{ slug: string }> };
 
@@ -46,6 +46,8 @@ export default async function ProductPage({ params }: Props) {
   const primaryCat = p.categories[0];
   const url = absoluteUrl(`/products/${p.slug}`);
   const inStock = variants.some((v) => v.stock > 0);
+  const stack = p.images.length > 1;
+  const crumbs = [{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, ...(primaryCat ? [{ label: primaryCat.name, href: `/collections/${primaryCat.slug}` }] : []), { label: p.name }];
 
   const jsonLd = {
     "@context": "https://schema.org",
@@ -70,72 +72,66 @@ export default async function ProductPage({ params }: Props) {
   return (
     <>
       {!p.isSample && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />}
-      <div className="container-kt pt-6 pb-16 md:pt-10">
-        <Breadcrumbs
-          items={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, ...(primaryCat ? [{ label: primaryCat.name, href: `/collections/${primaryCat.slug}` }] : []), { label: p.name }]}
-        />
-        {p.isSample && (
-          <p className="mt-5 flex items-start gap-2.5 border-l-2 border-cocoa-200 py-1 pl-3 text-[0.82rem] text-cocoa-500">
-            <Info className="mt-0.5 h-4 w-4 shrink-0 text-cocoa-400" />
-            <span>Sample listing — shown while our first collection is being prepared. Photography is placeholder imagery, not an actual Kinder Thread product.</span>
-          </p>
-        )}
-        <div className="mt-6 grid gap-10 lg:grid-cols-12 lg:gap-14">
+      <div className="container-kt pt-4 pb-16 md:pt-8">
+        <Breadcrumbs items={crumbs} className="mb-5 lg:hidden" />
+        <div className="grid gap-8 lg:grid-cols-12 lg:gap-14 xl:gap-20">
           <div className="lg:col-span-7">
-            <div className="lg:sticky lg:top-28">
+            {/* one photo: the photo stays in view; several: the buy column stays in view instead */}
+            <div className={cn(!stack && "lg:sticky lg:top-28")}>
               <GalleryBridge images={p.images.map((i) => ({ id: i.id, url: i.url, alt: i.alt, colorId: i.colorId }))} name={p.name} />
             </div>
           </div>
           <div className="lg:col-span-5">
-            <PurchasePanel
-              product={{ id: p.id, slug: p.slug, name: p.name, price: p.price, compareAtPrice: p.compareAtPrice, isSample: p.isSample, isNewArrival: p.isNewArrival, colors: p.colors.map((c) => ({ id: c.id, name: c.name, hex: c.hex })), variants, images: p.images.map((i) => ({ url: i.url, colorId: i.colorId })) }}
-              sizeGuide={sizeGuide}
-              whatsapp={settings.store.whatsapp}
-              info={{ freeThreshold: settings.shipping.freeThreshold, estimate: settings.shipping.estimate, cod: settings.payments.cod.enabled, returnDays: settings.policies.returnWindowDays }}
-              url={url}
-            />
-            <div className="mt-8 border-t border-cocoa-100">
-              <AccordionItem title="Description" defaultOpen>
-                <p className="whitespace-pre-line">{p.description}</p>
-                <p className="mt-3 text-[0.8rem] text-cocoa-500">SKU: {skus.length > 1 ? `${skus[0]} (varies by size & colour)` : skus[0] ?? "—"}</p>
-              </AccordionItem>
-              <AccordionItem title="Fabric & care">
-                {p.fabric && (
-                  <p>
-                    <strong className="text-cocoa">Fabric:</strong> {p.fabric}
+            <div className={cn(stack && "lg:sticky lg:top-28")}>
+              <Breadcrumbs items={crumbs} className="mb-6 hidden lg:block" />
+              <PurchasePanel
+                product={{ id: p.id, slug: p.slug, name: p.name, price: p.price, compareAtPrice: p.compareAtPrice, isSample: p.isSample, isNewArrival: p.isNewArrival, colors: p.colors.map((c) => ({ id: c.id, name: c.name, hex: c.hex })), variants, images: p.images.map((i) => ({ url: i.url, colorId: i.colorId })) }}
+                sizeGuide={sizeGuide}
+                whatsapp={settings.store.whatsapp}
+                info={{ freeThreshold: settings.shipping.freeThreshold, estimate: settings.shipping.estimate, cod: settings.payments.cod.enabled, returnDays: settings.policies.returnWindowDays }}
+                url={url}
+              />
+              <div className="mt-8 border-t border-cocoa/10">
+                <AccordionItem title="Description">
+                  <p className="whitespace-pre-line">{p.description}</p>
+                  <p className="mt-3 text-[0.8rem] text-cocoa-500">SKU: {skus.length > 1 ? `${skus[0]} (varies by size & colour)` : skus[0] ?? "—"}</p>
+                </AccordionItem>
+                <AccordionItem title="Fabric & care">
+                  {p.fabric && (
+                    <p>
+                      <strong className="text-cocoa">Fabric:</strong> {p.fabric}
+                    </p>
+                  )}
+                  <p className="mt-2">
+                    <strong className="text-cocoa">Care:</strong> {p.care || settings.policies.careDefault}
                   </p>
-                )}
-                <p className="mt-2">
-                  <strong className="text-cocoa">Care:</strong> {p.care || settings.policies.careDefault}
-                </p>
-              </AccordionItem>
-              <AccordionItem title="Delivery & cash on delivery">
-                <p>
-                  {settings.shipping.estimate}. Delivery is {formatPrice(settings.shipping.flatRate)}
-                  {settings.shipping.freeThreshold > 0 && <>, free on orders of {formatPrice(settings.shipping.freeThreshold)} or more</>}.
-                </p>
-                {settings.payments.cod.enabled && <p className="mt-2">{settings.policies.codSummary}</p>}
-                <Link href="/pages/shipping" className="mt-2 inline-block font-semibold text-sage-700 underline underline-offset-2">
-                  Shipping policy
-                </Link>
-              </AccordionItem>
-              <AccordionItem title="Returns & exchanges">
-                <p>{settings.policies.returnsSummary}</p>
-                <Link href="/pages/returns" className="mt-2 inline-block font-semibold text-sage-700 underline underline-offset-2">
-                  Returns policy
-                </Link>
-              </AccordionItem>
+                </AccordionItem>
+                <AccordionItem title="Delivery & cash on delivery">
+                  <p>
+                    {settings.shipping.estimate}. Delivery is {formatPrice(settings.shipping.flatRate)}
+                    {settings.shipping.freeThreshold > 0 && <>, free on orders of {formatPrice(settings.shipping.freeThreshold)} or more</>}.
+                  </p>
+                  {settings.payments.cod.enabled && <p className="mt-2">{settings.policies.codSummary}</p>}
+                  <Link href="/pages/shipping" className="mt-2 inline-block font-semibold text-cocoa underline underline-offset-4">
+                    Shipping policy
+                  </Link>
+                </AccordionItem>
+                <AccordionItem title="Returns & exchanges">
+                  <p>{settings.policies.returnsSummary}</p>
+                  <Link href="/pages/returns" className="mt-2 inline-block font-semibold text-cocoa underline underline-offset-4">
+                    Returns policy
+                  </Link>
+                </AccordionItem>
+              </div>
             </div>
           </div>
         </div>
       </div>
 
       {related.length > 0 && (
-        <section className="container-kt py-16" aria-labelledby="related-heading">
-          <h2 id="related-heading" className="display-md mb-8">
-            You may also like
-          </h2>
-          <ul className="grid grid-cols-2 gap-x-4 gap-y-10 md:gap-x-6 lg:grid-cols-4">
+        <section className="container-kt pt-10 pb-16 md:pt-16" aria-labelledby="related-heading">
+          <SectionHeader id="related-heading" eyebrow="Complete the look" title="You may also *like*" link={primaryCat ? { href: `/collections/${primaryCat.slug}`, label: `More ${primaryCat.name}` } : { href: "/shop", label: "Shop all" }} />
+          <ul className="grid grid-cols-2 gap-x-3 gap-y-10 md:gap-x-5 lg:grid-cols-4">
             {related.map((r) => (
               <li key={r.id}>
                 <ProductCard product={r} showSample={settings.features.showSampleBadges} />

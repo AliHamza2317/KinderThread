@@ -49,3 +49,11 @@ export function absoluteUrl(path = "/") {
   const base = (process.env.SITE_URL || process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000").replace(/\/$/, "");
   return `${base}${path.startsWith("/") ? path : `/${path}`}`;
 }
+
+/** "Baby Girls" → "Baby *Girls*": marks the last word for the serif italic accent used in headings. */
+export function accentLast(text: string) {
+  const words = text.trim().split(/\s+/);
+  if (words.length < 2) return text;
+  const last = words.pop();
+  return `${words.join(" ")} *${last}*`;
+}

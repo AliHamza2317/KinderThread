@@ -4,7 +4,7 @@ import { AnimatePresence, motion, useMotionValueEvent, useScroll } from "motion/
 import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
-import { ChevronDown, Heart, Menu, Search, ShoppingBag, User } from "lucide-react";
+import { ArrowLeft, ChevronDown, Heart, Lock, Menu, Search, ShoppingBag, User } from "lucide-react";
 import { useEffect, useRef, useState } from "react";
 import { cn } from "@/lib/utils";
 import { useHydrated } from "@/lib/hooks";
@@ -38,6 +38,9 @@ export function Header({ categories, signedIn }: Props) {
   const shopCats = categories.filter((c) => c.kind === "category");
   const collections = categories.filter((c) => c.kind === "collection");
   const featured = categories.find((c) => c.isFeatured && c.image) ?? categories[0];
+
+  // checkout is distraction-free: logo, a way back to the bag, and a reassurance
+  if (pathname === "/checkout") return <CheckoutHeader />;
 
   // age first, like the brands parents already shop with (ranges shown on wide screens)
   const nav: { label: string; href: string; menu?: string; sub?: string }[] = [
@@ -249,5 +252,23 @@ function BagIcon() {
       </motion.span>
       <CountBadge n={n} bump={bump} />
     </button>
+  );
+}
+
+function CheckoutHeader() {
+  return (
+    <header className="sticky top-0 z-40 border-b border-cocoa/10 bg-cream/90 backdrop-blur-md">
+      <div className="container-kt grid h-[72px] grid-cols-3 items-center">
+        <Link href="/cart" className="inline-flex items-center gap-2 justify-self-start text-[0.85rem] font-medium text-cocoa-600 hover:text-cocoa">
+          <ArrowLeft className="h-4 w-4" /> <span className="hidden sm:inline">Back to bag</span>
+        </Link>
+        <Link href="/" aria-label="Kinder Thread home" className="justify-self-center">
+          <Image src={mark} alt="Kinder Thread" priority sizes="100px" className="h-auto w-[74px]" />
+        </Link>
+        <p className="inline-flex items-center gap-2 justify-self-end text-[0.8rem] text-cocoa-500">
+          <Lock className="h-4 w-4" /> <span className="hidden sm:inline">Secure checkout</span>
+        </p>
+      </div>
+    </header>
   );
 }

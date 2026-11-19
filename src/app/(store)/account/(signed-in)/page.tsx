@@ -25,7 +25,7 @@ export default async function AccountOverview() {
     <div className="flex flex-col gap-10">
       <header>
         <Eyebrow>Overview</Eyebrow>
-        <h1 className="display-md mt-3">Hello, {first}</h1>
+        <h2 className="display-md mt-3">Hello, {first}</h2>
         <p className="mt-2 text-cocoa-500">
           Signed in as <span className="font-semibold break-all text-cocoa-600">{user.email}</span>
         </p>

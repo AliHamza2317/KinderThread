@@ -16,7 +16,7 @@ export default async function ProfilePage() {
     <div className="flex flex-col gap-8">
       <header>
         <Eyebrow>Profile</Eyebrow>
-        <h1 className="display-md mt-3">Your details</h1>
+        <h2 className="display-md mt-3">Your details</h2>
         {row && <p className="mt-2 text-cocoa-500">Member since {formatDate(row.createdAt, { month: "long", year: "numeric" })}</p>}
       </header>
 

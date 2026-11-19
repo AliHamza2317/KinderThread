@@ -111,25 +111,25 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
   const showMsg = msg && (!hadFieldErrors || fieldErrorsLeft);
 
   return (
-    <div className="container-kt py-10 md:py-14">
-      <div className="flex flex-wrap items-end justify-between gap-4">
-        <h1 className="display-lg">Checkout</h1>
-        <p className="flex items-center gap-2 text-sm text-cocoa-500">
-          <Lock className="h-4 w-4" /> Secure checkout
-        </p>
-      </div>
-      <p className="mt-4 border-l-2 border-cocoa-200 py-1 pl-3 text-sm text-cocoa-500">
+    <div className="container-kt py-8 md:py-12">
+      <CheckoutSteps current={1} />
+      <h1 className="display-lg mt-5">
+        Check<span className="font-serif-accent text-sage-700">out</span>
+      </h1>
+      <p className="mt-5 inline-flex items-start gap-2 rounded-2xl bg-sun-50 px-4 py-2.5 text-[0.85rem] text-cocoa-600">
+        <Info className="mt-0.5 h-4 w-4 shrink-0 text-sun-700" />
         Preview mode — placing an order shows a demo confirmation. Nothing is sent or charged yet.
       </p>
 
-      <form onSubmit={onSubmit} className="mt-10 grid gap-12 lg:grid-cols-12" noValidate>
+      <form onSubmit={onSubmit} className="mt-8 grid gap-8 lg:grid-cols-12 lg:gap-12" noValidate>
         <input type="hidden" name="lines" value={JSON.stringify(lines.map((l) => ({ variantId: l.variantId, quantity: l.quantity })))} />
         <input type="hidden" name="coupon" value={quote?.coupon?.code ?? ""} />
         <input type="hidden" name="paymentMethod" value={payment} />
 
-        <div className="space-y-12 lg:col-span-7">
-          <section aria-labelledby="contact-h">
-            <h2 id="contact-h" className="font-display text-2xl">
+        <div className="space-y-5 lg:col-span-7">
+          <section aria-labelledby="contact-h" className="rounded-[1.75rem] border border-cocoa/10 bg-cream-50 p-5 md:p-8">
+            <h2 id="contact-h" className="flex items-center gap-3 font-display text-[1.6rem] tracking-[-0.03em]">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-cocoa font-sans text-[0.8rem] font-semibold text-cream-50">1</span>
               Contact
             </h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -145,8 +145,9 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
             </div>
           </section>
 
-          <section aria-labelledby="delivery-h">
-            <h2 id="delivery-h" className="font-display text-2xl">
+          <section aria-labelledby="delivery-h" className="rounded-[1.75rem] border border-cocoa/10 bg-cream-50 p-5 md:p-8">
+            <h2 id="delivery-h" className="flex items-center gap-3 font-display text-[1.6rem] tracking-[-0.03em]">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-cocoa font-sans text-[0.8rem] font-semibold text-cream-50">2</span>
               Delivery
             </h2>
             <div className="mt-5 grid gap-4 sm:grid-cols-2">
@@ -171,8 +172,9 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
             <p className="mt-3 text-[0.82rem] text-cocoa-500">Estimated delivery: {estimate}.</p>
           </section>
 
-          <section aria-labelledby="pay-h">
-            <h2 id="pay-h" className="font-display text-2xl">
+          <section aria-labelledby="pay-h" className="rounded-[1.75rem] border border-cocoa/10 bg-cream-50 p-5 md:p-8">
+            <h2 id="pay-h" className="flex items-center gap-3 font-display text-[1.6rem] tracking-[-0.03em]">
+              <span className="grid h-8 w-8 place-items-center rounded-full bg-cocoa font-sans text-[0.8rem] font-semibold text-cream-50">3</span>
               Payment
             </h2>
             {options.length === 0 ? (
@@ -218,11 +220,11 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
         </div>
 
         <aside className="lg:col-span-5">
-          <div className="sticky top-28 space-y-6 rounded-[1.5rem] bg-cream-100 p-6 md:p-8">
-            <h2 className="font-display text-2xl">Your order</h2>
+          <div className="sticky top-28 space-y-6 rounded-[2rem] bg-cream-100 p-6 md:p-8">
+            <h2 className="font-display text-[1.6rem] tracking-[-0.03em]">Your order</h2>
             <SummaryLines quote={quote} />
             {hasSamples && (
-              <p className="flex gap-2 border-l-2 border-cocoa-200 py-1 pl-3 text-[0.8rem] text-cocoa-500">
+              <p className="flex gap-2 rounded-2xl bg-cream-50 px-3.5 py-2.5 text-[0.8rem] text-cocoa-500">
                 <Info className="h-4 w-4 shrink-0" /> Your bag contains sample listings used for testing the store.
               </p>
             )}
@@ -251,5 +253,32 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
         </aside>
       </form>
     </div>
+  );
+}
+
+/** Bag → Details → Confirmation, shown on the bag and checkout pages. */
+export function CheckoutSteps({ current }: { current: 0 | 1 | 2 }) {
+  const steps = [
+    { label: "Bag", href: "/cart" },
+    { label: "Details", href: "/checkout" },
+    { label: "Confirmation" },
+  ];
+  return (
+    <ol className="flex flex-wrap items-center gap-2 text-[0.7rem] font-semibold tracking-[0.14em] uppercase" aria-label="Checkout progress">
+      {steps.map((st, i) => (
+        <li key={st.label} className="flex items-center gap-2">
+          {i > 0 && <span aria-hidden className="h-px w-6 bg-cocoa/20" />}
+          {st.href && i < current ? (
+            <Link href={st.href} className="text-cocoa-500 hover:text-cocoa">
+              {st.label}
+            </Link>
+          ) : (
+            <span aria-current={i === current ? "step" : undefined} className={i === current ? "text-cocoa" : "text-cocoa-300"}>
+              {st.label}
+            </span>
+          )}
+        </li>
+      ))}
+    </ol>
   );
 }

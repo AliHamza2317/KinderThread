@@ -17,7 +17,7 @@ export default async function OrdersPage() {
   return (
     <div>
       <Eyebrow>Orders</Eyebrow>
-      <h1 className="display-md mt-3">Your orders</h1>
+      <h2 className="display-md mt-3">Your orders</h2>
       <p className="mt-2 text-cocoa-500">Track deliveries, view details and request returns.</p>
 
       {orders.length === 0 ? (

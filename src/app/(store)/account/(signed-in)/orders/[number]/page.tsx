@@ -47,7 +47,7 @@ export default async function OrderDetailPage({ params }: { params: Promise<{ nu
           ← All orders
         </Link>
         <div className="mt-3 flex flex-wrap items-center gap-3">
-          <h1 className="display-md">Order {order.number}</h1>
+          <h2 className="display-md">Order {order.number}</h2>
           <OrderStatusPill status={order.status} />
         </div>
         <p className="mt-2 text-cocoa-500">

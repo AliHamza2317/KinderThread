@@ -2,7 +2,7 @@
 
 import { useRouter } from "next/navigation";
 import { useEffect, useRef, useState } from "react";
-import { Check, Truck, RotateCcw, Banknote } from "lucide-react";
+import { Banknote, Check, Info, RotateCcw, Truck } from "lucide-react";
 import { AnimatePresence, motion } from "motion/react";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
@@ -103,19 +103,27 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
   return (
     <div className="flex flex-col gap-7">
       <div>
-        <div className="flex flex-wrap gap-2">
-          {product.isNewArrival && <Badge tone="new">New</Badge>}
-          {product.isSample && <span className="text-[0.62rem] font-bold tracking-[0.16em] text-cocoa-400 uppercase">Sample listing</span>}
-        </div>
-        <h1 className="display-md mt-3">{product.name}</h1>
-        <Price price={price} compareAt={product.compareAtPrice} size="lg" className="mt-3" />
-        {info.cod && <p className="mt-1 text-[0.82rem] text-cocoa-500">Cash on delivery available</p>}
+        {(product.isNewArrival || product.isSample) && (
+          <div className="mb-4 flex flex-wrap items-center gap-2">
+            {product.isNewArrival && <Badge tone="new">New</Badge>}
+            {product.isSample && <span className="rounded-full border border-cocoa/10 px-2 py-0.5 text-[0.62rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase">Sample</span>}
+          </div>
+        )}
+        <h1 className="font-display text-[clamp(2rem,1.3rem+1.8vw,2.9rem)] leading-[1.02] font-medium tracking-[-0.045em] text-cocoa">{product.name}</h1>
+        <Price price={price} compareAt={product.compareAtPrice} size="lg" className="mt-4" />
+        {info.cod && <p className="mt-1.5 text-[0.82rem] text-cocoa-500">Cash on delivery available · {info.estimate}</p>}
+        {product.isSample && (
+          <p className="mt-4 flex items-start gap-2 rounded-2xl bg-cream-100 px-3.5 py-2.5 text-[0.78rem] leading-relaxed text-cocoa-500">
+            <Info className="mt-0.5 h-3.5 w-3.5 shrink-0 text-cocoa-400" />
+            Sample listing while our first collection is prepared — the photo is placeholder imagery, not an actual Kinder Thread product.
+          </p>
+        )}
       </div>
 
       {product.colors.length > 0 && (
         <div>
-          <p className="mb-3 text-sm font-semibold">
-            Colour: <span className="font-normal text-cocoa-500">{sel.color?.name}</span>
+          <p className="mb-3 text-[0.72rem] font-semibold tracking-[0.14em] text-cocoa-400 uppercase">
+            Colour <span className="ml-1.5 text-[0.88rem] font-medium tracking-normal text-cocoa normal-case">{sel.color?.name}</span>
           </p>
           <ColorSwatches colors={product.colors} value={sel.colorId} onChange={sel.setColorId} hasStock={sel.colorHasStock} />
         </div>
@@ -123,8 +131,8 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
 
       <div id="size-picker">
         <div className="mb-3 flex items-center justify-between">
-          <p className="text-sm font-semibold">
-            Size (age){sel.size && <span className="font-normal text-cocoa-500"> · {sizeLabel(sel.size)}</span>}
+          <p className="text-[0.72rem] font-semibold tracking-[0.14em] text-cocoa-400 uppercase">
+            Size (age){sel.size && <span className="ml-1.5 text-[0.88rem] font-medium tracking-normal text-cocoa normal-case">{sizeLabel(sel.size)}</span>}
           </p>
           <SizeGuideButton guide={sizeGuide} highlight={sel.size} />
         </div>
@@ -183,27 +191,35 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
         </div>
       </div>
 
-      <ul className="grid gap-3 border-y border-cocoa-100 py-5 text-[0.85rem] text-cocoa-600">
-        <li className="flex gap-3">
-          <Truck className="h-5 w-5 shrink-0 text-cocoa-400" strokeWidth={1.5} />
+      <ul className="grid gap-3 rounded-[1.5rem] bg-cream-100 p-4 text-[0.85rem] text-cocoa-600 sm:p-5">
+        <li className="flex items-center gap-3">
+          <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cream-50">
+            <Truck className="h-4 w-4 text-cocoa-500" strokeWidth={1.6} />
+          </span>
           <span>
             {info.estimate}.{info.freeThreshold > 0 && <> Free delivery over {formatPrice(info.freeThreshold)}.</>}
           </span>
         </li>
         {info.cod && (
-          <li className="flex gap-3">
-            <Banknote className="h-5 w-5 shrink-0 text-cocoa-400" strokeWidth={1.5} /> Cash on delivery available across Pakistan.
+          <li className="flex items-center gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cream-50">
+              <Banknote className="h-4 w-4 text-cocoa-500" strokeWidth={1.6} />
+            </span>
+            Cash on delivery across Pakistan.
           </li>
         )}
         {info.returnDays > 0 && (
-          <li className="flex gap-3">
-            <RotateCcw className="h-5 w-5 shrink-0 text-cocoa-400" strokeWidth={1.5} /> Returns & exchanges within {info.returnDays} days of delivery.
+          <li className="flex items-center gap-3">
+            <span className="grid h-9 w-9 shrink-0 place-items-center rounded-full bg-cream-50">
+              <RotateCcw className="h-4 w-4 text-cocoa-500" strokeWidth={1.6} />
+            </span>
+            Easy exchange within {info.returnDays} days of delivery.
           </li>
         )}
       </ul>
 
       {/* sticky mobile bar */}
-      <div className={cn("fixed inset-x-0 bottom-0 z-30 border-t border-cocoa-100 bg-cream/95 p-3 backdrop-blur transition-transform duration-500 md:hidden", showSticky ? "translate-y-0" : "translate-y-full")} aria-hidden={!showSticky}>
+      <div className={cn("fixed inset-x-0 bottom-0 z-30 border-t border-cocoa/10 bg-cream-50/95 p-3 backdrop-blur transition-transform duration-500 md:hidden", showSticky ? "translate-y-0" : "translate-y-full")} aria-hidden={!showSticky}>
         <div className="flex items-center gap-3">
           <div className="min-w-0 flex-1">
             <p className="truncate text-sm font-semibold">{product.name}</p>

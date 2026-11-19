@@ -27,6 +27,14 @@
 > - **Measured (Lighthouse mobile, real throttling, local build):** homepage score 33 → 56–66, LCP 10–17.5 s →
 >   3.4–4.6 s, blocking time 4.6 s → 0.75 s, download 2.9 MB → 0.77 MB; shop page LCP 6.5 s → 2.7–3.0 s.
 >
+> **Revision 4.1 — inner pages:** shop/collection pages follow brand stores (title band — with the collection
+> photo where there is one — collection pills, a slim toolbar with count, quick age pills and a "Filter & sort"
+> drawer, full-width 4-column grid); product pages have an editorial photo stack, a calm sticky buy column with
+> pill sizes, an honest sample note, trust panel and collapsed accordions; bag and checkout have progress steps
+> (Bag → Details → Confirmation), numbered section cards and a distraction-free checkout header; About, Collections,
+> Size guide, Help/policy pages (with side menu), Search, Wishlist, Track order, sign-in, account and 404 share the
+> same rounded title band (`src/components/layout/page-hero.tsx`).
+>
 > **Revision 3 — "Modern Gallery" (superseded by Revision 4):** the client found Revision 1 too plain and asked for a
 > modern, premium site with real 3D and motion. Research into 2026 web-design trends (scroll-driven
 > storytelling, practical WebGL that serves the product, restraint and performance) and award-winning fashion

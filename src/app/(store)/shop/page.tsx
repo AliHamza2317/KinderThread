@@ -1,6 +1,6 @@
 import type { Metadata } from "next";
 import { ShopView } from "@/components/shop/shop-view";
-import { getFacets, listProducts, parseFilters } from "@/lib/catalog";
+import { getCollectionPills, getFacets, listProducts, parseFilters } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
 
 export const metadata: Metadata = {
@@ -12,11 +12,12 @@ export const metadata: Metadata = {
 export default async function ShopPage({ searchParams }: { searchParams: Promise<Record<string, string | string[] | undefined>> }) {
   const sp = await searchParams;
   const filters = parseFilters(sp);
-  const [res, facets, settings] = await Promise.all([listProducts(filters), getFacets(), getSettings()]);
+  const [res, facets, settings, pills] = await Promise.all([listProducts(filters), getFacets(), getSettings(), getCollectionPills()]);
   return (
     <ShopView
       eyebrow="The collection"
-      title="Shop all"
+      title="Shop *all*"
+      pills={pills}
       description="Thoughtfully selected outfits for newborns, babies and little ones up to five years."
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop" }]}
       {...res}

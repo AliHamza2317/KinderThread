@@ -1,17 +1,25 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ShopView } from "@/components/shop/shop-view";
-import { getCategoryBySlug, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
+import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
+import { accentLast } from "@/lib/utils";
+
+// photographs for the collection headers of the virtual collections
+const VIRTUAL_IMAGES: Record<string, string> = {
+  "new-arrivals": "/images/gallery/g1.webp",
+  "best-sellers": "/images/products/nordic-cardigan-rose.webp",
+  sale: "/images/editorial/banner-knitwear.webp",
+};
 import { getSettings } from "@/lib/settings";
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 async function resolve(slug: string) {
   const v = VIRTUAL_COLLECTIONS[slug];
-  if (v) return { name: v.name, description: v.description, seoTitle: null, seoDescription: null, flag: v.flag, category: undefined, kind: "collection" };
+  if (v) return { name: v.name, description: v.description, seoTitle: null, seoDescription: null, flag: v.flag, category: undefined, kind: "collection", image: VIRTUAL_IMAGES[slug] ?? null };
   const c = await getCategoryBySlug(slug);
   if (!c) return null;
-  return { name: c.name, description: c.description, seoTitle: c.seoTitle, seoDescription: c.seoDescription, flag: undefined, category: c.slug, kind: c.kind };
+  return { name: c.name, description: c.description, seoTitle: c.seoTitle, seoDescription: c.seoDescription, flag: undefined, category: c.slug, kind: c.kind, image: c.image };
 }
 
 export async function generateMetadata({ params }: Props): Promise<Metadata> {
@@ -30,13 +38,15 @@ export default async function CollectionPage({ params, searchParams }: Props) {
   const c = await resolve(slug);
   if (!c) notFound();
   const filters = { ...parseFilters(sp), category: c.category, flag: c.flag };
-  const [res, facets, settings] = await Promise.all([listProducts(filters), getFacets({ category: c.category, flag: c.flag }), getSettings()]);
+  const [res, facets, settings, pills] = await Promise.all([listProducts(filters), getFacets({ category: c.category, flag: c.flag }), getSettings(), getCollectionPills(slug)]);
   return (
     <ShopView
       eyebrow={c.kind === "collection" ? "Collection" : "Category"}
-      title={c.name}
+      title={accentLast(c.name)}
       description={c.description}
-      breadcrumb={[{ label: "Home", href: "/" }, { label: "Collections", href: "/collections" }, { label: c.name }]}
+      image={c.image}
+      pills={pills}
+      breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: c.name }]}
       {...res}
       facets={facets}
       basePath={`/collections/${slug}`}

@@ -1,5 +1,6 @@
 "use client";
 
+import { CheckoutSteps } from "./checkout-form";
 import Image from "next/image";
 import { CheckCircle2 } from "lucide-react";
 import { ButtonLink } from "@/components/ui/button";
@@ -28,6 +29,9 @@ export function OrderConfirmation({ number, whatsapp }: { number: string; whatsa
   const manual = ["bank", "jazzcash", "easypaisa"].includes(order.paymentMethod);
   return (
     <div className="container-kt max-w-3xl py-14 md:py-20">
+      <div className="mb-8 flex justify-center">
+        <CheckoutSteps current={2} />
+      </div>
       <div className="text-center">
         <CheckCircle2 className="mx-auto h-14 w-14 text-sage-600" strokeWidth={1.2} />
         <p className="eyebrow eyebrow-rule mt-6 justify-center">Order placed</p>

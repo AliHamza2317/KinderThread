@@ -5,19 +5,19 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 /** Split layout for sign-in / register: form on the left, calm brand panel on the right. */
 export function AuthShell({ eyebrow, title, intro, children, footer }: { eyebrow: string; title: string; intro: ReactNode; children: ReactNode; footer?: ReactNode }) {
   return (
-    <div className="container-kt py-10 md:py-16">
-      <div className="grid items-stretch gap-10 lg:grid-cols-2 lg:gap-16">
-        <div className="mx-auto flex w-full max-w-md flex-col justify-center lg:py-10">
+    <div className="px-2.5 pt-2 pb-10 md:px-4 md:pb-16">
+      <div className="grid items-stretch gap-6 rounded-[2rem] bg-cream-100 p-3 md:rounded-[3rem] md:p-4 lg:grid-cols-2">
+        <div className="mx-auto flex w-full max-w-md flex-col justify-center px-3 py-10 md:py-14">
           <Eyebrow>{eyebrow}</Eyebrow>
-          <h1 className="display-md mt-4">{title}</h1>
+          <h1 className="display-lg mt-4">{title}</h1>
           <p className="mt-3 text-[1.02rem] leading-relaxed text-cocoa-500">{intro}</p>
           <div className="mt-8">{children}</div>
-          {footer && <div className="mt-8 border-t border-cocoa-100 pt-6 text-sm text-cocoa-500">{footer}</div>}
+          {footer && <div className="mt-8 border-t border-cocoa/10 pt-6 text-sm text-cocoa-500">{footer}</div>}
         </div>
 
-        <aside className="relative hidden min-h-[560px] overflow-hidden rounded-[1.5rem] bg-cream-200 lg:block" aria-hidden>
+        <aside className="relative hidden min-h-[600px] overflow-hidden rounded-[1.6rem] bg-cream-200 md:rounded-[2.5rem] lg:block" aria-hidden>
           <Image src="/images/gallery/g8.webp" alt="" fill sizes="(min-width: 1024px) 45vw, 0px" className="object-cover" priority />
-          <div className="absolute inset-x-6 bottom-6 rounded-[1.5rem] bg-cream p-6">
+          <div className="absolute inset-x-6 bottom-6 rounded-[1.5rem] bg-cream-50/90 p-6 backdrop-blur-md">
             <p className="font-display text-2xl leading-snug">Your little world, all in one place.</p>
             <ul className="mt-4 grid gap-2 text-sm text-cocoa-600">
               <li className="flex items-center gap-2"><Dot /> Track orders and deliveries</li>

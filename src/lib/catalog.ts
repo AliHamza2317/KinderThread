@@ -250,3 +250,16 @@ export const getCategoryBySlug = cache(async (slug: string) => CATEGORIES.find((
 export function countProductsInCategory(categoryId: string) {
   return PRODUCTS.filter((p) => p.status === "ACTIVE" && p.categoryIds.includes(categoryId)).length;
 }
+
+/** Pills shown under shop/collection headers: all, new, every visible category/collection, best sellers, sale. */
+export async function getCollectionPills(active?: string) {
+  const cats = await getNavCategories();
+  const items = [
+    { label: "All", href: "/shop", slug: "__all" },
+    { label: "New In", href: "/collections/new-arrivals", slug: "new-arrivals" },
+    ...cats.map((c) => ({ label: c.name, href: `/collections/${c.slug}`, slug: c.slug })),
+    { label: "Best Sellers", href: "/collections/best-sellers", slug: "best-sellers" },
+    { label: "Sale", href: "/collections/sale", slug: "sale" },
+  ];
+  return items.map(({ slug, ...it }) => ({ ...it, active: slug === (active ?? "__all") }));
+}

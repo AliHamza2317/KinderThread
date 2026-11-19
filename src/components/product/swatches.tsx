@@ -56,7 +56,7 @@ export function SizeGrid({
   compact?: boolean;
 }) {
   return (
-    <div role="radiogroup" aria-label="Size" className={cn("grid gap-2", compact ? "grid-cols-3" : "grid-cols-3 sm:grid-cols-4")}>
+    <div role="radiogroup" aria-label="Size" className={cn("flex flex-wrap gap-2", compact && "gap-1.5")}>
       {sizes.map((s) => {
         const stock = stockFor(s);
         const active = value === s;
@@ -71,13 +71,13 @@ export function SizeGrid({
             disabled={out}
             onClick={() => onChange(s)}
             className={cn(
-              "relative flex h-12 flex-col items-center justify-center rounded-xl border text-[0.82rem] font-semibold transition",
-              active ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa-100 bg-cream-50 hover:border-cocoa-400",
-              out && "cursor-not-allowed border-dashed text-cocoa-300 line-through hover:border-cocoa-100",
+              "relative inline-flex h-11 min-w-[4.25rem] items-center justify-center rounded-full border px-4 text-[0.84rem] font-medium transition",
+              active ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa/15 bg-cream-50 text-cocoa hover:border-cocoa",
+              out && "cursor-not-allowed border-dashed text-cocoa-300 line-through hover:border-cocoa/15",
             )}
           >
             {s}
-            {!out && stock <= 3 && <span className={cn("text-[0.6rem] font-bold", active ? "text-sun-200" : "text-coral-700")}>{stock} left</span>}
+            {!out && stock <= 3 && <span aria-hidden className={cn("absolute top-1.5 right-2 h-1.5 w-1.5 rounded-full", active ? "bg-sun-300" : "bg-coral-500")} />}
           </button>
         );
       })}
