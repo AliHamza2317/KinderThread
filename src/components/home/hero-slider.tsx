@@ -19,6 +19,10 @@ export type Slide = {
   secondaryHref?: string;
   image: string;
   imageAlt: string;
+  /** transparent cut-out (subject without background) shown directly on the colour field */
+  cutout?: string;
+  /** how the cut-out sits: on the bottom edge (people), floating in the middle (garments) or against the right edge */
+  align?: "bottom" | "center" | "right";
   tone: SlideTone;
   product?: { href: string; name: string; label: string; image: string; price: number; compareAt: number | null; isSample: boolean } | null;
 };
@@ -43,34 +47,54 @@ function titleLines(title: string) {
   return stop >= 0 && stop < words.length - 1 ? [words.slice(0, stop + 1).join(" "), words.slice(stop + 1).join(" ")] : [title];
 }
 
-/** One slide's content: colour field, copy on the left, photograph in an arched window on the right. */
+/** One slide's content: colour field, copy on the left, the subject (cut-out or full photo) on the right. */
 function SlideFace({ slide, active, size, heading, priority, controls = true, children }: { slide: Slide; active: boolean; size: "home" | "page"; heading: "h1" | "h2"; priority: boolean; controls?: boolean; children?: ReactNode }) {
   const t = TONES[slide.tone];
   const enter = cn("transition-[opacity,transform] duration-700 ease-[var(--ease-soft)] motion-reduce:transition-none", active ? "translate-y-0 opacity-100" : "translate-y-5 opacity-0");
   const Heading = heading;
   return (
     <div className={cn("relative isolate grid h-full overflow-hidden lg:grid-cols-2", t.bg, t.text)}>
-      {/* soft shape behind the photograph */}
-      <div aria-hidden className={cn("pointer-events-none absolute -z-10 aspect-square rounded-full", t.shape, size === "home" ? "-top-[20%] -right-[12%] h-[130%] max-lg:-top-[10%] max-lg:-right-[30%] max-lg:h-[70%]" : "-top-[30%] -right-[10%] h-[150%] max-lg:h-[80%]")} />
+      {/* soft shape behind the subject (like the circles on brand banners) */}
+      <div aria-hidden className={cn("pointer-events-none absolute -z-10 aspect-square rounded-full", t.shape, size === "home" ? "top-[8%] right-[2%] h-[95%] max-lg:top-[2%] max-lg:right-[-25%] max-lg:h-[55%]" : "top-[6%] right-[4%] h-[100%] max-lg:h-[60%] max-lg:right-[-20%]")} />
 
-      {/* photograph */}
-      <div className={cn("relative order-1 px-5 pt-5 lg:order-2 lg:flex lg:items-end lg:justify-center lg:px-10 lg:pt-10 xl:px-16", size === "home" ? "lg:pb-0" : "lg:pb-0")}>
-        <div className={cn("relative mx-auto w-full overflow-hidden rounded-t-[999px] bg-black/5", size === "home" ? "aspect-[16/11] max-w-md rounded-b-[1.75rem] sm:aspect-[4/3] lg:aspect-[4/5] lg:h-[92%] lg:w-auto lg:max-w-none lg:rounded-b-none" : "aspect-[16/10] max-w-md rounded-b-[1.5rem] lg:aspect-[4/5] lg:h-[88%] lg:w-auto lg:max-w-none lg:rounded-b-none")}>
+      {/* photograph: a cut-out on the colour field, or the full photo filling the right half */}
+      <div className={cn("relative order-1 lg:order-2", size === "home" ? "h-[17rem] sm:h-[22rem] lg:h-full" : "h-[15rem] sm:h-[20rem] lg:h-full")}>
+        {slide.cutout ? (
+          <div
+            className={cn(
+              "absolute transition-[opacity,transform] duration-[1.1s] ease-[var(--ease-soft)] motion-reduce:transition-none",
+              slide.align === "bottom" ? "inset-x-4 top-4 bottom-0 lg:inset-x-10 lg:top-[7%]" : slide.align === "right" ? "inset-y-[10%] right-0 left-4 lg:left-10" : "inset-[8%] lg:inset-[9%]",
+              active ? "translate-x-0 opacity-100" : "translate-x-10 opacity-0",
+            )}
+          >
+            <Image
+              src={slide.cutout}
+              alt={slide.imageAlt}
+              fill
+              priority={priority}
+              sizes="(min-width: 1024px) 45vw, 100vw"
+              className={cn(
+                "object-contain",
+                slide.align === "bottom" ? "object-bottom" : slide.align === "right" ? "object-right" : "object-center drop-shadow-[0_34px_34px_rgb(20_16_12/0.28)]",
+              )}
+            />
+          </div>
+        ) : (
           <Image
             src={slide.image}
             alt={slide.imageAlt}
             fill
             priority={priority}
-            sizes="(min-width: 1024px) 40vw, 100vw"
-            className={cn("object-cover transition-transform duration-[1.8s] ease-[var(--ease-soft)] motion-reduce:transition-none", active ? "scale-100" : "scale-110")}
+            sizes="(min-width: 1024px) 50vw, 100vw"
+            className={cn("object-cover transition-transform duration-[1.8s] ease-[var(--ease-soft)] motion-reduce:transition-none", active ? "scale-100" : "scale-105")}
           />
-        </div>
+        )}
         {slide.product && (
           <Link
             href={slide.product.href}
             tabIndex={active ? undefined : -1}
             className={cn(
-              "group absolute right-8 bottom-6 z-10 hidden w-[19rem] items-center gap-3 rounded-[1.25rem] border border-white/50 bg-cream-50/90 p-2.5 pr-3 text-cocoa shadow-[0_24px_50px_-24px_rgb(20_16_12/0.5)] backdrop-blur-md transition-[opacity,transform] delay-300 duration-700 lg:flex xl:right-14",
+              "group absolute top-8 right-8 z-10 hidden w-[19rem] items-center gap-3 rounded-[1.25rem] border border-white/50 bg-cream-50/90 p-2.5 pr-3 text-cocoa shadow-[0_24px_50px_-24px_rgb(20_16_12/0.5)] backdrop-blur-md transition-[opacity,transform] delay-300 duration-700 lg:flex xl:right-14",
               active ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0",
             )}
           >
@@ -134,8 +158,8 @@ function SlideFace({ slide, active, size, heading, priority, controls = true, ch
 }
 
 /**
- * Full-width "window" slider, as on brand homepages: one rounded frame, a colour
- * field per slide, headline + button on the left, photograph in an arch on the right.
+ * Full-width hero slider, as on brand homepages: a colour field per slide, headline +
+ * button on the left, the subject (cut-out on the colour, or the full photo) on the right.
  * Accessible carousel: arrows, progress, pause; swipe on touch; pauses on hover/focus,
  * in background tabs and off-screen; no autoplay for reduced motion.
  */
@@ -172,14 +196,13 @@ export function HeroSlider({ slides, size = "home", interval = 6500, label = "Fe
       ref={root}
       aria-roledescription="carousel"
       aria-label={label}
-      className="px-2.5 pt-2 md:px-4"
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") go(index + 1);
         if (e.key === "ArrowLeft") go(index - 1);
       }}
     >
       <div
-        className={cn("relative overflow-hidden rounded-[2rem] [clip-path:inset(0_round_2rem)] md:rounded-[3rem] md:[clip-path:inset(0_round_3rem)]", size === "home" ? "lg:h-[min(calc(100svh-8.5rem),780px)] lg:min-h-[580px]" : "lg:h-[min(62svh,560px)] lg:min-h-[440px]")}
+        className={cn("relative overflow-hidden", size === "home" ? "lg:h-[min(calc(100svh-8.5rem),780px)] lg:min-h-[580px]" : "lg:h-[min(62svh,560px)] lg:min-h-[440px]")}
         style={{ touchAction: "pan-y" }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
@@ -260,8 +283,8 @@ export function HeroSlider({ slides, size = "home", interval = 6500, label = "Fe
 /** A single slide used as a collection banner (same look, no controls). */
 export function SlideBanner({ slide, top }: { slide: Slide; top?: ReactNode }) {
   return (
-    <section className="px-2.5 pt-2 md:px-4">
-      <div className="relative overflow-hidden rounded-[2rem] [clip-path:inset(0_round_2rem)] md:rounded-[3rem] md:[clip-path:inset(0_round_3rem)] lg:h-[min(56svh,500px)] lg:min-h-[420px]">
+    <section>
+      <div className="relative overflow-hidden lg:h-[min(56svh,500px)] lg:min-h-[420px]">
         <SlideFace slide={slide} active size="page" heading="h1" priority controls={false}>
           {top}
         </SlideFace>

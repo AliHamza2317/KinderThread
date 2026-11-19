@@ -191,7 +191,7 @@ const KEYS = ["age", "gender", "size", "color", "min", "max", "stock", "sale"];
 export function ActiveFilters() {
   const { sp, list, toggle, push } = useParamsUpdater();
   const chips: { label: string; remove: () => void }[] = [];
-  list("age").forEach((a) => chips.push({ label: AGE_GROUPS.find((g) => g.id === a)?.label.split(" · ")[1] ?? a, remove: () => toggle("age", a) }));
+  list("age").forEach((a) => chips.push({ label: AGE_GROUPS.find((g) => g.id === a)?.label.split(" · ")[0] ?? a, remove: () => toggle("age", a) }));
   list("gender").forEach((g) => chips.push({ label: GENDERS[g.toUpperCase()] ?? g, remove: () => toggle("gender", g) }));
   list("size").forEach((s) => chips.push({ label: `Size ${s}`, remove: () => toggle("size", s) }));
   list("color").forEach((c) => chips.push({ label: c, remove: () => toggle("color", c) }));
@@ -248,10 +248,10 @@ export function AgePills() {
             type="button"
             onClick={() => toggle("age", a.id)}
             aria-pressed={active}
+            title={range}
             className={cn("inline-flex h-9 shrink-0 items-center gap-1.5 rounded-full border px-3.5 text-[0.82rem] font-medium whitespace-nowrap transition-colors", active ? "border-cocoa bg-cocoa text-cream-50" : "border-cocoa/12 text-cocoa-600 hover:border-cocoa hover:text-cocoa")}
           >
             {name}
-            <span className={cn("text-[0.74rem]", active ? "text-cream-200" : "text-cocoa-400")}>{range}</span>
           </button>
         );
       })}

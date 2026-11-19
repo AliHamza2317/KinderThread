@@ -25,10 +25,10 @@ export function MobileMenu({ categories, signedIn }: { categories: NavCategory[]
     { label: "Our Story", href: "/about" },
   ];
   const ages = [
-    { label: "Newborn", sub: "0–6M", href: "/shop?age=newborn" },
-    { label: "Baby", sub: "6–12M", href: "/shop?age=baby" },
-    { label: "Toddler", sub: "1–2Y", href: "/shop?age=toddler" },
-    { label: "Little ones", sub: "2–5Y", href: "/shop?age=little" },
+    { label: "Newborn", href: "/shop?age=newborn" },
+    { label: "Baby", href: "/shop?age=baby" },
+    { label: "Toddler", href: "/shop?age=toddler" },
+    { label: "Little ones", href: "/shop?age=little" },
   ];
 
   return (
@@ -73,7 +73,6 @@ export function MobileMenu({ categories, signedIn }: { categories: NavCategory[]
               <li key={a.href}>
                 <Link href={a.href} className="flex flex-col rounded-2xl bg-cream-100 px-4 py-3 transition-colors hover:bg-cocoa hover:text-cream-50">
                   <span className="font-display text-[1.15rem] leading-tight">{a.label}</span>
-                  <span className="text-[0.78rem] opacity-70">{a.sub}</span>
                 </Link>
               </li>
             ))}

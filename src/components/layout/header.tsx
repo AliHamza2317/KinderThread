@@ -43,12 +43,12 @@ export function Header({ categories, signedIn }: Props) {
   if (pathname === "/checkout") return <CheckoutHeader />;
 
   // age first, like the brands parents already shop with (ranges shown on wide screens)
-  const nav: { label: string; href: string; menu?: string; sub?: string }[] = [
+  const nav: { label: string; href: string; menu?: string }[] = [
     { label: "Shop", href: "/shop", menu: "shop" },
     { label: "New In", href: "/collections/new-arrivals" },
-    { label: "Newborn", sub: "0–6M", href: "/shop?age=newborn" },
-    { label: "Baby", sub: "6–12M", href: "/shop?age=baby" },
-    { label: "Toddler", sub: "1–5Y", href: "/shop?age=toddler,little" },
+    { label: "Newborn", href: "/shop?age=newborn" },
+    { label: "Baby", href: "/shop?age=baby" },
+    { label: "Toddler", href: "/shop?age=toddler,little" },
     { label: "Girls", href: "/collections/baby-girls" },
     { label: "Boys", href: "/collections/baby-boys" },
     { label: "Our Story", href: "/about" },
@@ -99,7 +99,6 @@ export function Header({ categories, signedIn }: Props) {
                   >
                     {active && <motion.span layoutId="nav-pill" className="absolute inset-0 -z-10 rounded-full bg-cocoa/[0.06]" transition={{ type: "spring", stiffness: 380, damping: 32 }} />}
                     {item.label}
-                    {item.sub && <span className="hidden text-[0.72rem] font-normal text-cocoa-400 xl:inline">{item.sub}</span>}
                     {item.menu && <ChevronDown className={cn("h-3.5 w-3.5 transition-transform", openMenu === item.menu && "rotate-180")} />}
                   </Link>
                 </li>
@@ -153,10 +152,10 @@ export function Header({ categories, signedIn }: Props) {
                     ))}
                   </MenuColumn>
                   <MenuColumn title="Shop by age" className="col-span-2">
-                    <MenuLink href="/shop?age=newborn">0–6 months</MenuLink>
-                    <MenuLink href="/shop?age=baby">6–12 months</MenuLink>
-                    <MenuLink href="/shop?age=toddler">1–2 years</MenuLink>
-                    <MenuLink href="/shop?age=little">2–5 years</MenuLink>
+                    <MenuLink href="/shop?age=newborn">Newborn</MenuLink>
+                    <MenuLink href="/shop?age=baby">Baby</MenuLink>
+                    <MenuLink href="/shop?age=toddler">Toddler</MenuLink>
+                    <MenuLink href="/shop?age=little">Little ones</MenuLink>
                   </MenuColumn>
                   {featured?.image && (
                     <Link href={`/collections/${featured.slug}`} className="group col-span-4 grid grid-cols-2 items-center gap-6 rounded-[1.5rem] bg-cream-100 p-3 pr-5">

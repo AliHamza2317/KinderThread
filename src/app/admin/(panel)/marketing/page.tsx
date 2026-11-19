@@ -242,6 +242,8 @@ function slideFields(k: string, n: number, withProduct: boolean): FieldSpec[] {
     { path: `${k}.secondaryLabel`, label: "Second link label (optional)" },
     { path: `${k}.secondaryHref`, label: "Second link (optional)" },
     { path: `${k}.imageAlt`, label: "Photograph description (alt text)", wide: true },
+    { path: `${k}.cutout`, label: "Cut-out image (optional)", hint: "A transparent PNG/WebP of the child or garment without background — shown directly on the colour", wide: true },
+    { path: `${k}.align`, label: "Cut-out position", hint: "bottom (people), center (garments) or right" },
     ...(withProduct ? ([{ path: `${k}.productSlug`, label: "Product card (optional)", hint: "Product URL name, e.g. tulle-party-dress" }] as FieldSpec[]) : []),
   ];
 }

@@ -17,9 +17,8 @@ export function AgeChips() {
         <ul className="scrollbar-none -mx-5 flex max-w-[calc(100%+2.5rem)] gap-2 overflow-x-auto px-5 md:mx-0 md:max-w-none md:px-0">
           {AGES.map((a) => (
             <li key={a.href} className="shrink-0">
-              <Link href={a.href} className="group inline-flex h-11 items-center gap-2 rounded-full border border-cocoa/12 bg-cream-50/70 px-4 text-[0.88rem] font-semibold whitespace-nowrap text-cocoa transition-colors hover:border-cocoa hover:bg-cocoa hover:text-cream-50">
+              <Link href={a.href} title={a.range} className="group inline-flex h-11 items-center gap-2 rounded-full border border-cocoa/12 bg-cream-50/70 px-4 text-[0.88rem] font-semibold whitespace-nowrap text-cocoa transition-colors hover:border-cocoa hover:bg-cocoa hover:text-cream-50">
                 {a.label}
-                <span className="text-[0.78rem] font-medium text-cocoa-400 transition-colors group-hover:text-cream-200">{a.range}</span>
                 <ArrowUpRight className="h-3.5 w-3.5 text-cocoa-300 transition-transform group-hover:rotate-45 group-hover:text-cream-200" />
               </Link>
             </li>

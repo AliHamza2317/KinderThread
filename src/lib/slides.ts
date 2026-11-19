@@ -21,6 +21,8 @@ export function buildSlides(group: SlideGroup): Slide[] {
         secondaryHref: s.secondaryHref,
         image: s.image,
         imageAlt: s.imageAlt,
+        cutout: s.cutout || undefined,
+        align: s.align,
         tone: s.tone,
         product: p ? { href: `/products/${p.slug}`, name: p.name, label: cat?.name ?? "New in", image: p.images[0]?.url ?? s.image, price: p.price, compareAt: p.compareAtPrice, isSample: p.isSample } : null,
       };
