@@ -4,7 +4,7 @@ import { Card, PageHeader } from "@/components/admin/ui";
 import { BannersManager } from "@/components/admin/content/banners";
 import { GalleryManager } from "@/components/admin/content/gallery";
 import { AnnouncementForm, BenefitsForm } from "@/components/admin/content/list-forms";
-import { SettingsForm } from "@/components/admin/content/settings-form";
+import { SettingsForm, type FieldSpec } from "@/components/admin/content/settings-form";
 import { requireStaff } from "@/lib/auth";
 import { BANNERS, GALLERY } from "@/data/content";
 import { getSettings } from "@/lib/settings";
@@ -59,29 +59,40 @@ export default async function MarketingPage() {
         </div>
 
         <div id="hero" className="scroll-mt-32">
-          <Card title="Hero" description="The first thing visitors see: a large photograph with your headline and buttons.">
+          <Card title="Homepage slider" description="The large slides at the top of the homepage. Use *word* to set a word in the italic accent. Colour: sage, coral, sun, cream, cocoa or forest. Switch a slide off to hide it.">
+            <SettingsForm
+              settingKey="home"
+              root="slider"
+              initial={home.slider}
+              submitLabel="Save slider"
+              images={(["slide1", "slide2", "slide3", "slide4"] as const).map((k, i) => ({ path: `${k}.image`, label: `Slide ${i + 1} photograph`, aspect: "aspect-[4/5]" }))}
+              fields={(["slide1", "slide2", "slide3", "slide4"] as const).flatMap((k, i) => slideFields(k, i + 1, true))}
+            />
+          </Card>
+        </div>
+
+        <div id="shop-banner" className="scroll-mt-32">
+          <Card title="Shop page banner" description="The slides at the top of the Shop page.">
+            <SettingsForm
+              settingKey="home"
+              root="shopSlider"
+              initial={home.shopSlider}
+              submitLabel="Save shop banner"
+              images={(["slide1", "slide2", "slide3"] as const).map((k, i) => ({ path: `${k}.image`, label: `Slide ${i + 1} photograph`, aspect: "aspect-[4/5]" }))}
+              fields={(["slide1", "slide2", "slide3"] as const).flatMap((k, i) => slideFields(k, i + 1, false))}
+            />
+          </Card>
+        </div>
+
+        <div id="prelaunch-photo" className="scroll-mt-32">
+          <Card title="Pre-launch page photo" description="Shown on the coming-soon page while pre-launch mode is on.">
             <SettingsForm
               settingKey="home"
               root="hero"
               initial={home.hero}
-              submitLabel="Save hero"
-              images={[
-                { path: "image", label: "Hero photograph", aspect: "aspect-[4/5]" },
-                { path: "secondaryImage", label: "Second photograph (desktop)", aspect: "aspect-[4/5]" },
-              ]}
-              fields={[
-                { path: "eyebrow", label: "Eyebrow", hint: "Short label above the heading, e.g. the season" },
-                { path: "heading", label: "Heading", wide: true },
-                { path: "subheading", label: "Supporting text", type: "textarea" },
-                { path: "imageAlt", label: "Photograph description (alt text)", wide: true },
-                { path: "productSlug", label: "Product shown on the photograph", hint: "Product URL name, e.g. tulle-party-dress. Leave empty to hide the card." },
-                { path: "badge", label: "Round badge text", hint: "Runs around the round badge, e.g. New season · Ages 0–5 ·" },
-                { type: "heading", label: "Buttons" },
-                { path: "primary.label", label: "Primary button label" },
-                { path: "primary.href", label: "Primary button link", placeholder: "/shop" },
-                { path: "secondary.label", label: "Secondary button label" },
-                { path: "secondary.href", label: "Secondary button link", placeholder: "/about" },
-              ]}
+              submitLabel="Save photo"
+              images={[{ path: "image", label: "Photograph", aspect: "aspect-[4/5]" }]}
+              fields={[{ path: "imageAlt", label: "Photograph description (alt text)", wide: true }]}
             />
           </Card>
         </div>
@@ -215,4 +226,22 @@ export default async function MarketingPage() {
       </div>
     </>
   );
+}
+
+/** Form fields for one slider slot (settings paths like "slide1.title"). */
+function slideFields(k: string, n: number, withProduct: boolean): FieldSpec[] {
+  return [
+    { type: "heading", label: `Slide ${n}` },
+    { path: `${k}.enabled`, label: "Show this slide", type: "checkbox", wide: true },
+    { path: `${k}.eyebrow`, label: "Small label" },
+    { path: `${k}.tone`, label: "Colour", hint: "sage, coral, sun, cream, cocoa or forest" },
+    { path: `${k}.title`, label: "Heading", wide: true, hint: "Use *word* for the italic accent" },
+    { path: `${k}.body`, label: "Text", type: "textarea", rows: 2 },
+    { path: `${k}.ctaLabel`, label: "Button label" },
+    { path: `${k}.ctaHref`, label: "Button link", placeholder: "/shop" },
+    { path: `${k}.secondaryLabel`, label: "Second link label (optional)" },
+    { path: `${k}.secondaryHref`, label: "Second link (optional)" },
+    { path: `${k}.imageAlt`, label: "Photograph description (alt text)", wide: true },
+    ...(withProduct ? ([{ path: `${k}.productSlug`, label: "Product card (optional)", hint: "Product URL name, e.g. tulle-party-dress" }] as FieldSpec[]) : []),
+  ];
 }

@@ -8,6 +8,25 @@ import { z } from "zod";
 
 const link = z.object({ label: z.string(), href: z.string() });
 
+type SlideDefaults = { eyebrow: string; title: string; body: string; ctaLabel: string; ctaHref: string; secondaryLabel?: string; secondaryHref?: string; image: string; imageAlt: string; tone: "sage" | "coral" | "sun" | "cream" | "cocoa" | "forest"; productSlug?: string };
+const slide = (d: SlideDefaults) =>
+  z
+    .object({
+      enabled: z.boolean().default(true),
+      eyebrow: z.string().default(d.eyebrow),
+      title: z.string().default(d.title),
+      body: z.string().default(d.body),
+      ctaLabel: z.string().default(d.ctaLabel),
+      ctaHref: z.string().default(d.ctaHref),
+      secondaryLabel: z.string().default(d.secondaryLabel ?? ""),
+      secondaryHref: z.string().default(d.secondaryHref ?? ""),
+      image: z.string().default(d.image),
+      imageAlt: z.string().default(d.imageAlt),
+      tone: z.enum(["sage", "coral", "sun", "cream", "cocoa", "forest"]).default(d.tone),
+      productSlug: z.string().default(d.productSlug ?? ""),
+    })
+    .prefault({});
+
 export const settingSchemas = {
   store: z.object({
     name: z.string().default("Kinder Thread"),
@@ -139,6 +158,24 @@ export const settingSchemas = {
         image2Alt: z.string().default("A parent holding a baby's tiny feet"),
         imagesAreSamples: z.boolean().default(false),
         cta: link.default({ label: "Read our story", href: "/about" }),
+      })
+      .prefault({}),
+    // homepage slider: four slots, each can be switched off. Use *word* for the serif accent;
+    // tone: sage, coral, sun, cream, cocoa or forest; productSlug shows a product card on the photo
+    slider: z
+      .object({
+        slide1: slide({ eyebrow: "New season · Ages 0–5", title: "Little Moments. Big *Adventures.*", body: "Thoughtfully selected outfits for your little ones, from their very first days to their biggest little adventures.", ctaLabel: "Explore Collection", ctaHref: "/shop", secondaryLabel: "Our Story", secondaryHref: "/about", image: "/images/editorial/hero-tulle.webp", imageAlt: "A toddler in a mint tulle dress sitting by a sunny window", tone: "sage", productSlug: "tulle-party-dress" }),
+        slide2: slide({ eyebrow: "The winter edit", title: "Winter *Collection*", body: "Cosy cardigans, chunky knits and soft layers for cooler days — chosen for warmth and easy wear.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/products/nordic-cardigan-rose.webp", imageAlt: "A rose Nordic yoke cardigan hanging on a wooden wall", tone: "cocoa" }),
+        slide3: slide({ eyebrow: "First days", title: "Newborn *Essentials*", body: "Gentle first pieces — bodysuits, knits and booties in the softest fabrics.", ctaLabel: "Shop newborn", ctaHref: "/collections/newborn", image: "/images/editorial/cat-newborn.webp", imageAlt: "A newborn's tiny feet on a soft white blanket", tone: "coral" }),
+        slide4: slide({ eyebrow: "For little girls", title: "Dresses & *Delights*", body: "Party dresses, blouses and knits in soft, timeless colours.", ctaLabel: "Shop baby girls", ctaHref: "/collections/baby-girls", image: "/images/editorial/cat-baby-girls.webp", imageAlt: "Little dresses drying on a washing line in a garden", tone: "forest" }),
+      })
+      .prefault({}),
+    // banner slider at the top of the Shop page
+    shopSlider: z
+      .object({
+        slide1: slide({ eyebrow: "Just in", title: "New *Arrivals*", body: "Fresh pieces for the new season — soft colours, easy fits.", ctaLabel: "Shop new arrivals", ctaHref: "/collections/new-arrivals", image: "/images/gallery/g1.webp", imageAlt: "A toddler in a tutu walking on the grass", tone: "sun" }),
+        slide2: slide({ eyebrow: "The winter edit", title: "Warm *Knits*", body: "Cardigans, bloomers and beanies for chilly mornings.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/products/knit-bloomers-moss.webp", imageAlt: "Hands holding moss-green cable knit bloomers", tone: "forest" }),
+        slide3: slide({ eyebrow: "Loved by little ones", title: "Best *Sellers*", body: "The styles parents come back for.", ctaLabel: "Shop best sellers", ctaHref: "/collections/best-sellers", image: "/images/products/crochet-booties-coral.webp", imageAlt: "Coral hand-crochet baby booties", tone: "coral" }),
       })
       .prefault({}),
     // seasonal campaign / sale slot (Eid, 11.11, winter sale…) — off until you switch it on

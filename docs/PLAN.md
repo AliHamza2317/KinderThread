@@ -27,6 +27,12 @@
 > - **Measured (Lighthouse mobile, real throttling, local build):** homepage score 33 → 56–66, LCP 10–17.5 s →
 >   3.4–4.6 s, blocking time 4.6 s → 0.75 s, download 2.9 MB → 0.77 MB; shop page LCP 6.5 s → 2.7–3.0 s.
 >
+> **Revision 4.2 — window slider:** the homepage hero is a full-width rounded "window" slider (as on many brand
+> homepages): each slide has its own colour field (sage, cocoa, coral, forest…), a big headline with the serif
+> accent, a button and the photo in an arch window; accessible controls (arrows, progress, pause), swipe on
+> phones, no autoplay with reduced motion. The Shop page opens with its own banner slider and collection pages
+> with a single banner in the same style. Slides are edited in Admin → Homepage & marketing.
+>
 > **Revision 4.1 — inner pages:** shop/collection pages follow brand stores (title band — with the collection
 > photo where there is one — collection pills, a slim toolbar with count, quick age pills and a "Filter & sort"
 > drawer, full-width 4-column grid); product pages have an editorial photo stack, a calm sticky buy column with

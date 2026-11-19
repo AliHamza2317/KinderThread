@@ -3,7 +3,8 @@ import { Benefits } from "@/components/home/benefits";
 import { BrandStory } from "@/components/home/brand-story";
 import { CategoryShowcase } from "@/components/home/category-showcase";
 import { Gallery } from "@/components/home/gallery";
-import { Hero, type HeroProduct } from "@/components/home/hero";
+import { AgeChips } from "@/components/home/age-chips";
+import { HeroSlider } from "@/components/home/hero-slider";
 import { NewsletterSection } from "@/components/home/newsletter";
 import { ProductRow } from "@/components/home/product-row";
 import { PromoBanner } from "@/components/home/promo-banner";
@@ -14,9 +15,10 @@ import { ProductCard } from "@/components/product/product-card";
 import { buttonClass } from "@/components/ui/button";
 import { Reveal } from "@/components/ui/reveal";
 import { countProductsInCategory, getProductsBy } from "@/lib/catalog";
-import { CATEGORIES, PRODUCTS } from "@/data/catalog";
+import { CATEGORIES } from "@/data/catalog";
 import { BANNERS, GALLERY } from "@/data/content";
 import { getSettings } from "@/lib/settings";
+import { buildSlides } from "@/lib/slides";
 import { absoluteUrl, formatPrice, whatsappLink } from "@/lib/utils";
 
 export default async function Home() {
@@ -34,13 +36,7 @@ export default async function Home() {
   const gallery = sec.gallery ? GALLERY.filter((g) => g.isActive).sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 8) : [];
   const showSample = settings.features.showSampleBadges;
 
-  // the product pictured on the hero photograph — name and price come from the catalogue
-  const heroProduct: HeroProduct | null = (() => {
-    const p = PRODUCTS.find((x) => x.slug === home.hero.productSlug && x.status === "ACTIVE");
-    if (!p) return null;
-    const cat = CATEGORIES.find((c) => p.categoryIds.includes(c.id));
-    return { href: `/products/${p.slug}`, name: p.name, label: cat?.name ?? "New in", image: p.images[0]?.url ?? home.hero.image, price: p.price, compareAt: p.compareAtPrice, isSample: p.isSample };
-  })();
+  const slides = buildSlides(home.slider);
 
   const trust: TrustItem[] = [
     payments.cod.enabled && { icon: "cash" as const, title: "Cash on delivery", body: "Pay when your parcel arrives" },
@@ -65,7 +61,8 @@ export default async function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <Hero content={home.hero} product={heroProduct} badge={home.hero.badge} />
+      <HeroSlider slides={slides} />
+      <AgeChips />
 
       {sec.trust && <TrustStrip items={trust} />}
 

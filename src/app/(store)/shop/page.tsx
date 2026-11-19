@@ -2,6 +2,7 @@ import type { Metadata } from "next";
 import { ShopView } from "@/components/shop/shop-view";
 import { getCollectionPills, getFacets, listProducts, parseFilters } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
+import { buildSlides } from "@/lib/slides";
 
 export const metadata: Metadata = {
   title: "Shop all",
@@ -18,6 +19,7 @@ export default async function ShopPage({ searchParams }: { searchParams: Promise
       eyebrow="The collection"
       title="Shop *all*"
       pills={pills}
+      slider={buildSlides(settings.home.shopSlider)}
       description="Thoughtfully selected outfits for newborns, babies and little ones up to five years."
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop" }]}
       {...res}

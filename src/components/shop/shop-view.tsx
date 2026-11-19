@@ -1,7 +1,9 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { PageHero, PillNav, type Crumb } from "@/components/layout/page-hero";
+import { HeroSlider, SlideBanner, type Slide } from "@/components/home/hero-slider";
+import { Breadcrumbs, PageHero, PillNav, type Crumb } from "@/components/layout/page-hero";
+import { SplitWords } from "@/components/ui/reveal";
 import { ProductCard } from "@/components/product/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import type { ProductCardData } from "@/lib/catalog";
@@ -41,6 +43,8 @@ export function ShopView({
   showSample,
   emptyAction,
   heroChildren,
+  slider,
+  banner,
 }: {
   eyebrow?: string;
   title: string;
@@ -59,12 +63,31 @@ export function ShopView({
   showSample: boolean;
   emptyAction?: { href: string; label: string };
   heroChildren?: ReactNode;
+  /** campaign slides shown at the top instead of the title band (shop page) */
+  slider?: Slide[];
+  /** a single campaign-style banner (collection pages) */
+  banner?: Slide | null;
 }) {
   return (
     <ShopProvider>
-      <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
-        {heroChildren}
-      </PageHero>
+      {slider && slider.length > 0 ? (
+        <>
+          <HeroSlider slides={slider} size="page" label="Shop highlights" />
+          <div className="container-kt mt-8 text-center md:mt-10">
+            <Breadcrumbs items={breadcrumb} align="center" />
+            <h1 className="display-md mt-3">
+              <SplitWords text={title} />
+            </h1>
+            {description && <p className="mx-auto mt-2 max-w-xl text-[0.98rem] text-cocoa-500">{description}</p>}
+          </div>
+        </>
+      ) : banner ? (
+        <SlideBanner slide={banner} top={<Breadcrumbs items={breadcrumb} className="mb-6 [&_*]:!text-current [&_*]:opacity-80" />} />
+      ) : (
+        <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
+          {heroChildren}
+        </PageHero>
+      )}
 
       {pills && pills.length > 0 && <PillNav items={pills} label="Collections" className="mt-6" />}
 

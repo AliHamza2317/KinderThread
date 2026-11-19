@@ -3,6 +3,10 @@ import { notFound } from "next/navigation";
 import { ShopView } from "@/components/shop/shop-view";
 import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
 import { accentLast } from "@/lib/utils";
+import type { SlideTone } from "@/components/home/hero-slider";
+
+// each collection banner gets its own colour field
+const TONE_BY_SLUG: Record<string, SlideTone> = { "new-arrivals": "sun", "best-sellers": "coral", sale: "cocoa", "baby-boys": "sage", "baby-girls": "coral", newborn: "cream", "everyday-wear": "sun", "casual-outfits": "forest", "matching-sets": "sage", seasonal: "cocoa" };
 
 // photographs for the collection headers of the virtual collections
 const VIRTUAL_IMAGES: Record<string, string> = {
@@ -46,6 +50,11 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       description={c.description}
       image={c.image}
       pills={pills}
+      banner={
+        c.image
+          ? { eyebrow: c.kind === "collection" ? "Collection" : "Category", title: accentLast(c.name), body: c.description ?? "", ctaLabel: "", ctaHref: "", image: c.image, imageAlt: "", tone: TONE_BY_SLUG[slug] ?? "sage" }
+          : null
+      }
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: c.name }]}
       {...res}
       facets={facets}

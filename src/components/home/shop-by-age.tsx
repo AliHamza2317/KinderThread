@@ -37,7 +37,7 @@ export function ShopByAge() {
             </span>
           </span>
           <span className="relative transition-colors duration-500 group-hover:text-cream-50">
-            <span className={cn("block font-display leading-[0.85] font-medium tracking-[-0.06em]", i === 0 ? "text-[clamp(4.5rem,3rem+8vw,11rem)]" : "text-[clamp(3rem,2rem+4vw,6rem)]")}>{a.big}</span>
+            <span className={cn("block font-display font-medium tracking-[-0.06em]", i === 0 ? "text-[clamp(4.5rem,3rem+8vw,11rem)]" : "text-[clamp(3rem,2rem+4vw,6rem)]", "leading-[0.85]")}>{a.big}</span>
             <span className="mt-2 block font-serif-accent text-[1.4rem] md:text-[1.8rem]">{a.unit}</span>
           </span>
         </Link>
