@@ -1,6 +1,6 @@
 import Image from "next/image";
 import Link from "next/link";
-import { Check, Heart, Sparkles, User, UserPlus } from "lucide-react";
+import { Check, Heart, User, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
 import { cn } from "@/lib/utils";
 
@@ -28,11 +28,11 @@ function Title({ text }: { text: string }) {
 }
 
 /**
- * Sign in / create account / password help: the form on the left (a small chip, the title
+ * Sign in / create account / password help: the form on the left (the title
  * on one line with the accent word in green, rounded icon fields) and the brand photograph
  * on the right in a large rounded frame with a frosted card of account benefits.
  */
-export function AuthShell({ mode, chip, title, intro, children, footer, next = "/account" }: { mode: Mode; chip: string; title: string; intro: ReactNode; children: ReactNode; footer?: ReactNode; next?: string }) {
+export function AuthShell({ mode, title, intro, children, footer, next = "/account" }: { mode: Mode; title: string; intro: ReactNode; children: ReactNode; footer?: ReactNode; next?: string }) {
   const q = next !== "/account" ? `?next=${encodeURIComponent(next)}` : "";
   return (
     <section className="relative isolate overflow-hidden bg-gradient-to-b from-cream-50 to-cream-100 max-lg:bg-cream-100">
@@ -42,14 +42,10 @@ export function AuthShell({ mode, chip, title, intro, children, footer, next = "
       <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-24 -z-10 h-80 w-80 rounded-full bg-sage-300/30 blur-3xl" />
       <div aria-hidden className="pointer-events-none absolute top-6 -right-10 -z-10 h-40 w-40 rounded-full bg-sage-300/40 blur-2xl lg:hidden" />
 
-      <div className="container-kt grid items-center gap-10 pt-7 md:pt-12 lg:grid-cols-[1fr_1.08fr] lg:gap-14 lg:py-14">
+      <div className="container-kt grid items-center gap-10 pt-8 md:pt-12 lg:grid-cols-[1fr_1.08fr] lg:gap-14 lg:py-14">
         {/* form */}
         <div className="w-full justify-self-center lg:max-w-[29rem]">
-          <p className="inline-flex items-center gap-2 rounded-full bg-sage-100/90 px-4 py-2 text-[0.85rem] font-semibold text-sage-800 shadow-[0_8px_24px_-14px_rgb(20_16_12/0.35)] ring-1 ring-cocoa/[0.05] lg:bg-white/80">
-            <Sparkles className="h-4 w-4 text-sage-700" strokeWidth={1.8} />
-            {chip}
-          </p>
-          <h1 className="mt-5 font-display text-[clamp(3.1rem,2rem+3vw,3.75rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-cocoa lg:text-[clamp(2.4rem,1.5rem+2.4vw,3.75rem)] lg:whitespace-nowrap">
+          <h1 className="font-display text-[clamp(3.1rem,2rem+3vw,3.75rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-cocoa lg:text-[clamp(2.4rem,1.5rem+2.4vw,3.75rem)] lg:whitespace-nowrap">
             <Title text={title} />
           </h1>
           <p className="mt-5 max-w-[22rem] text-[1rem] leading-relaxed text-cocoa-500 lg:max-w-[24rem] lg:text-[1.05rem]">{intro}</p>
@@ -60,7 +56,7 @@ export function AuthShell({ mode, chip, title, intro, children, footer, next = "
           </div>
 
           {/* the form: a rounded sheet on phones, plain on computers */}
-          <div className="relative z-10 -mx-5 -mt-12 rounded-t-[2.5rem] bg-cream-50 px-5 pt-6 pb-10 shadow-[0_-24px_50px_-36px_rgb(20_16_12/0.4)] sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-7 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+          <div className="relative z-10 -mx-5 -mt-12 rounded-t-[2.5rem] bg-cream-50 px-5 pt-6 pb-28 shadow-[0_-24px_50px_-36px_rgb(20_16_12/0.4)] sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-7 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
             {mode !== "forgot" && (
               <nav aria-label="Account" className="mb-6 grid grid-cols-2 rounded-full bg-cream-200/70 p-1.5 lg:hidden">
                 {(

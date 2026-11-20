@@ -3,6 +3,7 @@ import { AnnouncementBar } from "@/components/layout/announcement-bar";
 import { CartDrawer } from "@/components/layout/cart-drawer";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
+import { HideOn } from "@/components/layout/hide-on";
 import { MobileMenu } from "@/components/layout/mobile-menu";
 import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { SearchOverlay } from "@/components/layout/search-overlay";
@@ -26,7 +27,10 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <AnnouncementBar messages={messages} />
       <Header categories={categories.filter((c) => c.showInNav)} signedIn={false} />
       <main id="main">{children}</main>
-      <Footer settings={settings} categories={categories.filter((c) => c.kind === "category")} pages={pages} />
+      {/* sign-in pages stay focused: no footer */}
+      <HideOn paths={["/account/login", "/account/register", "/account/forgot"]}>
+        <Footer settings={settings} categories={categories.filter((c) => c.kind === "category")} pages={pages} />
+      </HideOn>
       <MobileTabBar signedIn={false} />
       <MobileMenu categories={categories} signedIn={false} />
       <SearchOverlay categories={categories} />

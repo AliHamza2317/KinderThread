@@ -18,7 +18,6 @@ export default async function LoginPage({ searchParams }: { searchParams: Promis
     <AuthShell
       mode="login"
       next={next}
-      chip="My Account"
       title="Welcome *back*"
       intro="Sign in to track orders, save addresses and keep your wishlist in sync."
       footer={

@@ -17,7 +17,6 @@ export default async function RegisterPage({ searchParams }: { searchParams: Pro
     <AuthShell
       mode="register"
       next={next}
-      chip="Join Kinder Thread"
       title="Create *account*"
       intro="It takes a minute — and makes every future order quicker."
       footer={
