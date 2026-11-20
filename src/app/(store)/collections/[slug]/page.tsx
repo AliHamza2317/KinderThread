@@ -7,6 +7,9 @@ import { getSettings } from "@/lib/settings";
 import { sizeRangeLabel } from "@/lib/sizes";
 import { accentLast, formatPrice } from "@/lib/utils";
 
+// which part of each collection photo stays in view in the phone banner
+const BANNER_FOCUS: Record<string, string> = { "baby-boys": "50% 35%", "baby-girls": "50% 30%", newborn: "50% 55%", "everyday-wear": "50% 45%", "casual-outfits": "50% 40%", "matching-sets": "50% 45%", seasonal: "50% 50%", "new-arrivals": "50% 62%", "best-sellers": "50% 45%", sale: "50% 45%" };
+
 // each collection header gets its own soft colour (two darker ones for contrast)
 const TONE: Record<string, CollectionTone> = {
   "new-arrivals": "sun",
@@ -71,7 +74,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       description={c.description}
       image={c.image}
       pills={pills}
-      collection={{ tone: TONE[slug] ?? "cream", facts, feature, products }}
+      collection={{ tone: TONE[slug] ?? "cream", facts, feature, products, mobileBanner: c.image ? { image: c.image, position: BANNER_FOCUS[slug] } : null }}
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: c.name }]}
       {...res}
       facets={facets}

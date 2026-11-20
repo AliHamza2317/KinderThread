@@ -104,6 +104,7 @@ export function CollectionHeader({
   feature,
   products = [],
   ctaHref = "#products",
+  mobileBanner,
 }: {
   eyebrow?: string;
   title: string;
@@ -114,62 +115,71 @@ export function CollectionHeader({
   feature?: CollagePhoto | null;
   products?: CollagePhoto[];
   ctaHref?: string;
+  /** phones: show the full-width photo banner instead (title over the photo) */
+  mobileBanner?: { image: string; position?: string } | null;
 }) {
   const t = COLLECTION_TONES[tone];
   const photos = [feature, ...products].filter(Boolean) as CollagePhoto[];
   const [big, ...small] = photos.slice(0, 3);
   return (
-    <section className={cn("relative isolate overflow-hidden", t.bg, t.text)}>
-      {/* soft light behind the collage */}
-      <div aria-hidden className={cn("pointer-events-none absolute -z-10 aspect-square w-[46rem] rounded-full blur-3xl max-lg:hidden", t.glow, "top-1/2 right-[-6rem] -translate-y-1/2")} />
-      <div className="container-kt grid items-center gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-12 lg:gap-12 lg:py-14">
-        <div className={cn("lg:col-span-6", t.accent)}>
-          {breadcrumb && (
-            <Breadcrumbs
-              items={breadcrumb}
-              className={cn("mb-5 md:mb-6", t.dark && "text-cream-200/70 [&_a:hover]:text-cream-50 [&_[aria-current]]:text-cream-50 [&_span[aria-hidden]]:text-cream-200/40")}
-            />
-          )}
-          {eyebrow && <p className={cn("eyebrow eyebrow-rule", t.muted)}>{eyebrow}</p>}
-          <h1 className="mt-4 font-display text-[clamp(2.8rem,1.4rem+4vw,5.4rem)] leading-[0.95] font-medium tracking-[-0.055em]">
-            <SplitWords text={title} />
-          </h1>
-          {description && <p className={cn("mt-4 max-w-md text-[0.98rem] leading-relaxed md:mt-5 md:text-[1.05rem]", t.muted)}>{description}</p>}
-          {facts.length > 0 && (
-            <ul className="mt-5 flex flex-wrap gap-2 md:mt-6">
-              {facts.map((f) => (
-                <li key={f} className={cn("rounded-full border px-3.5 py-1.5 text-[0.78rem] font-semibold", t.chip)}>
-                  {f}
-                </li>
-              ))}
-            </ul>
-          )}
-          <a
-            href={ctaHref}
-            className={cn(
-              "group mt-8 hidden h-12 items-center gap-2 rounded-full pr-1.5 pl-6 text-[0.8rem] font-semibold tracking-[0.14em] uppercase transition-colors sm:inline-flex",
-              t.dark ? "bg-cream-50 text-cocoa hover:bg-sun-200" : "bg-cocoa text-cream-50 hover:bg-sage-700",
-            )}
-          >
-            Shop the collection
-            <span className={cn("grid h-9 w-9 place-items-center rounded-full transition-transform duration-500 group-hover:translate-y-0.5", t.dark ? "bg-cocoa text-cream-50" : "bg-cream-50 text-cocoa")}>
-              <ArrowDown className="h-4 w-4" />
-            </span>
-          </a>
+    <>
+      {mobileBanner && (
+        <div className="md:hidden">
+          <PageBanner image={mobileBanner.image} position={mobileBanner.position} eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} />
         </div>
-
-        {big && (
-          <div className="lg:col-span-6">
-            <div className={cn("grid h-[13rem] gap-2.5 sm:h-[20rem] md:gap-3 lg:h-[26rem]", small.length ? "grid-cols-5 grid-rows-2" : "grid-cols-1")}>
-              <CollageTile photo={big} className={cn(small.length ? "col-span-3 row-span-2" : "")} sizes="(min-width: 1024px) 26vw, 60vw" priority />
-              {small.map((p, i) => (
-                <CollageTile key={p.image + i} photo={p} className={cn("col-span-2", small.length === 1 && "row-span-2")} sizes="(min-width: 1024px) 18vw, 40vw" caption />
-              ))}
-            </div>
+      )}
+      <section className={cn("relative isolate overflow-hidden", mobileBanner && "max-md:hidden", t.bg, t.text)}>
+        {/* soft light behind the collage */}
+        <div aria-hidden className={cn("pointer-events-none absolute -z-10 aspect-square w-[46rem] rounded-full blur-3xl max-lg:hidden", t.glow, "top-1/2 right-[-6rem] -translate-y-1/2")} />
+        <div className="container-kt grid items-center gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-12 lg:gap-12 lg:py-14">
+          <div className={cn("lg:col-span-6", t.accent)}>
+            {breadcrumb && (
+              <Breadcrumbs
+                items={breadcrumb}
+                className={cn("mb-5 md:mb-6", t.dark && "text-cream-200/70 [&_a:hover]:text-cream-50 [&_[aria-current]]:text-cream-50 [&_span[aria-hidden]]:text-cream-200/40")}
+              />
+            )}
+            {eyebrow && <p className={cn("eyebrow eyebrow-rule", t.muted)}>{eyebrow}</p>}
+            <h1 className="mt-4 font-display text-[clamp(2.8rem,1.4rem+4vw,5.4rem)] leading-[0.95] font-medium tracking-[-0.055em]">
+              <SplitWords text={title} />
+            </h1>
+            {description && <p className={cn("mt-4 max-w-md text-[0.98rem] leading-relaxed md:mt-5 md:text-[1.05rem]", t.muted)}>{description}</p>}
+            {facts.length > 0 && (
+              <ul className="mt-5 flex flex-wrap gap-2 md:mt-6">
+                {facts.map((f) => (
+                  <li key={f} className={cn("rounded-full border px-3.5 py-1.5 text-[0.78rem] font-semibold", t.chip)}>
+                    {f}
+                  </li>
+                ))}
+              </ul>
+            )}
+            <a
+              href={ctaHref}
+              className={cn(
+                "group mt-8 hidden h-12 items-center gap-2 rounded-full pr-1.5 pl-6 text-[0.8rem] font-semibold tracking-[0.14em] uppercase transition-colors sm:inline-flex",
+                t.dark ? "bg-cream-50 text-cocoa hover:bg-sun-200" : "bg-cocoa text-cream-50 hover:bg-sage-700",
+              )}
+            >
+              Shop the collection
+              <span className={cn("grid h-9 w-9 place-items-center rounded-full transition-transform duration-500 group-hover:translate-y-0.5", t.dark ? "bg-cocoa text-cream-50" : "bg-cream-50 text-cocoa")}>
+                <ArrowDown className="h-4 w-4" />
+              </span>
+            </a>
           </div>
-        )}
-      </div>
-    </section>
+
+          {big && (
+            <div className="lg:col-span-6">
+              <div className={cn("grid h-[13rem] gap-2.5 sm:h-[20rem] md:gap-3 lg:h-[26rem]", small.length ? "grid-cols-5 grid-rows-2" : "grid-cols-1")}>
+                <CollageTile photo={big} className={cn(small.length ? "col-span-3 row-span-2" : "")} sizes="(min-width: 1024px) 26vw, 60vw" priority />
+                {small.map((p, i) => (
+                  <CollageTile key={p.image + i} photo={p} className={cn("col-span-2", small.length === 1 && "row-span-2")} sizes="(min-width: 1024px) 18vw, 40vw" caption />
+                ))}
+              </div>
+            </div>
+          )}
+        </div>
+      </section>
+    </>
   );
 }
 

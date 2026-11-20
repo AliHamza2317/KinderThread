@@ -70,6 +70,7 @@ export function ShopView({
     facts: string[];
     feature: { image: string; alt: string } | null;
     products: { href: string; image: string; alt: string; name: string; price: string }[];
+    mobileBanner?: { image: string; position?: string } | null;
   } | null;
 }) {
   return (
@@ -81,7 +82,7 @@ export function ShopView({
           <BannerSlider slides={slider} size="page" label="Shop highlights" />
         </>
       ) : collection ? (
-        <CollectionHeader eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} tone={collection.tone} facts={collection.facts} feature={collection.feature} products={collection.products} />
+        <CollectionHeader eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} tone={collection.tone} facts={collection.facts} feature={collection.feature} products={collection.products} mobileBanner={collection.mobileBanner} />
       ) : (
         <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
           {heroChildren}
