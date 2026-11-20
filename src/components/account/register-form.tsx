@@ -31,7 +31,7 @@ export function RegisterForm({ next }: { next: string }) {
         </Field>
       </div>
       <Notice state={state} />
-      <Submit pending={pending} size="lg" className="w-full">
+      <Submit pending={pending} size="lg" className="w-full text-[0.8rem] tracking-[0.16em] uppercase">
         Create account
       </Submit>
       <p className="text-center text-[0.8rem] text-cocoa-400">Demo mode — sign-in isn&apos;t connected yet; you&apos;ll see a sample account.</p>

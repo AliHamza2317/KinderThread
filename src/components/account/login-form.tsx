@@ -24,7 +24,7 @@ export function LoginForm({ next }: { next: string }) {
         </Link>
       </div>
       <Notice state={state} />
-      <Submit pending={pending} size="lg" className="w-full">
+      <Submit pending={pending} size="lg" className="w-full text-[0.8rem] tracking-[0.16em] uppercase">
         Sign in
       </Submit>
       <div className="flex items-center gap-3 text-[0.75rem] font-semibold tracking-[0.14em] text-cocoa-400 uppercase" aria-hidden>
@@ -32,8 +32,8 @@ export function LoginForm({ next }: { next: string }) {
         or
         <span className="h-px flex-1 bg-cocoa/10" />
       </div>
-      <Link href={next.startsWith("/checkout") ? next : "/shop"} className={buttonClass("secondary", "lg", "w-full")}>
-        {next.startsWith("/checkout") ? "Continue as guest" : "Continue shopping as guest"}
+      <Link href={next.startsWith("/checkout") ? next : "/shop"} className={buttonClass("secondary", "lg", "w-full text-[0.8rem] tracking-[0.16em] uppercase")}>
+        Continue as guest
       </Link>
       <p className="text-center text-[0.78rem] leading-relaxed text-cocoa-400">Demo mode — sign-in isn&apos;t connected yet; you&apos;ll see a sample account.</p>
     </form>
