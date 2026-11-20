@@ -210,7 +210,7 @@ export default async function SettingsPage() {
               readOnly={readOnly}
               fields={[
                 { path: "smoothScroll", label: "Smooth scrolling on desktop", type: "checkbox", wide: true, hint: "Touch devices and visitors who prefer reduced motion always use normal scrolling." },
-                { path: "showSampleBadges", label: "Show “Sample” labels on sample products", type: "checkbox", wide: true, hint: "Keep this on while any sample products are visible." },
+                { path: "showSampleBadges", label: "Show “Sample” labels on product cards", type: "checkbox", wide: true, hint: "Off by default. The product page of a sample product always shows a short note that its photo is placeholder imagery." },
                 { path: "tryOn", label: "Virtual try-on (planned for a later phase)", type: "checkbox", wide: true, disabled: true, hint: "Not available yet — it needs 3D garment assets per product. Customers can register interest on the try-on page." },
               ]}
             />

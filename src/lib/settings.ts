@@ -268,7 +268,8 @@ export const settingSchemas = {
   features: z.object({
     tryOn: z.boolean().default(false),
     smoothScroll: z.boolean().default(true),
-    showSampleBadges: z.boolean().default(true),
+    // "Sample" labels on product cards (the product page always notes placeholder photos)
+    showSampleBadges: z.boolean().default(false),
   }),
 } as const;
 

@@ -32,15 +32,3 @@ export function sortSizes<T extends string>(sizes: T[]): T[] {
 export function sizeLabel(size: string) {
   return SIZE_LABELS[size] ?? size;
 }
-
-/** "0–3M … 4–5Y" → "0M–5Y" style range for a set of sizes (sorted first). */
-export function sizeRangeLabel(sizes: string[]) {
-  const s = sortSizes([...new Set(sizes)]);
-  if (!s.length) return "";
-  const short = (x: string) => x.replace("-", "–");
-  if (s.length === 1) return short(s[0]);
-  const start = short(s[0]).split("–")[0];
-  const from = start === "0" ? start : start + (/M$/.test(s[0]) && /Y$/.test(s.at(-1)!) ? "M" : "");
-  const to = short(s.at(-1)!).split("–")[1];
-  return `${from}–${to}`;
-}

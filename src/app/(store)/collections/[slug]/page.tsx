@@ -4,7 +4,6 @@ import { ShopView } from "@/components/shop/shop-view";
 import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTION_IMAGES, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
 import type { CollectionTone } from "@/components/layout/page-hero";
 import { getSettings } from "@/lib/settings";
-import { sizeRangeLabel } from "@/lib/sizes";
 import { accentLast, formatPrice } from "@/lib/utils";
 
 // which part of each collection photo stays in view in the phone banner
@@ -64,8 +63,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
     .filter((p) => p.images[0] && p.images[0].url !== c.image)
     .slice(0, feature ? 2 : 3)
     .map((p) => ({ href: `/products/${p.slug}`, image: p.images[0].url, alt: p.name, name: p.name, price: formatPrice(p.price) }));
-  const sizes = sizeRangeLabel(all.products.flatMap((p) => p.sizes));
-  const facts = [`${all.total} ${all.total === 1 ? "style" : "styles"}`, sizes && `Sizes ${sizes}`, settings.payments.cod.enabled && "Cash on delivery"].filter(Boolean) as string[];
+  const facts = [`${all.total} ${all.total === 1 ? "style" : "styles"}`, settings.payments.cod.enabled && "Cash on delivery"].filter(Boolean) as string[];
 
   return (
     <ShopView

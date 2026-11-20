@@ -10,12 +10,6 @@ import { cn, discountPercent } from "@/lib/utils";
 import { useUi } from "@/stores/ui";
 import { WishlistButton } from "./wishlist-button";
 
-function sizeRange(sizes: string[]) {
-  if (!sizes.length) return "";
-  const short = (s: string) => s.replace("-", "–");
-  return sizes.length === 1 ? short(sizes[0]) : `${short(sizes[0]).split("–")[0]}${/M$/.test(sizes[0]) && /Y$/.test(sizes.at(-1)!) ? "M" : ""}–${short(sizes.at(-1)!).split("–")[1]}`;
-}
-
 export function ProductCard({ product, priority, showSample = true, className }: { product: ProductCardData; priority?: boolean; showSample?: boolean; className?: string }) {
   const openQuickAdd = useUi((s) => s.openQuickAdd);
   const [a, b] = product.images;
@@ -90,7 +84,6 @@ export function ProductCard({ product, priority, showSample = true, className }:
             {product.colors.length > 4 && <span>+{product.colors.length - 4}</span>}
           </span>
         )}
-        {product.sizes.length > 0 && <span>Sizes {sizeRange(product.sizes)}</span>}
         {showSample && product.isSample && (
           <span className="ml-auto rounded-full border border-cocoa/10 px-2 py-0.5 text-[0.6rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase" title="Sample listing used while the first collection is prepared">
             Sample
