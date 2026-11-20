@@ -388,3 +388,22 @@ select.kt-select {
 .kt-thread { stroke-dasharray: 1; stroke-dashoffset: 1; animation: kt-draw 2.6s cubic-bezier(0.22, 1, 0.36, 1) 0.3s forwards; }
 @keyframes kt-draw { to { stroke-dashoffset: 0; } }
 @media (prefers-reduced-motion: reduce) { .kt-thread { animation: none; stroke-dashoffset: 0; } }
+
+/* dropdown list (components/ui/select.tsx) opens with a short fade and lift */
+.kt-pop { animation: kt-pop 0.14s cubic-bezier(0.22, 1, 0.36, 1); transform-origin: top; }
+@keyframes kt-pop { from { opacity: 0; transform: translateY(-4px) scale(0.985); } }
+@media (prefers-reduced-motion: reduce) { .kt-pop { animation: none; } }
+
+/* admin: dropdown triggers look like the other admin fields */
+.admin-ui .kt-select-trigger {
+  background-color: #fff;
+  border-color: var(--adm-line);
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--adm-ink);
+  box-shadow: 0 1px 1px rgb(20 16 12 / 0.03);
+}
+.admin-ui .kt-select-trigger.h-12 { height: 2.625rem; }
+.admin-ui .kt-select-trigger:hover:not(:disabled) { border-color: var(--adm-line-strong); }
+.admin-ui .kt-select-trigger:focus-visible,
+.admin-ui .kt-select-trigger[aria-expanded="true"] { border-color: #4f6a45; box-shadow: 0 0 0 3px rgb(79 106 69 / 0.16); outline: none; }

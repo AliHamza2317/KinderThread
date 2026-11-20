@@ -1,8 +1,8 @@
 import type { ComponentProps, ReactNode } from "react";
 import { cn } from "@/lib/utils";
+import { control } from "./control";
 
-const control =
-  "w-full rounded-md border border-cocoa-100 bg-cream-50 px-4 text-[0.95rem] text-cocoa placeholder:text-cocoa-400/80 transition-[border-color,box-shadow] duration-200 hover:border-cocoa-200 focus:border-cocoa-600 focus:outline-none focus:ring-2 focus:ring-cocoa-100 disabled:opacity-60 aria-[invalid=true]:border-coral-600";
+export { Select } from "./select";
 
 export function Input({ className, ...props }: ComponentProps<"input">) {
   return <input className={cn(control, "h-12", className)} {...props} />;
@@ -10,22 +10,6 @@ export function Input({ className, ...props }: ComponentProps<"input">) {
 
 export function Textarea({ className, ...props }: ComponentProps<"textarea">) {
   return <textarea className={cn(control, "min-h-28 py-3 leading-relaxed", className)} {...props} />;
-}
-
-export function Select({ className, children, ...props }: ComponentProps<"select">) {
-  return (
-    <select
-      className={cn(
-        control,
-        // chevron comes from the .kt-select rule in globals.css
-        "kt-select h-12 pr-10",
-        className,
-      )}
-      {...props}
-    >
-      {children}
-    </select>
-  );
 }
 
 export function Field({

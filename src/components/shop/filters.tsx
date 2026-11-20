@@ -5,6 +5,7 @@ import { SlidersHorizontal, X } from "lucide-react";
 import { createContext, useContext, useState, useTransition, type ReactNode } from "react";
 import { Drawer } from "@/components/ui/overlay";
 import { Button } from "@/components/ui/button";
+import { Select } from "@/components/ui/select";
 import { AGE_GROUPS } from "@/lib/sizes";
 import { cn, formatPrice } from "@/lib/utils";
 
@@ -220,16 +221,23 @@ export function ActiveFilters() {
 export function SortSelect() {
   const { sp, set } = useParamsUpdater();
   return (
-    <label className="flex items-center gap-2 text-[0.85rem] text-cocoa-500">
+    <div className="flex items-center gap-2 text-[0.85rem] text-cocoa-500">
       <span className="hidden xl:inline">Sort by</span>
-      <select value={sp.get("sort") ?? ""} onChange={(e) => set("sort", e.target.value || null)} className="h-10 cursor-pointer rounded-full border border-cocoa/12 bg-cream-50 pr-8 pl-4 text-[0.85rem] font-medium text-cocoa focus:border-cocoa focus:outline-none" aria-label="Sort products">
-        {SORTS.map((s) => (
-          <option key={s.value} value={s.value}>
-            {s.label}
-          </option>
-        ))}
-      </select>
-    </label>
+      <div className="w-[12.5rem]">
+        <Select
+          value={sp.get("sort") ?? ""}
+          onChange={(e) => set("sort", e.target.value || null)}
+          aria-label="Sort products"
+          className="h-10 rounded-full border-cocoa/12 bg-cream-50 pr-3.5 pl-4 text-[0.85rem] font-medium"
+        >
+          {SORTS.map((s) => (
+            <option key={s.value} value={s.value}>
+              {s.label}
+            </option>
+          ))}
+        </Select>
+      </div>
+    </div>
   );
 }
 
