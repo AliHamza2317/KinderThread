@@ -1,6 +1,8 @@
 import Image from "next/image";
-import { Check, Heart, Sparkles } from "lucide-react";
+import Link from "next/link";
+import { Check, Heart, Sparkles, User, UserPlus } from "lucide-react";
 import type { ReactNode } from "react";
+import { cn } from "@/lib/utils";
 
 type Mode = "login" | "register" | "forgot";
 
@@ -13,6 +15,7 @@ function Title({ text }: { text: string }) {
   return (
     <>
       {m[1]}
+      <br className="lg:hidden" />
       <span className="relative inline-block text-sage-700">
         {m[2]}
         <svg aria-hidden viewBox="0 0 240 24" fill="none" preserveAspectRatio="none" className="absolute -bottom-[0.32em] left-[-4%] h-[0.42em] w-[135%] text-sage-400">
@@ -29,46 +32,60 @@ function Title({ text }: { text: string }) {
  * on one line with the accent word in green, rounded icon fields) and the brand photograph
  * on the right in a large rounded frame with a frosted card of account benefits.
  */
-export function AuthShell({ mode, chip, title, intro, children, footer }: { mode: Mode; chip: string; title: string; intro: ReactNode; children: ReactNode; footer?: ReactNode; next?: string }) {
+export function AuthShell({ mode, chip, title, intro, children, footer, next = "/account" }: { mode: Mode; chip: string; title: string; intro: ReactNode; children: ReactNode; footer?: ReactNode; next?: string }) {
+  const q = next !== "/account" ? `?next=${encodeURIComponent(next)}` : "";
   return (
-    <section className="relative isolate overflow-hidden bg-gradient-to-b from-cream-50 to-cream-100">
+    <section className="relative isolate overflow-hidden bg-gradient-to-b from-cream-50 to-cream-100 max-lg:bg-cream-100">
       {/* soft leaves */}
       <div aria-hidden className="pointer-events-none absolute top-28 -left-40 -z-10 h-[30rem] w-72 rotate-[24deg] rounded-[50%] bg-gradient-to-br from-sage-300/70 to-sage-100/0 blur-2xl" />
       <div aria-hidden className="pointer-events-none absolute top-[22rem] -left-28 -z-10 h-72 w-52 -rotate-[18deg] rounded-[50%] bg-gradient-to-br from-sage-200/80 to-transparent blur-xl" />
       <div aria-hidden className="pointer-events-none absolute -right-24 -bottom-24 -z-10 h-80 w-80 rounded-full bg-sage-300/30 blur-3xl" />
+      <div aria-hidden className="pointer-events-none absolute top-6 -right-10 -z-10 h-40 w-40 rounded-full bg-sage-300/40 blur-2xl lg:hidden" />
 
-      <div className="container-kt grid items-center gap-10 py-6 md:py-12 lg:grid-cols-[1fr_1.08fr] lg:gap-14 lg:py-14">
+      <div className="container-kt grid items-center gap-10 pt-7 md:pt-12 lg:grid-cols-[1fr_1.08fr] lg:gap-14 lg:py-14">
         {/* form */}
-        <div className="w-full max-w-[29rem] justify-self-center">
-          {/* phones: the photograph as a short banner above the form */}
-          <div className="relative mb-7 h-48 overflow-hidden rounded-[1.75rem] bg-[#e5c3a0] shadow-[0_24px_50px_-34px_rgb(20_16_12/0.5)] sm:h-64 lg:hidden">
-            <Image src="/images/account/sign-in.webp" alt="" fill priority={mode === "login"} sizes="100vw" className="object-cover object-[60%_14%]" />
-          </div>
-          <p className="inline-flex items-center gap-2 rounded-full bg-white/80 px-4 py-2 text-[0.85rem] font-semibold text-sage-800 shadow-[0_8px_24px_-14px_rgb(20_16_12/0.35)] ring-1 ring-cocoa/[0.05]">
+        <div className="w-full justify-self-center lg:max-w-[29rem]">
+          <p className="inline-flex items-center gap-2 rounded-full bg-sage-100/90 px-4 py-2 text-[0.85rem] font-semibold text-sage-800 shadow-[0_8px_24px_-14px_rgb(20_16_12/0.35)] ring-1 ring-cocoa/[0.05] lg:bg-white/80">
             <Sparkles className="h-4 w-4 text-sage-700" strokeWidth={1.8} />
             {chip}
           </p>
-          <h1 className="mt-5 font-display text-[clamp(2.4rem,1.5rem+2.4vw,3.75rem)] leading-[1.05] font-semibold tracking-[-0.045em] text-cocoa sm:whitespace-nowrap">
+          <h1 className="mt-5 font-display text-[clamp(3.1rem,2rem+3vw,3.75rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-cocoa lg:text-[clamp(2.4rem,1.5rem+2.4vw,3.75rem)] lg:whitespace-nowrap">
             <Title text={title} />
           </h1>
-          <p className="mt-5 max-w-[24rem] text-[1rem] leading-relaxed text-cocoa-500 md:text-[1.05rem]">{intro}</p>
-          <div className="mt-7">{children}</div>
-          {footer && <div className="mt-6 text-center text-[0.9rem] text-cocoa-500">{footer}</div>}
-          <div className="mt-8 flex items-start gap-3.5 rounded-[1.5rem] bg-cream-50/90 p-5 ring-1 ring-cocoa/[0.06] lg:hidden">
-            <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sage-100 text-sage-700">
-              <Heart className="h-5 w-5" strokeWidth={1.8} />
-            </span>
-            <div>
-              <p className="font-sans text-[1rem] font-semibold text-cocoa">Your little world, all in one place.</p>
-              <ul className="mt-2 grid gap-1.5 text-[0.84rem] text-cocoa-600">
-                {POINTS.map((p) => (
-                  <li key={p} className="flex items-center gap-2">
-                    <Check className="h-3.5 w-3.5 shrink-0 text-sage-600" strokeWidth={2.4} />
-                    {p}
-                  </li>
+          <p className="mt-5 max-w-[22rem] text-[1rem] leading-relaxed text-cocoa-500 lg:max-w-[24rem] lg:text-[1.05rem]">{intro}</p>
+
+          {/* phones: the photograph under the heading, fading into the page */}
+          <div className="relative -mx-5 -mt-4 aspect-[1373/1146] [mask-image:linear-gradient(to_bottom,transparent,black_30%)] sm:-mx-8 lg:hidden">
+            <Image src="/images/account/sign-in.webp" alt="" fill priority={mode === "login"} sizes="100vw" className="object-cover" />
+          </div>
+
+          {/* the form: a rounded sheet on phones, plain on computers */}
+          <div className="relative z-10 -mx-5 -mt-12 rounded-t-[2.5rem] bg-cream-50 px-5 pt-6 pb-10 shadow-[0_-24px_50px_-36px_rgb(20_16_12/0.4)] sm:-mx-8 sm:px-8 lg:mx-0 lg:mt-7 lg:rounded-none lg:bg-transparent lg:p-0 lg:shadow-none">
+            {mode !== "forgot" && (
+              <nav aria-label="Account" className="mb-6 grid grid-cols-2 rounded-full bg-cream-200/70 p-1.5 lg:hidden">
+                {(
+                  [
+                    ["login", "Sign In", `/account/login${q}`, User],
+                    ["register", "Sign Up", `/account/register${q}`, UserPlus],
+                  ] as const
+                ).map(([m, label, href, Icon]) => (
+                  <Link
+                    key={m}
+                    href={href}
+                    aria-current={mode === m ? "page" : undefined}
+                    className={cn(
+                      "flex h-12 items-center justify-center gap-2.5 rounded-full text-[1rem] font-semibold transition-colors",
+                      mode === m ? "bg-white text-sage-800 shadow-[0_8px_20px_-12px_rgb(20_16_12/0.4)]" : "text-cocoa-400",
+                    )}
+                  >
+                    <Icon className="h-[1.15rem] w-[1.15rem]" strokeWidth={mode === m ? 2.2 : 1.8} />
+                    {label}
+                  </Link>
                 ))}
-              </ul>
-            </div>
+              </nav>
+            )}
+            {children}
+            {footer && <div className="mt-6 text-center text-[0.9rem] text-cocoa-500">{footer}</div>}
           </div>
         </div>
 

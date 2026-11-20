@@ -11,7 +11,7 @@ import { PasswordInput } from "./password-input";
 export function LoginForm({ next }: { next: string }) {
   const { state, pending, formProps } = useActionForm(loginAction);
   return (
-    <form {...formProps} className="flex flex-col gap-5 [&_label[for]]:text-[0.9rem] [&_label[for]]:font-semibold [&_label[for]]:text-cocoa" noValidate>
+    <form {...formProps} className="flex flex-col gap-5 max-lg:gap-4 [&_label[for]]:text-[0.9rem] [&_label[for]]:font-semibold [&_label[for]]:text-cocoa max-lg:[&_label[for]]:sr-only" noValidate>
       <input type="hidden" name="next" value={next} />
       <Field label="Email Address" htmlFor="email" error={errorOf(state, "email")}>
         <WithIcon icon={Mail}>
