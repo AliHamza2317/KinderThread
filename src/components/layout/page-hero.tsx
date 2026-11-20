@@ -74,6 +74,59 @@ export function PageBanner({
 }
 
 /**
+ * Collection header: a calm full-width band with the breadcrumb, label and style count,
+ * the title and a short line — and, on larger screens, a few crisp photos of products
+ * from the collection (instead of stretching a portrait photo into a wide banner).
+ */
+export function CollectionHeader({
+  eyebrow,
+  title,
+  description,
+  breadcrumb,
+  count,
+  thumbs = [],
+}: {
+  eyebrow?: string;
+  title: string;
+  description?: string | null;
+  breadcrumb?: Crumb[];
+  count?: number;
+  thumbs?: { href: string; image: string; alt: string }[];
+}) {
+  return (
+    <section className="border-b border-cocoa/[0.06] bg-cream-100">
+      <div className="container-kt grid items-center gap-8 py-9 md:py-12 lg:grid-cols-12 lg:py-10">
+        <div className={cn(thumbs.length ? "lg:col-span-6" : "lg:col-span-12")}>
+          {breadcrumb && <Breadcrumbs items={breadcrumb} className="mb-5" />}
+          {(eyebrow || count !== undefined) && (
+            <p className="flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.2em] text-cocoa-500 uppercase">
+              {eyebrow}
+              {eyebrow && count !== undefined && <span aria-hidden className="h-1 w-1 rounded-full bg-coral-400" />}
+              {count !== undefined && `${count} ${count === 1 ? "style" : "styles"}`}
+            </p>
+          )}
+          <h1 className="mt-3 font-display text-[clamp(2.3rem,1.3rem+2.8vw,3.9rem)] leading-[1] font-medium tracking-[-0.045em]">
+            <SplitWords text={title} />
+          </h1>
+          {description && <p className="mt-4 max-w-md text-[0.98rem] leading-relaxed text-cocoa-500">{description}</p>}
+        </div>
+        {thumbs.length > 0 && (
+          <ul className="hidden justify-end gap-3 lg:col-span-6 lg:flex xl:gap-4" aria-label="From this collection">
+            {thumbs.slice(0, 3).map((t) => (
+              <li key={t.href} className="w-[min(30%,10.5rem)]">
+                <Link href={t.href} className="group relative block aspect-[4/5] overflow-hidden rounded-[1.1rem] bg-cream-200 shadow-[0_18px_40px_-26px_rgb(20_16_12/0.45)]">
+                  <Image src={t.image} alt={t.alt} fill sizes="170px" className="object-cover transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.05]" />
+                </Link>
+              </li>
+            ))}
+          </ul>
+        )}
+      </div>
+    </section>
+  );
+}
+
+/**
  * Inner-page header: a full-width soft band with the breadcrumb and a centred title
  * (or, when a photograph is given, the full-width photo banner).
  * Use *word* in the title for the serif italic accent.

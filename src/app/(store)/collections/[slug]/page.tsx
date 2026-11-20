@@ -5,8 +5,6 @@ import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFi
 import { getSettings } from "@/lib/settings";
 import { accentLast } from "@/lib/utils";
 
-// which part of each collection photo stays in view in the wide banner
-const BANNER_FOCUS: Record<string, string> = { "baby-boys": "50% 35%", "baby-girls": "50% 30%", newborn: "50% 55%", "everyday-wear": "50% 45%", "casual-outfits": "50% 40%", "matching-sets": "50% 45%", seasonal: "50% 50%", "new-arrivals": "50% 62%", "best-sellers": "50% 45%", sale: "50% 45%" };
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
@@ -34,7 +32,18 @@ export default async function CollectionPage({ params, searchParams }: Props) {
   const c = await resolve(slug);
   if (!c) notFound();
   const filters = { ...parseFilters(sp), category: c.category, flag: c.flag };
-  const [res, facets, settings, pills] = await Promise.all([listProducts(filters), getFacets({ category: c.category, flag: c.flag }), getSettings(), getCollectionPills(slug)]);
+  const [res, all, facets, settings, pills] = await Promise.all([
+    listProducts(filters),
+    listProducts({ ...parseFilters({}), category: c.category, flag: c.flag }),
+    getFacets({ category: c.category, flag: c.flag }),
+    getSettings(),
+    getCollectionPills(slug),
+  ]);
+  // a few product photos from the whole collection (not the filtered view) for the header
+  const thumbs = all.products
+    .filter((p) => p.images[0])
+    .slice(0, 3)
+    .map((p) => ({ href: `/products/${p.slug}`, image: p.images[0].url, alt: p.name }));
   return (
     <ShopView
       eyebrow={c.kind === "collection" ? "Collection" : "Category"}
@@ -42,7 +51,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       description={c.description}
       image={c.image}
       pills={pills}
-      banner={c.image ? { image: c.image, position: BANNER_FOCUS[slug] } : null}
+      collection={{ thumbs }}
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: c.name }]}
       {...res}
       facets={facets}

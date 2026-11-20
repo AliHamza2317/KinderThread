@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { BannerSlider, type Banner } from "@/components/home/banner-slider";
-import { CollectionCircles, PageBanner, PageHero, type Crumb } from "@/components/layout/page-hero";
+import { CollectionCircles, CollectionHeader, PageHero, type Crumb } from "@/components/layout/page-hero";
 import { ProductCard } from "@/components/product/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import type { ProductCardData } from "@/lib/catalog";
@@ -43,7 +43,7 @@ export function ShopView({
   emptyAction,
   heroChildren,
   slider,
-  banner,
+  collection,
 }: {
   eyebrow?: string;
   title: string;
@@ -64,8 +64,8 @@ export function ShopView({
   heroChildren?: ReactNode;
   /** photo banner slides shown at the top instead of the title band (shop page) */
   slider?: Banner[];
-  /** a full-width photo banner with the title (collection pages) */
-  banner?: { image: string; position?: string } | null;
+  /** collection pages: a calm title band with a few product photos from the collection */
+  collection?: { thumbs: { href: string; image: string; alt: string }[]; count?: number } | null;
 }) {
   return (
     <ShopProvider>
@@ -75,8 +75,8 @@ export function ShopView({
           <h1 className="sr-only">{title.replace(/\*/g, "")}</h1>
           <BannerSlider slides={slider} size="page" label="Shop highlights" />
         </>
-      ) : banner ? (
-        <PageBanner image={banner.image} position={banner.position} eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} />
+      ) : collection ? (
+        <CollectionHeader eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} count={collection.count} thumbs={collection.thumbs} />
       ) : (
         <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
           {heroChildren}
