@@ -48,10 +48,10 @@ const GROUPS = [
 export function AdminNav({ role }: { role: "ADMIN" | "STAFF" }) {
   const pathname = usePathname();
   return (
-    <nav className="flex flex-col gap-6" aria-label="Admin">
+    <nav className="flex flex-col gap-5" aria-label="Admin">
       {GROUPS.map((g) => (
         <div key={g.label}>
-          <p className="mb-2 px-3 text-[0.68rem] font-bold tracking-[0.18em] text-cocoa-400 uppercase">{g.label}</p>
+          <p className="mb-1.5 px-3 text-[0.66rem] font-semibold tracking-[0.14em] text-cocoa-400 uppercase">{g.label}</p>
           <ul className="flex flex-col gap-0.5">
             {g.items
               .filter((i) => !("adminOnly" in i && i.adminOnly) || role === "ADMIN")
@@ -62,11 +62,13 @@ export function AdminNav({ role }: { role: "ADMIN" | "STAFF" }) {
                     <Link
                       href={href}
                       className={cn(
-                        "flex items-center gap-3 rounded-xl px-3 py-2 text-[0.9rem] font-semibold transition",
-                        active ? "bg-cocoa text-cream-50" : "text-cocoa-600 hover:bg-cocoa-50 hover:text-cocoa",
+                        "relative flex items-center gap-3 rounded-lg px-3 py-2 text-[0.875rem] font-medium transition-colors",
+                        active ? "bg-[#f1eee8] font-semibold text-cocoa" : "text-cocoa-600 hover:bg-[#f7f5f1] hover:text-cocoa",
                       )}
+                      aria-current={active ? "page" : undefined}
                     >
-                      <Icon className="h-4 w-4" />
+                      {active && <span aria-hidden className="absolute top-1.5 bottom-1.5 left-0 w-[3px] rounded-full bg-sage-700" />}
+                      <Icon className={cn("h-4 w-4", active ? "text-sage-700" : "text-cocoa-400")} strokeWidth={1.8} />
                       {label}
                     </Link>
                   </li>
@@ -95,7 +97,7 @@ export function MobileAdminNav({ role }: { role: "ADMIN" | "STAFF" }) {
       {open && (
         <div className="fixed inset-0 z-50">
           <div className="absolute inset-0 bg-cocoa-900/30" onClick={() => setOpen(false)} />
-          <div className="absolute inset-y-0 left-0 w-72 overflow-y-auto bg-cream p-5 shadow-lift">
+          <div className="absolute inset-y-0 left-0 w-72 overflow-y-auto bg-white p-5 shadow-lift">
             <button className="mb-4 ml-auto grid h-10 w-10 place-items-center rounded-full hover:bg-cocoa-50" onClick={() => setOpen(false)} aria-label="Close menu">
               <X className="h-5 w-5" />
             </button>

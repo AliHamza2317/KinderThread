@@ -54,7 +54,7 @@ export default async function ReturnsPage({ searchParams }: { searchParams: Prom
       {requests.length === 0 ? (
         <EmptyState title={filter === "open" ? "No open requests" : "Nothing here"} body="When customers ask to return or exchange a delivered item, their request will show up here." />
       ) : (
-        <div className="rounded-2xl border border-cocoa-100 bg-white/70 p-5">
+        <div className="rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-5">
           <TableWrap>
             <table className={tableCls}>
               <thead>

@@ -4,7 +4,7 @@ import { useActionState, useState, type ReactNode } from "react";
 import { saveSettingsAction } from "@/actions/admin/content";
 import { FormMessage, SubmitButton } from "@/components/admin/form-bits";
 import { ImageInput } from "@/components/admin/image-input";
-import { Checkbox, Field, Input, Textarea } from "@/components/ui/field";
+import { Checkbox, Field, Input, Select, Textarea } from "@/components/ui/field";
 import { cn } from "@/lib/utils";
 import { getPath, nest, setPathImmutable } from "./path";
 
@@ -22,6 +22,7 @@ export type FieldSpec =
       max?: number;
     }
   | { path: string; label: string; type: "checkbox"; hint?: ReactNode; disabled?: boolean; wide?: boolean }
+  | { path: string; label: string; type: "select"; options: { value: string; label: string }[]; hint?: ReactNode; disabled?: boolean; wide?: boolean }
   | { type: "heading"; label: string; hint?: ReactNode; path?: never }
   | { type: "note"; label: ReactNode; tone?: "info" | "warning"; path?: never };
 
@@ -65,6 +66,21 @@ export function SettingsForm({
       <input type="hidden" name="key" value={settingKey} />
       <input type="hidden" name="payload" value={JSON.stringify(root ? nest(root, patchValue) : patchValue)} />
       <fieldset disabled={readOnly} className="grid gap-4 sm:grid-cols-2">
+        {images.length > 0 && (
+          <div className="flex flex-wrap gap-4 rounded-lg border border-[var(--adm-line,#e6e1d9)] bg-[#fbfaf8] p-4 sm:col-span-2">
+            {images.map((img) => (
+              <ImageInput
+                key={img.path}
+                name={`img:${prefix}${img.path}`}
+                label={img.label}
+                folder={img.folder ?? "marketing"}
+                aspect={img.aspect}
+                defaultValue={String(getPath(initial, img.path) ?? "")}
+                className="w-[180px]"
+              />
+            ))}
+          </div>
+        )}
         {fields.map((f, i) => {
           if (f.type === "heading")
             return (
@@ -103,12 +119,20 @@ export function SettingsForm({
           const common = {
             id,
             disabled: f.disabled,
-            placeholder: f.placeholder,
+            placeholder: "placeholder" in f ? f.placeholder : undefined,
             "aria-invalid": errorFor(f.path) ? true : undefined,
           };
           return (
             <Field key={f.path} label={f.label} htmlFor={id} hint={f.hint} error={errorFor(f.path)} className={cn((f.wide || f.type === "textarea") && "sm:col-span-2")}>
-              {f.type === "textarea" ? (
+              {f.type === "select" ? (
+                <Select {...common} value={String(current ?? "")} onChange={(e) => set(f.path, e.target.value)}>
+                  {f.options.map((o) => (
+                    <option key={o.value} value={o.value}>
+                      {o.label}
+                    </option>
+                  ))}
+                </Select>
+              ) : f.type === "textarea" ? (
                 <Textarea {...common} rows={f.rows ?? 3} value={String(current ?? "")} onChange={(e) => set(f.path, e.target.value)} />
               ) : f.type === "number" ? (
                 <Input
@@ -127,21 +151,6 @@ export function SettingsForm({
             </Field>
           );
         })}
-        {images.length > 0 && (
-          <div className="flex flex-wrap gap-6 sm:col-span-2">
-            {images.map((img) => (
-              <ImageInput
-                key={img.path}
-                name={`img:${prefix}${img.path}`}
-                label={img.label}
-                folder={img.folder ?? "marketing"}
-                aspect={img.aspect}
-                defaultValue={String(getPath(initial, img.path) ?? "")}
-                className="w-[220px]"
-              />
-            ))}
-          </div>
-        )}
       </fieldset>
       {footer}
       <FormMessage state={state} />

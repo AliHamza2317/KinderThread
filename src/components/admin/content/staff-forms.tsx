@@ -71,7 +71,7 @@ export function StaffCard({ member, isSelf }: { member: StaffRow; isSelf: boolea
   const [pw, setPw] = useState("");
 
   return (
-    <li className="rounded-2xl border border-cocoa-100 bg-cream-50 p-4">
+    <li className="rounded-lg border border-[var(--adm-line)] bg-[#fbfaf8] p-4">
       <div className="flex flex-wrap items-start gap-3">
         <span className="grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sage-100 font-display text-lg text-sage-700" aria-hidden>
           {member.name.slice(0, 1).toUpperCase()}

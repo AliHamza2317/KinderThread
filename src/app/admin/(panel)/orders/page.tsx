@@ -66,7 +66,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
       </nav>
 
       {/* filters */}
-      <form method="get" className="mb-6 grid items-end gap-3 rounded-2xl border border-cocoa-100 bg-white/70 p-4 md:grid-cols-12" role="search">
+      <form method="get" className="mb-6 grid items-end gap-3 rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-4 md:grid-cols-12" role="search">
         {f.status && <input type="hidden" name="status" value={f.status} />}
         <label className="relative md:col-span-4">
           <span className="sr-only">Search orders</span>
@@ -122,7 +122,7 @@ export default async function OrdersPage({ searchParams }: { searchParams: Promi
           body={filtered || f.status ? "Try clearing a filter or searching for something else." : "New orders from the store will appear here as soon as they're placed."}
         />
       ) : (
-        <div className="rounded-2xl border border-cocoa-100 bg-white/70 p-5">
+        <div className="rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-5">
           <TableWrap>
             <table className={tableCls}>
               <thead>

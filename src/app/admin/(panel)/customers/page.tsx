@@ -105,7 +105,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
         {groups.length === 0 ? (
           <EmptyState title="No guest customers" body="Guest checkouts will be grouped here by email address." />
         ) : (
-          <div className="rounded-2xl border border-cocoa-100 bg-white/70 p-5">
+          <div className="rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-5">
             <TableWrap>
               <table className={tableCls}>
                 <thead>
@@ -193,7 +193,7 @@ export default async function CustomersPage({ searchParams }: { searchParams: Pr
       {rows.length === 0 ? (
         <EmptyState title={q || segment || sp.tag ? "No customers match" : "No registered customers yet"} body={q || segment || sp.tag ? "Try a different search or segment." : "Customers who create an account will appear here."} />
       ) : (
-        <div className="rounded-2xl border border-cocoa-100 bg-white/70 p-5">
+        <div className="rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-5">
           <TableWrap>
             <table className={tableCls}>
               <thead>

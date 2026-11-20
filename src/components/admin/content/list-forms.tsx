@@ -48,7 +48,7 @@ export function AnnouncementForm({ initial }: { initial: { enabled: boolean; mes
       <Checkbox label={<span className="font-semibold text-cocoa">Show the announcement bar</span>} checked={enabled} onChange={(e) => setEnabled(e.target.checked)} />
       <ol className="flex flex-col gap-3">
         {messages.map((m, i) => (
-          <li key={i} className="flex flex-col gap-3 rounded-2xl border border-cocoa-100 bg-cream-50 p-4 sm:flex-row sm:items-end">
+          <li key={i} className="flex flex-col gap-3 rounded-lg border border-[var(--adm-line)] bg-[#fbfaf8] p-4 sm:flex-row sm:items-end">
             <Field label={`Message ${i + 1}`} htmlFor={`ann-text-${i}`} className="flex-1">
               <Input id={`ann-text-${i}`} value={m.text} maxLength={120} onChange={(e) => update(i, { text: e.target.value })} placeholder="Free delivery on orders above Rs. 4,000" />
             </Field>
@@ -106,7 +106,7 @@ export function BenefitsForm({ initial }: { initial: Benefit[] }) {
         {items.map((b, i) => {
           const Icon = BENEFIT_ICONS[b.icon as keyof typeof BENEFIT_ICONS] ?? Sparkles;
           return (
-            <li key={i} className="rounded-2xl border border-cocoa-100 bg-cream-50 p-4">
+            <li key={i} className="rounded-lg border border-[var(--adm-line)] bg-[#fbfaf8] p-4">
               <div className="flex items-start gap-3">
                 <span className="mt-6 grid h-11 w-11 shrink-0 place-items-center rounded-full bg-sage-100 text-sage-700">
                   <Icon className="h-5 w-5" />

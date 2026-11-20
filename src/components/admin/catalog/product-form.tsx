@@ -736,7 +736,7 @@ export function ProductForm({
       </div>
 
       {/* ---------------- Save bar */}
-      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-cocoa-100 bg-cream/95 backdrop-blur lg:left-[260px]">
+      <div className="fixed inset-x-0 bottom-0 z-30 border-t border-cocoa-100 bg-[#f6f5f2]/95 backdrop-blur lg:left-[260px]">
         <div className="mx-auto flex max-w-[1280px] items-center gap-3 px-4 py-3 md:px-8">
           <p className={cn("min-w-0 flex-1 truncate text-sm", formError ? "font-semibold text-coral-700" : "text-cocoa-500")} role={formError ? "alert" : undefined}>
             {formError || (dirty ? "You have unsaved changes." : product ? "All changes saved." : "Fill in the details and save.")}

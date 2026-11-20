@@ -305,3 +305,81 @@ html.lenis, html.lenis body { height: auto; }
     padding-bottom: calc(4rem + env(safe-area-inset-bottom));
   }
 }
+
+/* ============================== Admin UI ==============================
+ * The dashboard uses a calmer, app-like look than the storefront: a light
+ * neutral page, white cards and crisp white form controls. These rules are
+ * scoped to .admin-ui (set on the admin layout) and unlayered on purpose so
+ * they apply over the shared storefront field styles. */
+.admin-ui {
+  --adm-page: #f6f5f2;
+  --adm-line: #e6e1d9;
+  --adm-line-strong: #cec6ba;
+  --adm-ink: #2a211b;
+  --adm-muted: #7a6f63;
+  background: var(--adm-page);
+}
+.admin-ui :is(input:not([type="checkbox"], [type="radio"], [type="color"], [type="file"], [type="range"], [type="hidden"]), select, textarea) {
+  background-color: #fff;
+  border: 1px solid var(--adm-line);
+  border-radius: 0.6rem;
+  font-size: 0.9rem;
+  color: var(--adm-ink);
+  box-shadow: 0 1px 1px rgb(20 16 12 / 0.03);
+  transition: border-color 0.15s, box-shadow 0.15s;
+}
+.admin-ui :is(input:not([type="checkbox"], [type="radio"], [type="color"], [type="file"], [type="range"], [type="hidden"]), select).h-12 {
+  height: 2.625rem;
+}
+
+/* buttons: squarer corners and a calmer size, matching the inputs */
+.admin-ui .group\/btn { border-radius: 0.6rem; }
+.admin-ui .group\/btn.h-12 { height: 2.5rem; padding-inline: 1.1rem; font-size: 0.875rem; }
+.admin-ui .group\/btn.h-9 { height: 2.125rem; }
+.admin-ui textarea { padding: 0.65rem 0.85rem; }
+.admin-ui :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="color"]):hover:not(:disabled) { border-color: var(--adm-line-strong); }
+.admin-ui :is(input, select, textarea):not([type="checkbox"], [type="radio"], [type="color"]):focus {
+  outline: none;
+  border-color: #4f6a45;
+  box-shadow: 0 0 0 3px rgb(79 106 69 / 0.16);
+}
+.admin-ui :is(input, textarea)::placeholder { color: #a99f93; }
+.admin-ui :is(input, select, textarea):disabled { background-color: #faf9f7; color: var(--adm-muted); }
+
+/* dropdowns: a clear chevron (also used by the shared Select via .kt-select) */
+.admin-ui select,
+select.kt-select {
+  appearance: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%237a6f63' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='m6 9 6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 0.75rem center;
+  background-size: 16px;
+  padding-right: 2.25rem;
+  cursor: pointer;
+}
+
+/* numbers: no browser spinners */
+.admin-ui input[type="number"]::-webkit-inner-spin-button,
+.admin-ui input[type="number"]::-webkit-outer-spin-button { -webkit-appearance: none; margin: 0; }
+.admin-ui input[type="number"] { -moz-appearance: textfield; appearance: textfield; }
+
+/* dates: quieter calendar icon */
+.admin-ui :is(input[type="date"], input[type="datetime-local"]) { color-scheme: light; }
+.admin-ui :is(input[type="date"], input[type="datetime-local"])::-webkit-calendar-picker-indicator { opacity: 0.5; cursor: pointer; }
+.admin-ui :is(input[type="date"], input[type="datetime-local"])::-webkit-calendar-picker-indicator:hover { opacity: 0.9; }
+
+/* plain checkboxes and radios that are not the styled kt-checkbox */
+.admin-ui input:is([type="checkbox"], [type="radio"]):not(.kt-checkbox) { accent-color: #2a211b; width: 1rem; height: 1rem; cursor: pointer; }
+
+/* colour pickers: round swatch */
+.admin-ui input[type="color"] { appearance: none; -webkit-appearance: none; padding: 0; border: 1px solid var(--adm-line); border-radius: 999px; cursor: pointer; background: #fff; overflow: hidden; }
+.admin-ui input[type="color"]::-webkit-color-swatch-wrapper { padding: 3px; }
+.admin-ui input[type="color"]::-webkit-color-swatch { border: none; border-radius: 999px; }
+.admin-ui input[type="color"]::-moz-color-swatch { border: none; border-radius: 999px; }
+
+/* tables */
+.admin-ui table thead th { background: #faf9f7; color: var(--adm-muted); }
+.admin-ui table thead th:first-child { border-top-left-radius: 0.5rem; }
+.admin-ui table thead th:last-child { border-top-right-radius: 0.5rem; }
+.admin-ui table tbody tr { transition: background-color 0.12s; }
+.admin-ui table tbody tr:hover { background: #fbfaf8; }

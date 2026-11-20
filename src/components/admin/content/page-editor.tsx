@@ -97,7 +97,7 @@ export function PageEditor({ page, slugLocked }: { page: PageData; slugLocked?: 
             className={cn("font-mono text-[0.85rem] leading-relaxed", tab !== "write" && "hidden")}
           />
           {tab === "preview" && (
-            <div className="min-h-[24rem] rounded-2xl border border-cocoa-100 bg-cream-50 p-6">
+            <div className="min-h-[24rem] rounded-lg border border-[var(--adm-line)] bg-[#fbfaf8] p-6">
               {loading ? (
                 <p className="text-sm text-cocoa-400">Rendering preview…</p>
               ) : (
@@ -115,7 +115,7 @@ export function PageEditor({ page, slugLocked }: { page: PageData; slugLocked?: 
       </div>
 
       <aside className="flex flex-col gap-4">
-        <div className="rounded-2xl border border-cocoa-100 bg-white/70 p-5">
+        <div className="rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-5">
           <div className="flex flex-col gap-3">
             <Checkbox name="isPublished" defaultChecked={page.isPublished} label={<span className="font-semibold text-cocoa">Published</span>} />
             <Checkbox name="showInFooter" defaultChecked={page.showInFooter} label={<span className="font-semibold text-cocoa">Link in footer</span>} />

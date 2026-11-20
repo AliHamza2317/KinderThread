@@ -38,7 +38,7 @@ export default async function CouponsPage({ searchParams }: { searchParams: Prom
       {coupons.length === 0 ? (
         <EmptyState title="No coupons yet" body="Create a code for a launch offer, a first-order discount or free delivery." action={<ButtonLink href="/admin/coupons/new">Create coupon</ButtonLink>} />
       ) : (
-        <div className="rounded-2xl border border-cocoa-100 bg-white/70 p-5">
+        <div className="rounded-xl border border-[var(--adm-line)] bg-white shadow-[0_1px_2px_rgb(20_16_12/0.04)] p-5">
           <TableWrap>
             <table className={tableCls}>
               <thead>

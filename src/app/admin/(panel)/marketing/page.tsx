@@ -40,15 +40,15 @@ export default async function MarketingPage() {
         title="Homepage & marketing"
         description="Everything visitors see on the homepage — edit text, images and promotions without touching code."
         actions={
-          <Link href="/" target="_blank" className="rounded-full border border-cocoa-200 px-4 py-2 text-sm font-semibold hover:border-cocoa">
+          <Link href="/" target="_blank" className="inline-flex h-9 items-center rounded-lg border border-[var(--adm-line)] bg-white px-3.5 text-[0.82rem] font-semibold transition-colors hover:border-[var(--adm-line-strong)]">
             Preview homepage ↗
           </Link>
         }
       />
 
-      <nav aria-label="Sections" className="scrollbar-none sticky top-16 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-cream/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
+      <nav aria-label="Sections" className="scrollbar-none sticky top-16 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-[#f6f5f2]/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
         {SECTIONS.map((s) => (
-          <a key={s.id} href={`#${s.id}`} className="shrink-0 rounded-full border border-cocoa-100 bg-white/70 px-3.5 py-1.5 text-[0.8rem] font-semibold text-cocoa-600 hover:border-cocoa hover:text-cocoa">
+          <a key={s.id} href={`#${s.id}`} className="shrink-0 rounded-full border border-[var(--adm-line)] bg-white px-3.5 py-1.5 text-[0.8rem] font-semibold text-cocoa-600 hover:border-cocoa hover:text-cocoa">
             {s.label}
           </a>
         ))}
@@ -274,7 +274,15 @@ function bannerFields(k: string, n: number): FieldSpec[] {
     { type: "heading", label: `Slide ${n}` },
     { path: `${k}.enabled`, label: "Show this slide", type: "checkbox", wide: true },
     { path: `${k}.eyebrow`, label: "Small label" },
-    { path: `${k}.text`, label: "Text colour", hint: "light (on darker photos) or dark (on light photos)" },
+    {
+      path: `${k}.text`,
+      label: "Text colour",
+      type: "select",
+      options: [
+        { value: "light", label: "Light text — for darker photos" },
+        { value: "dark", label: "Dark text — for light photos" },
+      ],
+    },
     { path: `${k}.title`, label: "Heading", wide: true, hint: "Use *word* for the italic accent" },
     { path: `${k}.body`, label: "Text (hidden on phones)", type: "textarea", rows: 2 },
     { path: `${k}.ctaLabel`, label: "Button label" },

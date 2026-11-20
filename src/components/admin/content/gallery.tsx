@@ -17,7 +17,7 @@ export type GalleryRow = { id: string; url: string; alt: string; href: string | 
 function GalleryItem({ img }: { img: GalleryRow }) {
   const [state, onSubmit, pending] = useFormAction(updateGalleryImageAction, null);
   return (
-    <li className="flex flex-col gap-3 rounded-2xl border border-cocoa-100 bg-cream-50 p-3">
+    <li className="flex flex-col gap-3 rounded-lg border border-[var(--adm-line)] bg-[#fbfaf8] p-3">
       <div className="relative aspect-square overflow-hidden rounded-xl bg-cream-100">
         <Image src={img.url} alt={img.alt} fill sizes="240px" className="object-cover" />
         <div className="absolute top-2 left-2 flex gap-1">

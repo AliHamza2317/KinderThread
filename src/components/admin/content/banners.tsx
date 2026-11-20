@@ -90,7 +90,7 @@ export function BannersManager({ banners }: { banners: BannerRow[] }) {
     <div className="flex flex-col gap-3">
       {banners.length === 0 && !adding && <p className="text-sm text-cocoa-500">No banners yet. Banners appear as promotional tiles on the homepage.</p>}
       {banners.map((b) => (
-        <div key={b.id} className="rounded-2xl border border-cocoa-100 bg-cream-50">
+        <div key={b.id} className="rounded-lg border border-[var(--adm-line)] bg-[#fbfaf8]">
           <button type="button" className="flex w-full items-center gap-4 p-3 text-left" onClick={() => setOpen(open === b.id ? null : b.id)} aria-expanded={open === b.id}>
             <span className={cn("relative h-16 w-14 shrink-0 overflow-hidden rounded-xl", TONES[b.tone] ?? "bg-cream-200")}>
               {b.image && <Image src={b.image} alt="" fill sizes="56px" className="object-cover" />}

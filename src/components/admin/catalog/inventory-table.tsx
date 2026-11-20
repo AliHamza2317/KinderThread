@@ -98,7 +98,7 @@ export function InventoryTable({ rows }: { rows: InventoryRow[] }) {
           </tbody>
         </table>
       </div>
-      <div className="sticky bottom-0 mt-4 flex items-center justify-between gap-3 border-t border-cocoa-100 bg-cream/95 py-3 backdrop-blur">
+      <div className="sticky bottom-0 mt-4 flex items-center justify-between gap-3 border-t border-cocoa-100 bg-[#f6f5f2]/95 py-3 backdrop-blur">
         <p className="text-sm text-cocoa-500">{changed.length ? `${changed.length} unsaved change${changed.length === 1 ? "" : "s"}` : "Edit stock values, then save."}</p>
         <div className="flex gap-2">
           {changed.length > 0 && (

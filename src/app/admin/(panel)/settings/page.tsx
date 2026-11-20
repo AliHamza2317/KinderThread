@@ -34,9 +34,9 @@ export default async function SettingsPage() {
         </p>
       )}
 
-      <nav aria-label="Settings sections" className="scrollbar-none sticky top-16 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-cream/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
+      <nav aria-label="Settings sections" className="scrollbar-none sticky top-16 z-20 -mx-4 mb-6 flex gap-2 overflow-x-auto bg-[#f6f5f2]/95 px-4 py-3 backdrop-blur md:-mx-8 md:px-8">
         {SECTIONS.map((x) => (
-          <a key={x.id} href={`#${x.id}`} className="shrink-0 rounded-full border border-cocoa-100 bg-white/70 px-3.5 py-1.5 text-[0.8rem] font-semibold text-cocoa-600 hover:border-cocoa hover:text-cocoa">
+          <a key={x.id} href={`#${x.id}`} className="shrink-0 rounded-full border border-[var(--adm-line)] bg-white px-3.5 py-1.5 text-[0.8rem] font-semibold text-cocoa-600 hover:border-cocoa hover:text-cocoa">
             {x.label}
           </a>
         ))}
