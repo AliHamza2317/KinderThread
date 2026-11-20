@@ -3,7 +3,7 @@
 import { ArrowRight, Lock, Mail, Phone, User } from "lucide-react";
 import { registerAction } from "@/actions/account";
 import { Field, Input } from "@/components/ui/field";
-import { authInput, OrDivider, SocialButtons, WithIcon } from "./auth-bits";
+import { authInput, WithIcon } from "./auth-bits";
 import { Notice, Submit, errorOf, useActionForm } from "./form-status";
 import { PasswordInput } from "./password-input";
 
@@ -53,8 +53,6 @@ export function RegisterForm({ next }: { next: string }) {
         </span>
         Create account
       </Submit>
-      <OrDivider />
-      <SocialButtons />
       <p className="text-center text-[0.78rem] leading-relaxed text-cocoa-500">
         By creating an account you agree to our{" "}
         <a href="/pages/terms" className="underline underline-offset-2">

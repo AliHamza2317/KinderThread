@@ -4,7 +4,7 @@ import Link from "next/link";
 import { ArrowRight, Lock, Mail } from "lucide-react";
 import { loginAction } from "@/actions/account";
 import { Checkbox, Field, Input } from "@/components/ui/field";
-import { authInput, OrDivider, SocialButtons, WithIcon } from "./auth-bits";
+import { authInput, WithIcon } from "./auth-bits";
 import { Notice, Submit, errorOf, useActionForm } from "./form-status";
 import { PasswordInput } from "./password-input";
 
@@ -40,8 +40,6 @@ export function LoginForm({ next }: { next: string }) {
         </span>
         Sign in
       </Submit>
-      <OrDivider />
-      <SocialButtons />
       <p className="text-center text-[0.74rem] text-cocoa-400">Demo mode — sign-in isn&apos;t connected yet; you&apos;ll see a sample account.</p>
     </form>
   );
