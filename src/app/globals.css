@@ -407,3 +407,59 @@ select.kt-select {
 .admin-ui .kt-select-trigger:hover:not(:disabled) { border-color: var(--adm-line-strong); }
 .admin-ui .kt-select-trigger:focus-visible,
 .admin-ui .kt-select-trigger[aria-expanded="true"] { border-color: #4f6a45; box-shadow: 0 0 0 3px rgb(79 106 69 / 0.16); outline: none; }
+
+/* size guide: height slider (filled track up to the thumb via --p) */
+.kt-range {
+  -webkit-appearance: none;
+  appearance: none;
+  height: 1.75rem;
+  background: transparent;
+  cursor: pointer;
+}
+.kt-range:focus-visible {
+  outline: none;
+}
+.kt-range::-webkit-slider-runnable-track {
+  height: 6px;
+  border-radius: 999px;
+  background: linear-gradient(to right, var(--color-sage-600) var(--p, 50%), var(--color-cream-200) var(--p, 50%));
+}
+.kt-range::-moz-range-track {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-cream-200);
+}
+.kt-range::-moz-range-progress {
+  height: 6px;
+  border-radius: 999px;
+  background: var(--color-sage-600);
+}
+.kt-range::-webkit-slider-thumb {
+  -webkit-appearance: none;
+  appearance: none;
+  margin-top: -10px;
+  height: 26px;
+  width: 26px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid var(--color-sage-700);
+  box-shadow: 0 6px 16px -6px rgb(20 16 12 / 0.45);
+  transition: transform 0.15s ease;
+}
+.kt-range::-moz-range-thumb {
+  height: 22px;
+  width: 22px;
+  border-radius: 999px;
+  background: #fff;
+  border: 2px solid var(--color-sage-700);
+  box-shadow: 0 6px 16px -6px rgb(20 16 12 / 0.45);
+}
+.kt-range:active::-webkit-slider-thumb {
+  transform: scale(1.1);
+}
+.kt-range:focus-visible::-webkit-slider-thumb {
+  box-shadow: 0 0 0 5px var(--color-sage-100), 0 6px 16px -6px rgb(20 16 12 / 0.45);
+}
+.kt-range:focus-visible::-moz-range-thumb {
+  box-shadow: 0 0 0 5px var(--color-sage-100);
+}

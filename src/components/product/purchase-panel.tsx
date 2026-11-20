@@ -134,7 +134,7 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
           <p className="text-[0.72rem] font-semibold tracking-[0.14em] text-cocoa-400 uppercase">
             Size (age){sel.size && <span className="ml-1.5 text-[0.88rem] font-medium tracking-normal text-cocoa normal-case">{sizeLabel(sel.size)}</span>}
           </p>
-          <SizeGuideButton guide={sizeGuide} highlight={sel.size} />
+          <SizeGuideButton guide={sizeGuide} highlight={sel.size} onChoose={sel.setSize} />
         </div>
         <SizeGrid sizes={sel.sizes} value={sel.size} onChange={sel.setSize} stockFor={sel.stockFor} />
         <div className="mt-3 min-h-5 text-[0.85rem]" aria-live="polite">
