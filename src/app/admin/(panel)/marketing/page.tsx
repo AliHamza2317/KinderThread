@@ -13,13 +13,16 @@ export const metadata: Metadata = { title: "Homepage & marketing" };
 
 const SECTIONS = [
   { id: "announcement", label: "Announcement bar" },
-  { id: "hero", label: "Hero" },
-  { id: "story", label: "Brand story" },
-  { id: "benefits", label: "Why Kinder Thread" },
-  { id: "banners", label: "Banners" },
+  { id: "hero", label: "Banner slider" },
+  { id: "ages", label: "Shop by age photos" },
+  { id: "banners", label: "Promo banners" },
+  { id: "brand-banner", label: "Brand banner" },
+  { id: "promo", label: "Campaign / sale" },
+  { id: "sections", label: "Section visibility" },
+  { id: "shop-banner", label: "Shop page banner" },
+  { id: "story", label: "Our Story page" },
   { id: "gallery", label: "Gallery" },
   { id: "copy", label: "Newsletter & gallery text" },
-  { id: "sections", label: "Section visibility" },
   { id: "products", label: "Featured products" },
 ];
 
@@ -59,14 +62,32 @@ export default async function MarketingPage() {
         </div>
 
         <div id="hero" className="scroll-mt-32">
-          <Card title="Homepage slider" description="The large slides at the top of the homepage. Use *word* to set a word in the italic accent. Colour: sage, coral, sun, cream, cocoa or forest. Switch a slide off to hide it.">
+          <Card title="Homepage banner slider" description="The full-width photo slides at the top of the homepage. Use wide, landscape photos (at least 1800px wide). Use *word* to set a word in the italic accent. Switch a slide off to hide it.">
             <SettingsForm
               settingKey="home"
               root="slider"
               initial={home.slider}
               submitLabel="Save slider"
-              images={(["slide1", "slide2", "slide3", "slide4"] as const).map((k, i) => ({ path: `${k}.image`, label: `Slide ${i + 1} photograph`, aspect: "aspect-[4/5]" }))}
-              fields={(["slide1", "slide2", "slide3", "slide4"] as const).flatMap((k, i) => slideFields(k, i + 1, true))}
+              images={(["slide1", "slide2", "slide3", "slide4"] as const).map((k, i) => ({ path: `${k}.image`, label: `Slide ${i + 1} photograph`, aspect: "aspect-[16/9]" }))}
+              fields={(["slide1", "slide2", "slide3", "slide4"] as const).flatMap((k, i) => bannerFields(k, i + 1))}
+            />
+          </Card>
+        </div>
+
+        <div id="ages" className="scroll-mt-32">
+          <Card title="Shop by age photos" description="The four round photos under the slider (Newborn, Baby, Toddler, Little ones). Square photos work best.">
+            <SettingsForm
+              settingKey="home"
+              root="ages"
+              initial={home.ages}
+              submitLabel="Save photos"
+              images={[
+                { path: "newborn", label: "Newborn", aspect: "aspect-square" },
+                { path: "baby", label: "Baby", aspect: "aspect-square" },
+                { path: "toddler", label: "Toddler", aspect: "aspect-square" },
+                { path: "little", label: "Little ones", aspect: "aspect-square" },
+              ]}
+              fields={[]}
             />
           </Card>
         </div>
@@ -98,7 +119,7 @@ export default async function MarketingPage() {
         </div>
 
         <div id="story" className="scroll-mt-32">
-          <Card title="Brand story" description="The editorial “Made for Little Moments.” section. Please don't add manufacturing or sustainability claims you can't verify.">
+          <Card title="Our Story page" description="The photo, heading and intro on the Our Story page. Please don't add manufacturing or sustainability claims you can't verify.">
             <SettingsForm
               settingKey="home"
               root="story"
@@ -129,14 +150,34 @@ export default async function MarketingPage() {
         </div>
 
         <div id="benefits" className="scroll-mt-32">
-          <Card title="Why Kinder Thread" description="Up to 8 benefits shown as a row of icons.">
+          <Card title="What we care about" description="The first three are shown as cards on the Our Story page.">
             <BenefitsForm initial={home.benefits} />
           </Card>
         </div>
 
         <div id="banners" className="scroll-mt-32">
-          <Card title="Promotional banners" description="Image tiles that link to a collection or campaign. Only active banners are shown.">
+          <Card title="Promo banners" description="The two photo banners side by side on the homepage (the first two active ones). Use *word* in the title for the italic accent.">
             <BannersManager banners={banners} />
+          </Card>
+        </div>
+
+        <div id="brand-banner" className="scroll-mt-32">
+          <Card title="Brand banner" description="The full-width photo banner lower on the homepage.">
+            <SettingsForm
+              settingKey="home"
+              root="brandBanner"
+              initial={home.brandBanner}
+              submitLabel="Save brand banner"
+              images={[{ path: "image", label: "Photograph", aspect: "aspect-[16/9]" }]}
+              fields={[
+                { path: "eyebrow", label: "Small label" },
+                { path: "title", label: "Heading", wide: true, hint: "Use *word* for the italic accent" },
+                { path: "body", label: "Text", type: "textarea", rows: 2 },
+                { path: "ctaLabel", label: "Button label" },
+                { path: "ctaHref", label: "Button link", placeholder: "/about" },
+                { path: "position", label: "Photo focus", hint: "Which part of the photo stays in view, e.g. 50% 50% (centre) or 50% 20% (top)" },
+              ]}
+            />
           </Card>
         </div>
 
@@ -193,14 +234,13 @@ export default async function MarketingPage() {
               initial={home.sections}
               submitLabel="Save visibility"
               fields={[
-                { path: "trust", label: "Trust strip (COD, delivery, exchanges)", type: "checkbox" },
-                { path: "newArrivals", label: "New arrivals", type: "checkbox" },
+                { path: "shopByAge", label: "Shop by age (round photos)", type: "checkbox" },
                 { path: "categories", label: "Shop by category", type: "checkbox" },
-                { path: "story", label: "Brand story", type: "checkbox" },
-                { path: "shopByAge", label: "Shop by age", type: "checkbox" },
+                { path: "newArrivals", label: "New arrivals (with tabs)", type: "checkbox" },
+                { path: "banners", label: "Two promo banners", type: "checkbox" },
                 { path: "bestSellers", label: "Best sellers", type: "checkbox" },
-                { path: "banners", label: "Two photo banners", type: "checkbox" },
-                { path: "benefits", label: "Why Kinder Thread", type: "checkbox" },
+                { path: "brandBanner", label: "Brand banner", type: "checkbox" },
+                { path: "trust", label: "Trust strip (COD, delivery, exchanges)", type: "checkbox" },
                 { path: "gallery", label: "Instagram gallery", type: "checkbox" },
                 { path: "newsletter", label: "Newsletter sign-up", type: "checkbox" },
               ]}
@@ -228,7 +268,24 @@ export default async function MarketingPage() {
   );
 }
 
-/** Form fields for one slider slot (settings paths like "slide1.title"). */
+/** Form fields for one homepage photo banner slide (settings paths like "slide1.title"). */
+function bannerFields(k: string, n: number): FieldSpec[] {
+  return [
+    { type: "heading", label: `Slide ${n}` },
+    { path: `${k}.enabled`, label: "Show this slide", type: "checkbox", wide: true },
+    { path: `${k}.eyebrow`, label: "Small label" },
+    { path: `${k}.text`, label: "Text colour", hint: "light (on darker photos) or dark (on light photos)" },
+    { path: `${k}.title`, label: "Heading", wide: true, hint: "Use *word* for the italic accent" },
+    { path: `${k}.body`, label: "Text (hidden on phones)", type: "textarea", rows: 2 },
+    { path: `${k}.ctaLabel`, label: "Button label" },
+    { path: `${k}.ctaHref`, label: "Button link", placeholder: "/shop" },
+    { path: `${k}.imageAlt`, label: "Photograph description (alt text)", wide: true },
+    { path: `${k}.position`, label: "Photo focus on computers", hint: "e.g. 50% 50% (centre), 30% 50% (more left)" },
+    { path: `${k}.mobilePosition`, label: "Photo focus on phones", hint: "Leave empty to use the computer setting" },
+  ];
+}
+
+/** Form fields for one Shop page slide (settings paths like "slide1.title"). */
 function slideFields(k: string, n: number, withProduct: boolean): FieldSpec[] {
   return [
     { type: "heading", label: `Slide ${n}` },

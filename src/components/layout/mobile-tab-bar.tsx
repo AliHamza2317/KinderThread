@@ -45,9 +45,7 @@ export function MobileTabBar({ signedIn }: { signedIn: boolean }) {
   return (
     <>
       <div aria-hidden className="h-16 md:hidden" />
-      {/* lift the floating WhatsApp button above the bar on phones */}
-      <style>{`@media (max-width: 767px) { a[aria-label="Chat with us on WhatsApp"] { bottom: calc(5rem + env(safe-area-inset-bottom)); } }`}</style>
-      <nav aria-label="Quick links" className="fixed inset-x-0 bottom-0 z-30 flex h-16 border-t border-cocoa/10 bg-cream-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
+      <nav aria-label="Quick links" data-tabbar className="fixed inset-x-0 bottom-0 z-30 flex h-16 border-t border-cocoa/10 bg-cream-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
         <Item label="Shop" href="/shop" icon={<LayoutGrid className="h-5 w-5" strokeWidth={1.7} />} />
         <Item label="Wishlist" href="/wishlist" count={hydrated ? wish : 0} icon={<Heart className="h-5 w-5" strokeWidth={1.7} />} />
         <Item label="Bag" onClick={() => setCart(true)} count={hydrated ? cartCount(lines) : 0} icon={<ShoppingBag className="h-5 w-5" strokeWidth={1.7} />} />

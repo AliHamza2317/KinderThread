@@ -3,23 +3,24 @@ import type { Banner, GalleryImage, Page } from "@/lib/types";
 
 const UPDATED = new Date("2026-11-01T10:00:00+05:00");
 
+// the two photo banners side by side on the homepage (use *word* for the italic accent)
 const BANNER_DEFS = [
   {
-    eyebrow: "Seasonal",
-    title: "Knits for cooler days",
-    subtitle: "Cardigans, sweaters and soft layers.",
-    image: "/images/editorial/banner-knitwear.webp",
-    ctaLabel: "Shop knitwear",
-    ctaHref: "/collections/seasonal",
+    eyebrow: "Soft & simple",
+    title: "Everyday *Essentials*",
+    subtitle: "Bodysuits, tees and easy pieces for every day.",
+    image: "/images/gallery/g7.webp",
+    ctaLabel: "Shop now",
+    ctaHref: "/collections/everyday-wear",
     tone: "cream",
   },
   {
-    eyebrow: "First days",
-    title: "Newborn essentials",
-    subtitle: "Bodysuits, booties and gentle first pieces.",
-    image: "/images/editorial/nursery.webp",
-    ctaLabel: "Shop newborn",
-    ctaHref: "/collections/newborn",
+    eyebrow: "The winter edit",
+    title: "Warm *Knits*",
+    subtitle: "Cardigans, sweaters and soft layers.",
+    image: "/images/gallery/g5.webp",
+    ctaLabel: "Shop now",
+    ctaHref: "/collections/seasonal",
     tone: "cream",
   },
 ];

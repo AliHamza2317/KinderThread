@@ -8,7 +8,7 @@ import { z } from "zod";
 
 const link = z.object({ label: z.string(), href: z.string() });
 
-type SlideDefaults = { eyebrow: string; title: string; body: string; ctaLabel: string; ctaHref: string; secondaryLabel?: string; secondaryHref?: string; image: string; imageAlt: string; cutout?: string; align?: "bottom" | "center" | "right"; tone: "sage" | "coral" | "sun" | "cream" | "cocoa" | "forest"; productSlug?: string };
+type SlideDefaults = { eyebrow: string; title: string; body: string; ctaLabel: string; ctaHref: string; secondaryLabel?: string; secondaryHref?: string; image: string; imageAlt: string; position?: string; mobilePosition?: string; text?: "light" | "dark"; cutout?: string; align?: "bottom" | "center" | "right"; tone: "sage" | "coral" | "sun" | "cream" | "cocoa" | "forest"; productSlug?: string };
 const slide = (d: SlideDefaults) =>
   z
     .object({
@@ -22,6 +22,10 @@ const slide = (d: SlideDefaults) =>
       secondaryHref: z.string().default(d.secondaryHref ?? ""),
       image: z.string().default(d.image),
       imageAlt: z.string().default(d.imageAlt),
+      // homepage photo banners: which part of the photo stays in view ("50% 50%" = centre) and the text colour
+      position: z.string().default(d.position ?? "50% 50%"),
+      mobilePosition: z.string().default(d.mobilePosition ?? ""),
+      text: z.enum(["light", "dark"]).default(d.text ?? "light"),
       // optional transparent PNG/WebP of the subject without background, placed on the colour field
       cutout: z.string().default(d.cutout ?? ""),
       align: z.enum(["bottom", "center", "right"]).default(d.align ?? "center"),
@@ -163,14 +167,35 @@ export const settingSchemas = {
         cta: link.default({ label: "Read our story", href: "/about" }),
       })
       .prefault({}),
-    // homepage slider: four slots, each can be switched off. Use *word* for the serif accent;
-    // tone: sage, coral, sun, cream, cocoa or forest; productSlug shows a product card on the photo
+    // homepage banner slider: four full-width photo slides, each can be switched off.
+    // Use *word* for the serif accent; text: "light" on darker photos, "dark" on light photos.
     slider: z
       .object({
-        slide1: slide({ eyebrow: "New season · Ages 0–5", title: "Little Moments. Big *Adventures.*", body: "Thoughtfully selected outfits for your little ones, from their very first days to their biggest little adventures.", ctaLabel: "Explore Collection", ctaHref: "/shop", secondaryLabel: "Our Story", secondaryHref: "/about", image: "/images/editorial/hero-tulle.webp", imageAlt: "A toddler in a mint tulle dress, seen from behind", cutout: "/images/cutouts/girl-tulle-dress.webp", align: "bottom", tone: "sage", productSlug: "tulle-party-dress" }),
-        slide2: slide({ eyebrow: "The winter edit", title: "Winter *Collection*", body: "Cosy cardigans, chunky knits and soft layers for cooler days — chosen for warmth and easy wear.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/products/nordic-cardigan-rose.webp", imageAlt: "A rose Nordic yoke cardigan", cutout: "/images/cutouts/nordic-cardigan.webp", align: "center", tone: "cocoa" }),
-        slide3: slide({ eyebrow: "First days", title: "Newborn *Essentials*", body: "Gentle first pieces — bodysuits, knits and booties in the softest fabrics.", ctaLabel: "Shop newborn", ctaHref: "/collections/newborn", image: "/images/products/crochet-booties-cream.webp", imageAlt: "Cream crochet baby booties held in a parent's hands", cutout: "/images/cutouts/booties-in-hands.webp", align: "right", tone: "coral" }),
-        slide4: slide({ eyebrow: "For little girls", title: "Dresses & *Delights*", body: "Occasion dresses, blouses and knits in soft, timeless colours.", ctaLabel: "Shop baby girls", ctaHref: "/collections/baby-girls", image: "/images/products/lace-dress-ivory.webp", imageAlt: "An ivory lace occasion dress with matching shoes and headband", cutout: "/images/cutouts/lace-dress.webp", align: "center", tone: "forest" }),
+        slide1: slide({ eyebrow: "Fall / Winter '26", title: "The Winter *Edit*", body: "Cosy knits, cardigans and soft layers for chilly mornings.", ctaLabel: "Shop now", ctaHref: "/collections/seasonal", image: "/images/editorial/banner-knitwear.webp", imageAlt: "Soft knitwear on wooden hangers", position: "50% 45%", mobilePosition: "30% 50%", tone: "cocoa" }),
+        slide2: slide({ eyebrow: "New season · Ages 0–5", title: "Little Moments, Big *Adventures*", body: "Thoughtfully selected outfits from their very first days to their biggest little adventures.", ctaLabel: "Explore collection", ctaHref: "/shop", image: "/images/editorial/nursery.webp", imageAlt: "A calm, light nursery with a white cot", position: "50% 55%", mobilePosition: "62% 50%", text: "dark", tone: "cream" }),
+        slide3: slide({ eyebrow: "First days", title: "Newborn *Essentials*", body: "Gentle first pieces — bodysuits, knits and booties in the softest fabrics.", ctaLabel: "Shop newborn", ctaHref: "/collections/newborn", image: "/images/editorial/story-feet.webp", imageAlt: "A newborn's feet held in a parent's hands", position: "50% 50%", mobilePosition: "55% 50%", tone: "coral" }),
+        slide4: slide({ eyebrow: "For little girls", title: "Dresses & *Delights*", body: "Occasion dresses, blouses and knits in soft, timeless colours.", ctaLabel: "Shop baby girls", ctaHref: "/collections/baby-girls", image: "/images/editorial/cat-baby-girls.webp", imageAlt: "Little dresses drying on a washing line", position: "50% 40%", mobilePosition: "50% 45%", tone: "forest" }),
+      })
+      .prefault({}),
+    // round photos in the homepage "Shop by age" row
+    ages: z
+      .object({
+        newborn: z.string().default("/images/gallery/g3.webp"),
+        baby: z.string().default("/images/gallery/g2.webp"),
+        toddler: z.string().default("/images/gallery/g1.webp"),
+        little: z.string().default("/images/gallery/g5.webp"),
+      })
+      .prefault({}),
+    // full-width photo banner lower on the homepage
+    brandBanner: z
+      .object({
+        eyebrow: z.string().default("Our promise"),
+        title: z.string().default("Soft fabrics, honest *sizing*"),
+        body: z.string().default("Every piece is chosen for comfort and sized by age — delivered across Pakistan, with cash on delivery."),
+        ctaLabel: z.string().default("Our story"),
+        ctaHref: z.string().default("/about"),
+        image: z.string().default("/images/editorial/story-muslin.webp"),
+        position: z.string().default("50% 55%"),
       })
       .prefault({}),
     // banner slider at the top of the Shop page
@@ -217,14 +242,13 @@ export const settingSchemas = {
       .prefault({}),
     sections: z
       .object({
-        trust: z.boolean().default(true),
+        shopByAge: z.boolean().default(true),
         categories: z.boolean().default(true),
         newArrivals: z.boolean().default(true),
-        story: z.boolean().default(true),
-        shopByAge: z.boolean().default(true),
+        banners: z.boolean().default(true),
         bestSellers: z.boolean().default(true),
-        banners: z.boolean().default(false),
-        benefits: z.boolean().default(true),
+        brandBanner: z.boolean().default(true),
+        trust: z.boolean().default(true),
         gallery: z.boolean().default(false),
         newsletter: z.boolean().default(true),
       })

@@ -1,4 +1,5 @@
 import type { Slide } from "@/components/home/hero-slider";
+import type { Banner } from "@/components/home/banner-slider";
 import { CATEGORIES, PRODUCTS } from "@/data/catalog";
 import type { Settings } from "@/lib/settings";
 
@@ -27,4 +28,22 @@ export function buildSlides(group: SlideGroup): Slide[] {
         product: p ? { href: `/products/${p.slug}`, name: p.name, label: cat?.name ?? "New in", image: p.images[0]?.url ?? s.image, price: p.price, compareAt: p.compareAtPrice, isSample: p.isSample } : null,
       };
     });
+}
+
+/** The homepage photo banner slides from settings (enabled ones with a heading and a photo). */
+export function buildBanners(group: Settings["home"]["slider"]): Banner[] {
+  return Object.values(group)
+    .filter((s) => s.enabled && s.title.trim() && s.image.trim())
+    .map((s) => ({
+      image: s.image,
+      imageAlt: s.imageAlt,
+      position: s.position || undefined,
+      mobilePosition: s.mobilePosition || undefined,
+      eyebrow: s.eyebrow,
+      title: s.title,
+      body: s.body || undefined,
+      ctaLabel: s.ctaLabel,
+      ctaHref: s.ctaHref,
+      text: s.text,
+    }));
 }

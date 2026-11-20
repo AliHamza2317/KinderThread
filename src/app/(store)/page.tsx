@@ -1,42 +1,72 @@
-import { Banners } from "@/components/home/banners";
-import { Benefits } from "@/components/home/benefits";
-import { BrandStory } from "@/components/home/brand-story";
-import { CategoryShowcase } from "@/components/home/category-showcase";
+import { AgeCircles } from "@/components/home/age-circles";
+import { BannerSlider } from "@/components/home/banner-slider";
+import { CategoryGrid } from "@/components/home/category-grid";
 import { Gallery } from "@/components/home/gallery";
-import { AgeChips } from "@/components/home/age-chips";
-import { HeroSlider } from "@/components/home/hero-slider";
 import { NewsletterSection } from "@/components/home/newsletter";
-import { ProductRow } from "@/components/home/product-row";
+import { ProductTabs } from "@/components/home/product-tabs";
 import { PromoBanner } from "@/components/home/promo-banner";
+import { PromoPair, WideBanner } from "@/components/home/promo-banners";
 import { SectionHeader } from "@/components/home/section-header";
-import { ShopByAge } from "@/components/home/shop-by-age";
 import { TrustStrip, type TrustItem } from "@/components/home/trust-strip";
-import { ProductCard } from "@/components/product/product-card";
+import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { buttonClass } from "@/components/ui/button";
-import { Reveal } from "@/components/ui/reveal";
-import { countProductsInCategory, getProductsBy } from "@/lib/catalog";
-import { CATEGORIES } from "@/data/catalog";
+import { getProductsBy, toCard } from "@/lib/catalog";
+import { CATEGORIES, PRODUCTS } from "@/data/catalog";
 import { BANNERS, GALLERY } from "@/data/content";
 import { getSettings } from "@/lib/settings";
-import { buildSlides } from "@/lib/slides";
+import { buildBanners } from "@/lib/slides";
 import { absoluteUrl, formatPrice, whatsappLink } from "@/lib/utils";
 
+const inCategory = (slug: string, take = 8) =>
+  PRODUCTS.filter((p) => p.status === "ACTIVE" && p.categoryIds.includes(`cat_${slug}`))
+    .sort((a, b) => a.sortOrder - b.sortOrder)
+    .slice(0, take)
+    .map(toCard);
+
+/**
+ * Homepage laid out the way Pakistani kidswear stores do it: a full-width photo banner
+ * slider, shop by age and by category straight away, product grids with tabs and a
+ * "View all" button, two promo banners, a brand banner, trust points and the newsletter.
+ */
 export default async function Home() {
   const settings = await getSettings();
   const { home, store, shipping, payments, policies } = settings;
   const sec = home.sections;
-
-  const visibleCats = CATEGORIES.filter((c) => c.isVisible).sort((a, b) => a.sortOrder - b.sortOrder);
-  const showcaseCats = visibleCats.filter((c) => c.kind === "category").slice(0, 6);
-  const [newArrivals, bestSellers] = await Promise.all([
-    sec.newArrivals ? getProductsBy("isNewArrival", 10) : Promise.resolve([]),
-    sec.bestSellers ? getProductsBy("isBestSeller", 8) : Promise.resolve([]),
-  ]);
-  const banners = sec.banners ? BANNERS.filter((b) => b.isActive).sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 2) : [];
-  const gallery = sec.gallery ? GALLERY.filter((g) => g.isActive).sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 8) : [];
   const showSample = settings.features.showSampleBadges;
 
-  const slides = buildSlides(home.slider);
+  const [newArrivals, bestSellers] = await Promise.all([
+    sec.newArrivals ? getProductsBy("isNewArrival", 8) : Promise.resolve([]),
+    sec.bestSellers ? getProductsBy("isBestSeller", 8) : Promise.resolve([]),
+  ]);
+
+  const ages = [
+    { label: "Newborn", href: "/shop?age=newborn", image: home.ages.newborn },
+    { label: "Baby", href: "/shop?age=baby", image: home.ages.baby },
+    { label: "Toddler", href: "/shop?age=toddler", image: home.ages.toddler },
+    { label: "Little ones", href: "/shop?age=little", image: home.ages.little },
+  ].filter((a) => a.image);
+
+  const tiles = [
+    ...CATEGORIES.filter((c) => c.isVisible && c.image)
+      .sort((a, b) => a.sortOrder - b.sortOrder)
+      .map((c) => ({ name: c.name.replace(/ Collection$/, ""), href: `/collections/${c.slug}`, image: c.image! })),
+    { name: "Best Sellers", href: "/collections/best-sellers", image: bestSellers[0]?.images[0]?.url ?? "/images/products/nordic-cardigan-rose.webp" },
+  ].slice(0, 8);
+
+  const newTabs = [
+    { label: "All", href: "/collections/new-arrivals", products: newArrivals },
+    { label: "Girls", href: "/collections/baby-girls", products: inCategory("baby-girls") },
+    { label: "Boys", href: "/collections/baby-boys", products: inCategory("baby-boys") },
+    { label: "Newborn", href: "/collections/newborn", products: inCategory("newborn") },
+  ].filter((t) => t.products.length > 0);
+
+  const promos = sec.banners
+    ? BANNERS.filter((b) => b.isActive && b.image && b.ctaHref)
+        .sort((a, b) => a.sortOrder - b.sortOrder)
+        .slice(0, 2)
+        .map((b) => ({ eyebrow: b.eyebrow ?? "", title: b.title, ctaLabel: b.ctaLabel || "Shop now", href: b.ctaHref!, image: b.image! }))
+    : [];
+  const gallery = sec.gallery ? GALLERY.filter((g) => g.isActive).sort((a, b) => a.sortOrder - b.sortOrder).slice(0, 8) : [];
 
   const trust: TrustItem[] = [
     payments.cod.enabled && { icon: "cash" as const, title: "Cash on delivery", body: "Pay when your parcel arrives" },
@@ -61,80 +91,66 @@ export default async function Home() {
   return (
     <>
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
-      <HeroSlider slides={slides} />
-      <AgeChips />
+      <BannerSlider slides={buildBanners(home.slider)} />
 
-      {sec.trust && <TrustStrip items={trust} />}
-
-      {sec.newArrivals && newArrivals.length > 0 && (
-        <div className="pt-24 md:pt-32">
-          <ProductRow
-            eyebrow="Just in"
-            title="New *Arrivals*"
-            body="Fresh pieces for the new season — soft colours, easy fits."
-            link={{ href: "/collections/new-arrivals", label: "View all" }}
-            products={newArrivals}
-            showSample={showSample}
-          />
+      {sec.shopByAge && ages.length > 0 && (
+        <div className="pt-12 md:pt-16">
+          <AgeCircles items={ages} />
         </div>
       )}
 
-      {sec.categories && showcaseCats.length > 0 && (
-        <section className="container-kt pt-24 md:pt-32" aria-labelledby="cat-heading">
-          <SectionHeader id="cat-heading" eyebrow="Shop by category" title="Dressed for every *little* stage" link={{ href: "/shop", label: "Shop all" }} />
-          <CategoryShowcase categories={showcaseCats.map((c) => ({ id: c.id, name: c.name, slug: c.slug, image: c.image, description: c.description, count: countProductsInCategory(c.id) }))} />
-        </section>
+      {sec.categories && tiles.length > 0 && (
+        <div className="pt-16 md:pt-24">
+          <CategoryGrid tiles={tiles} />
+        </div>
+      )}
+
+      {sec.newArrivals && newTabs.length > 0 && (
+        <div className="pt-16 md:pt-24">
+          <ProductTabs id="new-heading" title="New *Arrivals*" body="Fresh pieces for the new season." showSample={showSample} tabs={newTabs} />
+        </div>
+      )}
+
+      {promos.length > 0 && (
+        <div className="pt-16 md:pt-24">
+          <PromoPair items={promos} />
+        </div>
       )}
 
       {home.promo.enabled && home.promo.title && (
-        <div className="pt-24 md:pt-32">
+        <div className="pt-16 md:pt-24">
           <PromoBanner promo={home.promo} />
         </div>
       )}
 
-      {sec.shopByAge && (
-        <section className="container-kt pt-24 md:pt-32">
-          <SectionHeader eyebrow="Shop by age" title="Every size, every *little* stage" link={{ href: "/size-guide", label: "Size guide" }} />
-          <ShopByAge />
-        </section>
-      )}
-
-      {sec.story && (
-        <div className="pt-24 md:pt-32">
-          <BrandStory story={home.story} />
+      {sec.bestSellers && bestSellers.length > 0 && (
+        <div className="pt-16 md:pt-24">
+          <ProductTabs id="best-heading" title="Best *Sellers*" body="The styles parents come back for." showSample={showSample} tabs={[{ label: "Best sellers", href: "/collections/best-sellers", products: bestSellers }]} />
         </div>
       )}
 
-      {sec.bestSellers && bestSellers.length > 0 && (
-        <section className="container-kt pt-24 md:pt-32">
-          <SectionHeader eyebrow="Loved by little ones" title="Best *Sellers*" link={{ href: "/collections/best-sellers", label: "Shop best sellers" }} />
-          <Reveal stagger={0.06} className="grid grid-cols-2 gap-x-3 gap-y-10 md:gap-x-5 lg:grid-cols-4 max-md:[&>*:nth-child(n+5)]:hidden">
-            {bestSellers.map((p) => (
-              <ProductCard key={p.id} product={p} showSample={showSample} />
-            ))}
-          </Reveal>
-        </section>
+      {sec.brandBanner && home.brandBanner.title && home.brandBanner.image && (
+        <div className="pt-16 md:pt-24">
+          <WideBanner
+            eyebrow={home.brandBanner.eyebrow}
+            title={home.brandBanner.title}
+            body={home.brandBanner.body}
+            ctaLabel={home.brandBanner.ctaLabel}
+            href={home.brandBanner.ctaHref}
+            image={home.brandBanner.image}
+            position={home.brandBanner.position}
+          />
+        </div>
       )}
 
-      {banners.length > 0 && (
-        <section className="container-kt pt-24 md:pt-32">
-          <Banners banners={banners} />
-        </section>
-      )}
-
-      {sec.benefits && home.benefits.length > 0 && (
-        <section className="pt-24 md:pt-32">
-          <div className="mx-2.5 rounded-[2rem] bg-cream-100 px-3 py-14 md:mx-4 md:rounded-[3rem] md:px-0 md:py-24">
-            <div className="container-kt max-md:px-2">
-              <SectionHeader eyebrow="Why Kinder Thread?" title="Little things, done with *care*" body="What you can expect every time you shop with us — from choosing a size to the moment the parcel arrives." />
-              <Benefits items={home.benefits} />
-            </div>
-          </div>
-        </section>
+      {sec.trust && trust.length > 0 && (
+        <div className="pt-14 md:pt-20">
+          <TrustStrip items={trust} />
+        </div>
       )}
 
       {gallery.length > 0 && (
-        <section className="container-kt pt-24 md:pt-32">
+        <section className="container-kt pt-16 md:pt-24">
           <SectionHeader eyebrow={settings.social.instagram ? settings.social.instagramHandle || "Instagram" : "Gallery"} title={home.gallery.heading} body={home.gallery.body}>
             {settings.social.instagram && (
               <a href={settings.social.instagram} target="_blank" rel="noopener noreferrer" className={buttonClass("secondary", "md")}>
@@ -147,10 +163,12 @@ export default async function Home() {
       )}
 
       {sec.newsletter && (
-        <div className="pt-24 md:pt-32">
+        <div className="pt-16 md:pt-24">
           <NewsletterSection heading={home.newsletter.heading} body={home.newsletter.body} />
         </div>
       )}
+
+      <MobileTabBar signedIn={false} />
     </>
   );
 }
