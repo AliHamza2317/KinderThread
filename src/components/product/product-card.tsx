@@ -41,6 +41,11 @@ export function ProductCard({ product, priority, showSample = true, className }:
 
         <div className="pointer-events-none absolute top-3 left-3 flex flex-col items-start gap-1.5">
           {!product.inStock ? <Badge tone="out">Sold out</Badge> : off > 0 ? <Badge tone="sale">−{off}%</Badge> : product.isNewArrival ? <Badge tone="new">New</Badge> : null}
+          {showSample && product.isSample && (
+            <span className="rounded-full bg-cream-50/90 px-2 py-0.5 text-[0.58rem] font-semibold tracking-[0.12em] text-cocoa-500 uppercase backdrop-blur" title="Sample listing used while the first collection is prepared">
+              Sample
+            </span>
+          )}
         </div>
         <WishlistButton productId={product.id} name={product.name} className="absolute top-3 right-3" />
 
@@ -74,21 +79,6 @@ export function ProductCard({ product, priority, showSample = true, className }:
           </h3>
           <Price price={product.price} compareAt={product.compareAtPrice} className="mt-1" />
         </div>
-      </div>
-      <div className="mt-2 flex items-center gap-3 text-[0.75rem] text-cocoa-500">
-        {product.colors.length > 0 && (
-          <span className="flex items-center gap-1" aria-label={`Colours: ${product.colors.map((c) => c.name).join(", ")}`}>
-            {product.colors.slice(0, 4).map((c) => (
-              <span key={c.id} className="h-3.5 w-3.5 rounded-full ring-1 ring-black/10" style={{ background: c.hex }} />
-            ))}
-            {product.colors.length > 4 && <span>+{product.colors.length - 4}</span>}
-          </span>
-        )}
-        {showSample && product.isSample && (
-          <span className="ml-auto rounded-full border border-cocoa/10 px-2 py-0.5 text-[0.6rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase" title="Sample listing used while the first collection is prepared">
-            Sample
-          </span>
-        )}
       </div>
     </article>
   );
