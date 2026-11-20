@@ -8,7 +8,6 @@ import { PromoBanner } from "@/components/home/promo-banner";
 import { PromoPair, WideBanner } from "@/components/home/promo-banners";
 import { SectionHeader } from "@/components/home/section-header";
 import { TrustStrip, type TrustItem } from "@/components/home/trust-strip";
-import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { buttonClass } from "@/components/ui/button";
 import { getProductsBy, toCard } from "@/lib/catalog";
 import { CATEGORIES, PRODUCTS } from "@/data/catalog";
@@ -168,7 +167,6 @@ export default async function Home() {
         </div>
       )}
 
-      <MobileTabBar signedIn={false} />
     </>
   );
 }

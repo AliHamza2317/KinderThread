@@ -27,14 +27,14 @@ export default async function AboutPage() {
   return (
     <>
       {/* campaign banner */}
-      <section className="px-2.5 pt-2 md:px-4">
-        <div className="relative isolate flex min-h-[70svh] items-end overflow-hidden rounded-[2rem] md:min-h-[78svh] md:rounded-[3rem]">
+      <section>
+        <div className="relative isolate flex min-h-[26rem] items-end overflow-hidden md:min-h-[min(72svh,40rem)]">
           <Image src={story.image} alt={story.imageAlt} fill priority sizes="100vw" className="-z-10 object-cover" />
           <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-cocoa-900/70 via-cocoa-900/15 to-transparent" />
-          <div className="w-full px-6 pt-24 pb-10 text-cream-50 md:px-14 md:pb-14">
+          <div className="container-kt w-full pt-24 pb-10 text-cream-50 md:pb-14">
             <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Our story" }]} className="mb-6 text-cream-200/80 [&_[aria-current]]:text-cream-50 [&_a:hover]:text-cream-50" />
             <p className="eyebrow eyebrow-rule text-cream-200">{story.eyebrow}</p>
-            <h1 className="mt-4 max-w-4xl font-display text-[clamp(2.8rem,1rem+6vw,7rem)] leading-[0.92] font-medium tracking-[-0.055em] [&_.text-sage-700]:text-sun-200">
+            <h1 className="mt-4 max-w-4xl font-display text-[clamp(2.6rem,1rem+4.6vw,5.6rem)] leading-[0.95] font-medium tracking-[-0.05em] [&_.text-sage-700]:text-sun-200">
               <SplitWords text={accentLast(story.heading)} />
             </h1>
             {story.imagesAreSamples && <p className="mt-6 text-[0.68rem] font-semibold tracking-[0.12em] text-cream-200/70 uppercase">Placeholder imagery</p>}
@@ -73,11 +73,11 @@ export default async function AboutPage() {
       {/* what we care about */}
       {values.length > 0 && (
         <section className="pb-20 md:pb-32">
-          <div className="mx-2.5 rounded-[2rem] bg-cream-100 px-3 py-14 md:mx-4 md:rounded-[3rem] md:py-24">
+          <div className="bg-cream-100 py-14 md:py-24">
             <div className="container-kt">
               <div className="text-center">
                 <p className="eyebrow eyebrow-rule justify-center">What we care about</p>
-                <h2 className="display-lg mx-auto mt-4 max-w-3xl">
+                <h2 className="mx-auto mt-3 max-w-3xl font-display text-[clamp(1.9rem,1.2rem+1.8vw,2.8rem)] leading-[1.05] font-medium tracking-[-0.035em]">
                   <SplitWords text="Little things, done with *care*" />
                 </h2>
               </div>
@@ -109,7 +109,7 @@ export default async function AboutPage() {
 
       {/* closing call to action */}
       <section className="container-kt pb-8 text-center">
-        <h2 className="display-md mx-auto max-w-2xl">
+        <h2 className="mx-auto max-w-2xl font-display text-[clamp(1.9rem,1.2rem+1.8vw,2.8rem)] leading-[1.05] font-medium tracking-[-0.035em]">
           <SplitWords text="Come and see the *collection*" />
         </h2>
         <div className="mt-8 flex flex-wrap justify-center gap-3">

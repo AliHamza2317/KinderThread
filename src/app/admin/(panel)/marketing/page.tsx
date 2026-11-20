@@ -93,14 +93,14 @@ export default async function MarketingPage() {
         </div>
 
         <div id="shop-banner" className="scroll-mt-32">
-          <Card title="Shop page banner" description="The slides at the top of the Shop page.">
+          <Card title="Shop page banner" description="The full-width photo slides at the top of the Shop page. Use wide photos; *word* sets the italic accent.">
             <SettingsForm
               settingKey="home"
               root="shopSlider"
               initial={home.shopSlider}
               submitLabel="Save shop banner"
-              images={(["slide1", "slide2", "slide3"] as const).map((k, i) => ({ path: `${k}.image`, label: `Slide ${i + 1} photograph`, aspect: "aspect-[4/5]" }))}
-              fields={(["slide1", "slide2", "slide3"] as const).flatMap((k, i) => slideFields(k, i + 1, false))}
+              images={(["slide1", "slide2", "slide3"] as const).map((k, i) => ({ path: `${k}.image`, label: `Slide ${i + 1} photograph`, aspect: "aspect-[16/9]" }))}
+              fields={(["slide1", "slide2", "slide3"] as const).flatMap((k, i) => bannerFields(k, i + 1))}
             />
           </Card>
         </div>
@@ -268,7 +268,7 @@ export default async function MarketingPage() {
   );
 }
 
-/** Form fields for one homepage photo banner slide (settings paths like "slide1.title"). */
+/** Form fields for one photo banner slide (settings paths like "slide1.title"). */
 function bannerFields(k: string, n: number): FieldSpec[] {
   return [
     { type: "heading", label: `Slide ${n}` },
@@ -282,25 +282,5 @@ function bannerFields(k: string, n: number): FieldSpec[] {
     { path: `${k}.imageAlt`, label: "Photograph description (alt text)", wide: true },
     { path: `${k}.position`, label: "Photo focus on computers", hint: "e.g. 50% 50% (centre), 30% 50% (more left)" },
     { path: `${k}.mobilePosition`, label: "Photo focus on phones", hint: "Leave empty to use the computer setting" },
-  ];
-}
-
-/** Form fields for one Shop page slide (settings paths like "slide1.title"). */
-function slideFields(k: string, n: number, withProduct: boolean): FieldSpec[] {
-  return [
-    { type: "heading", label: `Slide ${n}` },
-    { path: `${k}.enabled`, label: "Show this slide", type: "checkbox", wide: true },
-    { path: `${k}.eyebrow`, label: "Small label" },
-    { path: `${k}.tone`, label: "Colour", hint: "sage, coral, sun, cream, cocoa or forest" },
-    { path: `${k}.title`, label: "Heading", wide: true, hint: "Use *word* for the italic accent" },
-    { path: `${k}.body`, label: "Text", type: "textarea", rows: 2 },
-    { path: `${k}.ctaLabel`, label: "Button label" },
-    { path: `${k}.ctaHref`, label: "Button link", placeholder: "/shop" },
-    { path: `${k}.secondaryLabel`, label: "Second link label (optional)" },
-    { path: `${k}.secondaryHref`, label: "Second link (optional)" },
-    { path: `${k}.imageAlt`, label: "Photograph description (alt text)", wide: true },
-    { path: `${k}.cutout`, label: "Cut-out image (optional)", hint: "A transparent PNG/WebP of the child or garment without background — shown directly on the colour", wide: true },
-    { path: `${k}.align`, label: "Cut-out position", hint: "bottom (people), center (garments) or right" },
-    ...(withProduct ? ([{ path: `${k}.productSlug`, label: "Product card (optional)", hint: "Product URL name, e.g. tulle-party-dress" }] as FieldSpec[]) : []),
   ];
 }

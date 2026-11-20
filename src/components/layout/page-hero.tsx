@@ -31,8 +31,51 @@ export function Breadcrumbs({ items, className, align = "left" }: { items: Crumb
 }
 
 /**
- * Inner-page header, in the style of brand collection banners: a soft rounded band
- * with the title centred — or, when a photograph is given, text beside the photo.
+ * Full-width photo banner at the top of collection and listing pages (as Pakistani
+ * kidswear stores open a collection): the photo edge to edge, a soft shade and the
+ * breadcrumb, label and title over it. Use *word* in the title for the italic accent.
+ */
+export function PageBanner({
+  image,
+  imageAlt = "",
+  position,
+  eyebrow,
+  title,
+  description,
+  breadcrumb,
+  children,
+}: {
+  image: string;
+  imageAlt?: string;
+  position?: string;
+  eyebrow?: string;
+  title: string;
+  description?: string | null;
+  breadcrumb?: Crumb[];
+  children?: ReactNode;
+}) {
+  return (
+    <section className="relative isolate overflow-hidden bg-cocoa-800">
+      <Image src={image} alt={imageAlt} fill priority sizes="100vw" className="-z-10 object-cover" style={{ objectPosition: position ?? "50% 50%" }} />
+      <div aria-hidden className="absolute inset-0 -z-10 bg-gradient-to-t from-cocoa-900/75 via-cocoa-900/35 to-cocoa-900/10 lg:bg-gradient-to-r lg:from-cocoa-900/70 lg:via-cocoa-900/30 lg:to-cocoa-900/5" />
+      <div className="container-kt flex min-h-[15rem] items-end py-8 text-cream-50 sm:min-h-[18rem] lg:min-h-[20rem] lg:items-center lg:py-12 [&_.text-sage-700]:text-sun-200">
+        <div className="max-w-xl">
+          {breadcrumb && <Breadcrumbs items={breadcrumb} className="mb-4 text-cream-100/75 [&_a:hover]:text-cream-50 [&_[aria-current]]:text-cream-50 [&_span[aria-hidden]]:text-cream-100/45" />}
+          {eyebrow && <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-cream-100/90 uppercase">{eyebrow}</p>}
+          <h1 className="mt-2 font-display text-[clamp(2.2rem,1.2rem+2.8vw,3.8rem)] leading-[1] font-medium tracking-[-0.045em]">
+            <SplitWords text={title} />
+          </h1>
+          {description && <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-cream-100/90 md:text-[1rem]">{description}</p>}
+          {children && <div className="mt-6">{children}</div>}
+        </div>
+      </div>
+    </section>
+  );
+}
+
+/**
+ * Inner-page header: a full-width soft band with the breadcrumb and a centred title
+ * (or, when a photograph is given, the full-width photo banner).
  * Use *word* in the title for the serif italic accent.
  */
 export function PageHero({
@@ -56,36 +99,48 @@ export function PageHero({
 }) {
   if (image) {
     return (
-      <section className="px-2.5 pt-2 md:px-4">
-        <div className="grid overflow-hidden rounded-[2rem] bg-cream-100 md:rounded-[3rem] lg:grid-cols-2">
-          <div className="relative order-1 aspect-[16/10] lg:order-2 lg:aspect-auto lg:min-h-[26rem]">
-            <Image src={image} alt={imageAlt} fill priority sizes="(min-width: 1024px) 50vw, 100vw" className="object-cover" />
-          </div>
-          <div className="order-2 flex flex-col justify-center px-6 py-10 text-center md:px-14 md:py-16 lg:order-1 lg:text-left">
-            {breadcrumb && <Breadcrumbs items={breadcrumb} className="mb-6 max-lg:[&_ol]:justify-center" />}
-            {eyebrow && <p className="eyebrow eyebrow-rule max-lg:justify-center">{eyebrow}</p>}
-            <h1 className="display-lg mt-4">
-              <SplitWords text={title} />
-            </h1>
-            {description && <p className="mx-auto mt-4 max-w-md text-[1.02rem] leading-relaxed text-cocoa-500 lg:mx-0">{description}</p>}
-            {children && <div className="mt-7">{children}</div>}
-          </div>
-        </div>
-      </section>
+      <PageBanner image={image} imageAlt={imageAlt} eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb}>
+        {children}
+      </PageBanner>
     );
   }
   return (
-    <section className="px-2.5 pt-2 md:px-4">
-      <div className={cn("rounded-[2rem] bg-cream-100 px-6 text-center md:rounded-[3rem]", size === "sm" ? "py-10 md:py-14" : "py-14 md:py-20")}>
-        {breadcrumb && <Breadcrumbs items={breadcrumb} align="center" className="mb-6" />}
-        {eyebrow && <p className="eyebrow eyebrow-rule justify-center">{eyebrow}</p>}
-        <h1 className={cn("mx-auto mt-4 max-w-4xl", size === "sm" ? "display-md" : "display-lg")}>
+    <section className="border-b border-cocoa/[0.06] bg-cream-100">
+      <div className={cn("container-kt text-center", size === "sm" ? "py-9 md:py-12" : "py-10 md:py-16")}>
+        {breadcrumb && <Breadcrumbs items={breadcrumb} align="center" className="mb-4" />}
+        {eyebrow && <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-cocoa-500 uppercase">{eyebrow}</p>}
+        <h1 className="mx-auto mt-2 max-w-4xl font-display text-[clamp(2rem,1.3rem+2.2vw,3.4rem)] leading-[1.02] font-medium tracking-[-0.04em]">
           <SplitWords text={title} />
         </h1>
-        {description && <p className="mx-auto mt-4 max-w-xl text-[1.02rem] leading-relaxed text-cocoa-500">{description}</p>}
-        {children && <div className="mt-8">{children}</div>}
+        {description && <p className="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-cocoa-500">{description}</p>}
+        {children && <div className="mt-7">{children}</div>}
       </div>
     </section>
+  );
+}
+
+/** Round photo links to every collection (as Baby Planet shows categories); scrolls sideways on phones. */
+export function CollectionCircles({ items, label = "Collections", className }: { items: { label: string; href: string; image?: string | null; active?: boolean }[]; label?: string; className?: string }) {
+  return (
+    <nav aria-label={label} className={cn("container-kt", className)}>
+      <ul className="scrollbar-none -mx-5 flex gap-4 overflow-x-auto px-5 pt-1 pb-1 md:mx-0 md:gap-5 md:px-0 lg:justify-center">
+        {items.map((it) => (
+          <li key={it.href} className="shrink-0">
+            <Link href={it.href} aria-current={it.active ? "page" : undefined} className="group flex w-[4.75rem] flex-col items-center text-center md:w-[5.5rem]">
+              <span
+                className={cn(
+                  "relative block aspect-square w-full overflow-hidden rounded-full bg-cream-200 ring-offset-2 ring-offset-cream-50 transition-[box-shadow]",
+                  it.active ? "ring-2 ring-cocoa" : "ring-1 ring-cocoa/10 group-hover:ring-2 group-hover:ring-sage-500",
+                )}
+              >
+                {it.image && <Image src={it.image} alt="" fill sizes="88px" className="object-cover transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.08]" />}
+              </span>
+              <span className={cn("mt-2 text-[0.72rem] leading-tight md:text-[0.78rem]", it.active ? "font-semibold text-cocoa" : "font-medium text-cocoa-600 group-hover:text-cocoa")}>{it.label}</span>
+            </Link>
+          </li>
+        ))}
+      </ul>
+    </nav>
   );
 }
 

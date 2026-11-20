@@ -7,7 +7,7 @@ import { PurchasePanel } from "@/components/product/purchase-panel";
 import { RecentlyViewed } from "@/components/product/recently-viewed";
 import type { SizeGuideData } from "@/components/product/size-guide";
 import { Breadcrumbs } from "@/components/layout/page-hero";
-import { SectionHeader } from "@/components/home/section-header";
+import { CenteredHeading } from "@/components/home/centered-heading";
 import { AccordionItem } from "@/components/ui/accordion";
 import { getProductBySlug, getRelatedProducts } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
@@ -130,7 +130,7 @@ export default async function ProductPage({ params }: Props) {
 
       {related.length > 0 && (
         <section className="container-kt pt-10 pb-16 md:pt-16" aria-labelledby="related-heading">
-          <SectionHeader id="related-heading" eyebrow="Complete the look" title="You may also *like*" link={primaryCat ? { href: `/collections/${primaryCat.slug}`, label: `More ${primaryCat.name}` } : { href: "/shop", label: "Shop all" }} />
+          <CenteredHeading id="related-heading" title="You may also *like*" body="Pieces that go well together." />
           <ul className="grid grid-cols-2 gap-x-3 gap-y-10 md:gap-x-5 lg:grid-cols-4">
             {related.map((r) => (
               <li key={r.id}>
@@ -138,6 +138,11 @@ export default async function ProductPage({ params }: Props) {
               </li>
             ))}
           </ul>
+          <div className="mt-9 flex justify-center md:mt-12">
+            <Link href={primaryCat ? `/collections/${primaryCat.slug}` : "/shop"} className="inline-flex h-12 items-center rounded-full bg-cocoa px-9 text-[0.8rem] font-semibold tracking-[0.14em] text-cream-50 uppercase transition-colors hover:bg-sage-700">
+              {primaryCat ? `More ${primaryCat.name}` : "Shop all"}
+            </Link>
+          </div>
         </section>
       )}
       <RecentlyViewed excludeId={p.id} showSample={settings.features.showSampleBadges} />

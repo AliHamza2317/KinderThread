@@ -1,26 +1,18 @@
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ShopView } from "@/components/shop/shop-view";
-import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
-import { accentLast } from "@/lib/utils";
-import type { SlideTone } from "@/components/home/hero-slider";
-
-// each collection banner gets its own colour field
-const TONE_BY_SLUG: Record<string, SlideTone> = { "new-arrivals": "sun", "best-sellers": "coral", sale: "cocoa", "baby-boys": "sage", "baby-girls": "coral", newborn: "cream", "everyday-wear": "sun", "casual-outfits": "forest", "matching-sets": "sage", seasonal: "cocoa" };
-
-// photographs for the collection headers of the virtual collections
-const VIRTUAL_IMAGES: Record<string, string> = {
-  "new-arrivals": "/images/gallery/g1.webp",
-  "best-sellers": "/images/products/nordic-cardigan-rose.webp",
-  sale: "/images/editorial/banner-knitwear.webp",
-};
+import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTION_IMAGES, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
 import { getSettings } from "@/lib/settings";
+import { accentLast } from "@/lib/utils";
+
+// which part of each collection photo stays in view in the wide banner
+const BANNER_FOCUS: Record<string, string> = { "baby-boys": "50% 35%", "baby-girls": "50% 30%", newborn: "50% 55%", "everyday-wear": "50% 45%", "casual-outfits": "50% 40%", "matching-sets": "50% 45%", seasonal: "50% 50%", "new-arrivals": "50% 62%", "best-sellers": "50% 45%", sale: "50% 45%" };
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
 
 async function resolve(slug: string) {
   const v = VIRTUAL_COLLECTIONS[slug];
-  if (v) return { name: v.name, description: v.description, seoTitle: null, seoDescription: null, flag: v.flag, category: undefined, kind: "collection", image: VIRTUAL_IMAGES[slug] ?? null };
+  if (v) return { name: v.name, description: v.description, seoTitle: null, seoDescription: null, flag: v.flag, category: undefined, kind: "collection", image: VIRTUAL_COLLECTION_IMAGES[slug] ?? null };
   const c = await getCategoryBySlug(slug);
   if (!c) return null;
   return { name: c.name, description: c.description, seoTitle: c.seoTitle, seoDescription: c.seoDescription, flag: undefined, category: c.slug, kind: c.kind, image: c.image };
@@ -50,11 +42,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       description={c.description}
       image={c.image}
       pills={pills}
-      banner={
-        c.image
-          ? { eyebrow: c.kind === "collection" ? "Collection" : "Category", title: accentLast(c.name), body: c.description ?? "", ctaLabel: "", ctaHref: "", image: c.image, imageAlt: "", tone: TONE_BY_SLUG[slug] ?? "sage" }
-          : null
-      }
+      banner={c.image ? { image: c.image, position: BANNER_FOCUS[slug] } : null}
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: c.name }]}
       {...res}
       facets={facets}

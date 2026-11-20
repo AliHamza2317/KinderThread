@@ -70,6 +70,13 @@ export const VIRTUAL_COLLECTIONS: Record<string, { name: string; description: st
   sale: { name: "On Sale", description: "Little treasures at little prices, while sizes last.", flag: "sale" },
 };
 
+/** Photographs for the virtual collections (collection banners, circles and the collections page). */
+export const VIRTUAL_COLLECTION_IMAGES: Record<string, string> = {
+  "new-arrivals": "/images/editorial/hero-tulle.webp",
+  "best-sellers": "/images/products/nordic-cardigan-rose.webp",
+  sale: "/images/editorial/banner-knitwear.webp",
+};
+
 export type ShopFilters = {
   category?: string;
   flag?: CollectionFlag;
@@ -255,11 +262,11 @@ export function countProductsInCategory(categoryId: string) {
 export async function getCollectionPills(active?: string) {
   const cats = await getNavCategories();
   const items = [
-    { label: "All", href: "/shop", slug: "__all" },
-    { label: "New In", href: "/collections/new-arrivals", slug: "new-arrivals" },
-    ...cats.map((c) => ({ label: c.name, href: `/collections/${c.slug}`, slug: c.slug })),
-    { label: "Best Sellers", href: "/collections/best-sellers", slug: "best-sellers" },
-    { label: "Sale", href: "/collections/sale", slug: "sale" },
+    { label: "All", href: "/shop", slug: "__all", image: "/images/gallery/g7.webp" },
+    { label: "New In", href: "/collections/new-arrivals", slug: "new-arrivals", image: VIRTUAL_COLLECTION_IMAGES["new-arrivals"] },
+    ...cats.map((c) => ({ label: c.name.replace(/ Collection$/, ""), href: `/collections/${c.slug}`, slug: c.slug, image: c.image })),
+    { label: "Best Sellers", href: "/collections/best-sellers", slug: "best-sellers", image: VIRTUAL_COLLECTION_IMAGES["best-sellers"] },
+    { label: "Sale", href: "/collections/sale", slug: "sale", image: VIRTUAL_COLLECTION_IMAGES.sale },
   ];
   return items.map(({ slug, ...it }) => ({ ...it, active: slug === (active ?? "__all") }));
 }

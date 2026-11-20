@@ -5,8 +5,8 @@ import { Eyebrow } from "@/components/ui/eyebrow";
 /** Split layout for sign-in / register: form on the left, calm brand panel on the right. */
 export function AuthShell({ eyebrow, title, intro, children, footer }: { eyebrow: string; title: string; intro: ReactNode; children: ReactNode; footer?: ReactNode }) {
   return (
-    <div className="px-2.5 pt-2 pb-10 md:px-4 md:pb-16">
-      <div className="grid items-stretch gap-6 rounded-[2rem] bg-cream-100 p-3 md:rounded-[3rem] md:p-4 lg:grid-cols-2">
+    <div className="bg-cream-100">
+      <div className="container-kt grid items-stretch gap-6 py-3 md:py-5 lg:grid-cols-2">
         <div className="mx-auto flex w-full max-w-md flex-col justify-center px-3 py-10 md:py-14">
           <Eyebrow>{eyebrow}</Eyebrow>
           <h1 className="display-lg mt-4">{title}</h1>

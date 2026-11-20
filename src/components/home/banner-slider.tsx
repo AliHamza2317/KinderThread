@@ -29,7 +29,7 @@ export type Banner = {
  * Accessible: pause button, keyboard arrows, swipe, pauses on hover/focus/off-screen,
  * no autoplay for reduced motion.
  */
-export function BannerSlider({ slides, interval = 5500 }: { slides: Banner[]; interval?: number }) {
+export function BannerSlider({ slides, interval = 5500, size = "home", label = "Featured collections" }: { slides: Banner[]; interval?: number; size?: "home" | "page"; label?: string }) {
   const [index, setIndex] = useState(0);
   const [userPaused, setUserPaused] = useState(false);
   const [hover, setHover] = useState(false);
@@ -67,7 +67,7 @@ export function BannerSlider({ slides, interval = 5500 }: { slides: Banner[]; in
     <section
       ref={root}
       aria-roledescription="carousel"
-      aria-label="Featured collections"
+      aria-label={label}
       className="relative"
       onKeyDown={(e) => {
         if (e.key === "ArrowRight") go(index + 1);
@@ -75,7 +75,7 @@ export function BannerSlider({ slides, interval = 5500 }: { slides: Banner[]; in
       }}
     >
       <div
-        className="relative aspect-[4/5] overflow-hidden bg-cream-200 sm:aspect-[16/10] lg:aspect-auto lg:h-[clamp(440px,calc(100svh-13rem),560px)]"
+        className={cn("relative overflow-hidden bg-cream-200 lg:aspect-auto", size === "home" ? "aspect-[4/5] sm:aspect-[16/10] lg:h-[clamp(440px,calc(100svh-13rem),560px)]" : "aspect-[5/4] sm:aspect-[16/8] lg:h-[400px]")}
         style={{ touchAction: "pan-y" }}
         onMouseEnter={() => setHover(true)}
         onMouseLeave={() => setHover(false)}
@@ -119,18 +119,18 @@ export function BannerSlider({ slides, interval = 5500 }: { slides: Banner[]; in
                   "absolute inset-0",
                   light
                     ? "bg-gradient-to-t from-cocoa-900/70 via-cocoa-900/20 to-transparent lg:bg-gradient-to-r lg:from-cocoa-900/60 lg:via-cocoa-900/15"
-                    : "bg-gradient-to-t from-cream-50/90 via-cream-50/30 to-transparent lg:bg-gradient-to-r lg:from-cream-50/85 lg:via-cream-50/25",
+                    : "bg-gradient-to-t from-cream-50 via-cream-50/80 to-transparent lg:bg-gradient-to-r lg:from-cream-50/90 lg:via-cream-50/40",
                 )}
               />
               <div className="container-kt absolute inset-0 flex items-end pb-14 lg:items-center lg:pb-6">
                 <div className={cn("max-w-xl transition-[opacity,transform] duration-700 motion-reduce:transition-none", active ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0", light ? "text-cream-50 [&_.text-sage-700]:text-sun-200" : "text-cocoa")}>
                   <p className={cn("text-[0.72rem] font-semibold tracking-[0.2em] uppercase", light ? "text-cream-100/90" : "text-cocoa-500")}>{s.eyebrow}</p>
-                  {i === 0 ? (
+                  {i === 0 && size === "home" ? (
                     <h1 className="mt-3 font-display text-[clamp(2.4rem,1.1rem+3.6vw,4.6rem)] leading-[0.98] font-medium tracking-[-0.045em]">
                       <SplitWords text={s.title} />
                     </h1>
                   ) : (
-                    <h2 className="mt-3 font-display text-[clamp(2.4rem,1.1rem+3.6vw,4.6rem)] leading-[0.98] font-medium tracking-[-0.045em]">
+                    <h2 className={cn("mt-3 font-display leading-[0.98] font-medium tracking-[-0.045em]", size === "home" ? "text-[clamp(2.4rem,1.1rem+3.6vw,4.6rem)]" : "text-[clamp(2.1rem,1.1rem+2.6vw,3.6rem)]")}>
                       <SplitWords text={s.title} />
                     </h2>
                   )}

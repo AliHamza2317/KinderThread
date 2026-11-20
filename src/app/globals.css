@@ -300,4 +300,8 @@ html.lenis, html.lenis body { height: auto; }
   body:has([data-tabbar]) [data-float="whatsapp"] {
     bottom: calc(5rem + env(safe-area-inset-bottom));
   }
+  /* keep the end of the footer clear of the bar */
+  body:has([data-tabbar]) footer {
+    padding-bottom: calc(4rem + env(safe-area-inset-bottom));
+  }
 }

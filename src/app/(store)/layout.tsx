@@ -4,6 +4,7 @@ import { CartDrawer } from "@/components/layout/cart-drawer";
 import { Footer } from "@/components/layout/footer";
 import { Header } from "@/components/layout/header";
 import { MobileMenu } from "@/components/layout/mobile-menu";
+import { MobileTabBar } from "@/components/layout/mobile-tab-bar";
 import { SearchOverlay } from "@/components/layout/search-overlay";
 import { SmoothScroll } from "@/components/layout/smooth-scroll";
 import { WhatsAppFloat } from "@/components/layout/whatsapp-float";
@@ -26,6 +27,7 @@ export default async function StoreLayout({ children }: { children: React.ReactN
       <Header categories={categories.filter((c) => c.showInNav)} signedIn={false} />
       <main id="main">{children}</main>
       <Footer settings={settings} categories={categories.filter((c) => c.kind === "category")} pages={pages} />
+      <MobileTabBar signedIn={false} />
       <MobileMenu categories={categories} signedIn={false} />
       <SearchOverlay categories={categories} />
       <CartDrawer freeThreshold={settings.shipping.freeThreshold} />

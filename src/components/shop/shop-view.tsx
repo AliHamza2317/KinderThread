@@ -1,8 +1,8 @@
 import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
-import { HeroSlider, SlideBanner, type Slide } from "@/components/home/hero-slider";
-import { Breadcrumbs, PageHero, PillNav, type Crumb } from "@/components/layout/page-hero";
+import { BannerSlider, type Banner } from "@/components/home/banner-slider";
+import { CollectionCircles, PageBanner, PageHero, type Crumb } from "@/components/layout/page-hero";
 import { ProductCard } from "@/components/product/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import type { ProductCardData } from "@/lib/catalog";
@@ -20,9 +20,9 @@ function pageHref(basePath: string, sp: Record<string, string | string[] | undef
 }
 
 /**
- * Collection / shop listing in the style of brand stores: a title band (with the
- * collection photo when there is one), collection pills, a slim toolbar with the
- * product count, quick age filters and a "Filter & sort" drawer, then a full-width grid.
+ * Collection / shop listing in the style of Pakistani kidswear stores: a full-width photo
+ * banner (a slider on the Shop page), round photo links to every collection, a toolbar
+ * with "Filter & sort", the product count, quick age filters and sorting, then the grid.
  */
 export function ShopView({
   eyebrow,
@@ -50,7 +50,7 @@ export function ShopView({
   description?: string | null;
   breadcrumb: Crumb[];
   image?: string | null;
-  pills?: { label: string; href: string; active?: boolean }[];
+  pills?: { label: string; href: string; image?: string | null; active?: boolean }[];
   products: ProductCardData[];
   total: number;
   page: number;
@@ -62,10 +62,10 @@ export function ShopView({
   showSample: boolean;
   emptyAction?: { href: string; label: string };
   heroChildren?: ReactNode;
-  /** campaign slides shown at the top instead of the title band (shop page) */
-  slider?: Slide[];
-  /** a single campaign-style banner (collection pages) */
-  banner?: Slide | null;
+  /** photo banner slides shown at the top instead of the title band (shop page) */
+  slider?: Banner[];
+  /** a full-width photo banner with the title (collection pages) */
+  banner?: { image: string; position?: string } | null;
 }) {
   return (
     <ShopProvider>
@@ -73,20 +73,23 @@ export function ShopView({
         <>
           {/* the slider is the visual header here; the page title stays for screen readers and search */}
           <h1 className="sr-only">{title.replace(/\*/g, "")}</h1>
-          <HeroSlider slides={slider} size="page" label="Shop highlights" />
+          <BannerSlider slides={slider} size="page" label="Shop highlights" />
         </>
       ) : banner ? (
-        <SlideBanner slide={banner} top={<Breadcrumbs items={breadcrumb} className="mb-6 [&_*]:!text-current [&_*]:opacity-80" />} />
+        <PageBanner image={banner.image} position={banner.position} eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} />
       ) : (
         <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
           {heroChildren}
         </PageHero>
       )}
 
-      {pills && pills.length > 0 && <PillNav items={pills} label="Collections" className="mt-6" />}
+      {pills && pills.length > 0 && <CollectionCircles items={pills} className="mt-8 md:mt-10" />}
 
       <div className="container-kt mt-8 md:mt-10">
         <div className="flex items-center gap-3 border-y border-cocoa/10 py-3">
+          <Suspense>
+            <FilterDrawer facets={facets} total={total} hideGender={hideGender} />
+          </Suspense>
           <p className="shrink-0 text-[0.85rem] text-cocoa-500" aria-live="polite">
             <span className="font-semibold text-cocoa">{total}</span> {total === 1 ? "style" : "styles"}
           </p>
@@ -95,12 +98,9 @@ export function ShopView({
               <AgePills />
             </Suspense>
           </div>
-          <div className="ml-auto flex items-center gap-2 lg:ml-0">
+          <div className="ml-auto hidden md:block lg:ml-0">
             <Suspense>
-              <div className="hidden md:block">
-                <SortSelect />
-              </div>
-              <FilterDrawer facets={facets} total={total} hideGender={hideGender} />
+              <SortSelect />
             </Suspense>
           </div>
         </div>

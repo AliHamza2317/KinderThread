@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { usePathname } from "next/navigation";
 import { Heart, LayoutGrid, Search, ShoppingBag, User } from "lucide-react";
 import type { ReactNode } from "react";
 import { useHydrated } from "@/lib/hooks";
@@ -35,16 +36,20 @@ function Item({ label, icon, href, onClick, count = 0 }: { label: string; icon: 
   );
 }
 
-/** App-style bottom bar on phones (Shop, Wishlist, Bag, Account, Search), as on Baby Planet. */
+/**
+ * App-style bottom bar on phones (Shop, Wishlist, Bag, Account, Search), as on Baby Planet.
+ * Hidden on product pages (they have their own "Add to bag" bar) and at checkout.
+ */
 export function MobileTabBar({ signedIn }: { signedIn: boolean }) {
+  const pathname = usePathname();
   const hydrated = useHydrated();
   const lines = useCart((s) => s.lines);
   const setCart = useCart((s) => s.setOpen);
   const wish = useWishlist((s) => s.ids.length);
   const setSearch = useUi((s) => s.setSearch);
+  if (pathname.startsWith("/products/") || pathname.startsWith("/checkout")) return null;
   return (
     <>
-      <div aria-hidden className="h-16 md:hidden" />
       <nav aria-label="Quick links" data-tabbar className="fixed inset-x-0 bottom-0 z-30 flex h-16 border-t border-cocoa/10 bg-cream-50/95 pb-[env(safe-area-inset-bottom)] backdrop-blur-md md:hidden">
         <Item label="Shop" href="/shop" icon={<LayoutGrid className="h-5 w-5" strokeWidth={1.7} />} />
         <Item label="Wishlist" href="/wishlist" count={hydrated ? wish : 0} icon={<Heart className="h-5 w-5" strokeWidth={1.7} />} />

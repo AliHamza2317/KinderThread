@@ -8,7 +8,8 @@ import { z } from "zod";
 
 const link = z.object({ label: z.string(), href: z.string() });
 
-type SlideDefaults = { eyebrow: string; title: string; body: string; ctaLabel: string; ctaHref: string; secondaryLabel?: string; secondaryHref?: string; image: string; imageAlt: string; position?: string; mobilePosition?: string; text?: "light" | "dark"; cutout?: string; align?: "bottom" | "center" | "right"; tone: "sage" | "coral" | "sun" | "cream" | "cocoa" | "forest"; productSlug?: string };
+type SlideDefaults = { eyebrow: string; title: string; body: string; ctaLabel: string; ctaHref: string; image: string; imageAlt: string; position?: string; mobilePosition?: string; text?: "light" | "dark" };
+/** One full-width photo banner slide (homepage and Shop page sliders). */
 const slide = (d: SlideDefaults) =>
   z
     .object({
@@ -18,19 +19,12 @@ const slide = (d: SlideDefaults) =>
       body: z.string().default(d.body),
       ctaLabel: z.string().default(d.ctaLabel),
       ctaHref: z.string().default(d.ctaHref),
-      secondaryLabel: z.string().default(d.secondaryLabel ?? ""),
-      secondaryHref: z.string().default(d.secondaryHref ?? ""),
       image: z.string().default(d.image),
       imageAlt: z.string().default(d.imageAlt),
-      // homepage photo banners: which part of the photo stays in view ("50% 50%" = centre) and the text colour
+      // which part of the photo stays in view ("50% 50%" = centre), and the text colour
       position: z.string().default(d.position ?? "50% 50%"),
       mobilePosition: z.string().default(d.mobilePosition ?? ""),
       text: z.enum(["light", "dark"]).default(d.text ?? "light"),
-      // optional transparent PNG/WebP of the subject without background, placed on the colour field
-      cutout: z.string().default(d.cutout ?? ""),
-      align: z.enum(["bottom", "center", "right"]).default(d.align ?? "center"),
-      tone: z.enum(["sage", "coral", "sun", "cream", "cocoa", "forest"]).default(d.tone),
-      productSlug: z.string().default(d.productSlug ?? ""),
     })
     .prefault({});
 
@@ -171,10 +165,10 @@ export const settingSchemas = {
     // Use *word* for the serif accent; text: "light" on darker photos, "dark" on light photos.
     slider: z
       .object({
-        slide1: slide({ eyebrow: "Fall / Winter '26", title: "The Winter *Edit*", body: "Cosy knits, cardigans and soft layers for chilly mornings.", ctaLabel: "Shop now", ctaHref: "/collections/seasonal", image: "/images/editorial/banner-knitwear.webp", imageAlt: "Soft knitwear on wooden hangers", position: "50% 45%", mobilePosition: "30% 50%", tone: "cocoa" }),
-        slide2: slide({ eyebrow: "New season · Ages 0–5", title: "Little Moments, Big *Adventures*", body: "Thoughtfully selected outfits from their very first days to their biggest little adventures.", ctaLabel: "Explore collection", ctaHref: "/shop", image: "/images/editorial/nursery.webp", imageAlt: "A calm, light nursery with a white cot", position: "50% 55%", mobilePosition: "62% 50%", text: "dark", tone: "cream" }),
-        slide3: slide({ eyebrow: "First days", title: "Newborn *Essentials*", body: "Gentle first pieces — bodysuits, knits and booties in the softest fabrics.", ctaLabel: "Shop newborn", ctaHref: "/collections/newborn", image: "/images/editorial/story-feet.webp", imageAlt: "A newborn's feet held in a parent's hands", position: "50% 50%", mobilePosition: "55% 50%", tone: "coral" }),
-        slide4: slide({ eyebrow: "For little girls", title: "Dresses & *Delights*", body: "Occasion dresses, blouses and knits in soft, timeless colours.", ctaLabel: "Shop baby girls", ctaHref: "/collections/baby-girls", image: "/images/editorial/cat-baby-girls.webp", imageAlt: "Little dresses drying on a washing line", position: "50% 40%", mobilePosition: "50% 45%", tone: "forest" }),
+        slide1: slide({ eyebrow: "Fall / Winter '26", title: "The Winter *Edit*", body: "Cosy knits, cardigans and soft layers for chilly mornings.", ctaLabel: "Shop now", ctaHref: "/collections/seasonal", image: "/images/editorial/banner-knitwear.webp", imageAlt: "Soft knitwear on wooden hangers", position: "50% 45%", mobilePosition: "30% 50%" }),
+        slide2: slide({ eyebrow: "New season · Ages 0–5", title: "Little Moments, Big *Adventures*", body: "Thoughtfully selected outfits from their very first days to their biggest little adventures.", ctaLabel: "Explore collection", ctaHref: "/shop", image: "/images/editorial/nursery.webp", imageAlt: "A calm, light nursery with a white cot", position: "50% 55%", mobilePosition: "62% 50%", text: "dark" }),
+        slide3: slide({ eyebrow: "First days", title: "Newborn *Essentials*", body: "Gentle first pieces — bodysuits, knits and booties in the softest fabrics.", ctaLabel: "Shop newborn", ctaHref: "/collections/newborn", image: "/images/editorial/story-feet.webp", imageAlt: "A newborn's feet held in a parent's hands", position: "50% 50%", mobilePosition: "55% 50%" }),
+        slide4: slide({ eyebrow: "For little girls", title: "Dresses & *Delights*", body: "Occasion dresses, blouses and knits in soft, timeless colours.", ctaLabel: "Shop baby girls", ctaHref: "/collections/baby-girls", image: "/images/editorial/cat-baby-girls.webp", imageAlt: "Little dresses drying on a washing line", position: "50% 40%", mobilePosition: "50% 45%" }),
       })
       .prefault({}),
     // round photos in the homepage "Shop by age" row
@@ -198,12 +192,12 @@ export const settingSchemas = {
         position: z.string().default("50% 55%"),
       })
       .prefault({}),
-    // banner slider at the top of the Shop page
+    // photo banner slider at the top of the Shop page
     shopSlider: z
       .object({
-        slide1: slide({ eyebrow: "Just in", title: "New *Arrivals*", body: "Fresh pieces for the new season — soft colours, easy fits.", ctaLabel: "Shop new arrivals", ctaHref: "/collections/new-arrivals", image: "/images/products/linen-shirt-sky.webp", imageAlt: "A sky-blue linen shirt hanging from a branch", cutout: "/images/cutouts/linen-shirt.webp", align: "center", tone: "sun" }),
-        slide2: slide({ eyebrow: "The winter edit", title: "Warm *Knits*", body: "Cardigans, bloomers and beanies for chilly mornings.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/products/ribbed-beanie-berry.webp", imageAlt: "A berry-pink ribbed knit beanie", cutout: "/images/cutouts/beanie-berry.webp", align: "center", tone: "forest" }),
-        slide3: slide({ eyebrow: "Loved by little ones", title: "Best *Sellers*", body: "The styles parents come back for.", ctaLabel: "Shop best sellers", ctaHref: "/collections/best-sellers", image: "/images/products/crochet-booties-coral.webp", imageAlt: "Coral hand-crochet baby booties", cutout: "/images/cutouts/crochet-booties.webp", align: "center", tone: "cocoa" }),
+        slide1: slide({ eyebrow: "Just in", title: "New *Arrivals*", body: "Fresh pieces for the new season — soft colours, easy fits.", ctaLabel: "Shop new arrivals", ctaHref: "/collections/new-arrivals", image: "/images/editorial/cat-everyday.webp", imageAlt: "Colourful little outfits on a clothing rail", position: "50% 45%", mobilePosition: "60% 45%", text: "dark" }),
+        slide2: slide({ eyebrow: "The winter edit", title: "Warm *Knits*", body: "Cardigans, bloomers and beanies for chilly mornings.", ctaLabel: "Shop knitwear", ctaHref: "/collections/seasonal", image: "/images/editorial/cat-seasonal.webp", imageAlt: "Close-up of a striped hand-knit sweater", position: "50% 50%" }),
+        slide3: slide({ eyebrow: "Easy outfits", title: "Matching *Sets*", body: "Coordinated pieces that work together — one less decision in the morning.", ctaLabel: "Shop sets", ctaHref: "/collections/matching-sets", image: "/images/editorial/cat-matching-sets.webp", imageAlt: "A little outfit laid flat with sandals and a wooden toy camera", position: "50% 40%", text: "dark" }),
       })
       .prefault({}),
     // seasonal campaign / sale slot (Eid, 11.11, winter sale…) — off until you switch it on

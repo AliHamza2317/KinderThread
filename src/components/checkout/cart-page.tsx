@@ -29,12 +29,12 @@ export function CartPageClient({ freeThreshold }: { freeThreshold: number }) {
 
   if (!lines.length)
     return (
-      <div className="px-2.5 pt-2 md:px-4">
-        <div className="flex min-h-[55vh] flex-col items-center justify-center rounded-[2rem] bg-cream-100 px-6 py-20 text-center md:rounded-[3rem]">
+      <div className="border-b border-cocoa/[0.06] bg-cream-100">
+        <div className="container-kt flex min-h-[50vh] flex-col items-center justify-center py-16 text-center md:py-20">
           <span className="grid h-20 w-20 place-items-center rounded-full bg-cream-50">
             <ShoppingBag className="h-8 w-8 text-cocoa-400" strokeWidth={1.5} />
           </span>
-          <h1 className="display-md mt-6">
+          <h1 className="mt-6 font-display text-[clamp(2rem,1.3rem+2.2vw,3.2rem)] leading-[1.02] font-medium tracking-[-0.04em]">
             Your bag is <span className="font-serif-accent text-sage-700">empty</span>
           </h1>
           <p className="mt-3 text-cocoa-500">Little outfits are waiting for little adventures.</p>
