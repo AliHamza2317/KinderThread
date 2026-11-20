@@ -47,3 +47,5 @@ Unsplash licence note: stock photos don't come with model or property releases. 
 | `products/sleepsuit-set.webp` | https://images.unsplash.com/photo-1569974641446-22542de88536 |
 | `products/rainbow-socks.webp` | https://images.unsplash.com/photo-1542355581-caf7454785ca |
 | `products/linen-romper-set.webp` | https://images.unsplash.com/photo-1777397660834-67c6d0eabe15 |
+
+`account/sign-in.webp` was supplied by the store owner for the sign-in and create-account pages.

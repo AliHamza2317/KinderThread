@@ -12,7 +12,8 @@ export default async function ForgotPage() {
   return (
     <AuthShell
       mode="forgot"
-      title="Forgot your *password?*"
+      chip="Account help"
+      title="Forgot *password?*"
       intro="Self-service password reset by email is coming soon. Until then, our team can help you get back into your account."
     >
       <div className="flex flex-col gap-4">
