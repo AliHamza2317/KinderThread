@@ -2,7 +2,7 @@ import Link from "next/link";
 import { Suspense, type ReactNode } from "react";
 import { ChevronLeft, ChevronRight } from "lucide-react";
 import { BannerSlider, type Banner } from "@/components/home/banner-slider";
-import { CollectionCircles, CollectionHeader, PageHero, type Crumb } from "@/components/layout/page-hero";
+import { CollectionCircles, CollectionHeader, PageHero, type CollectionTone, type Crumb } from "@/components/layout/page-hero";
 import { ProductCard } from "@/components/product/product-card";
 import { ButtonLink } from "@/components/ui/button";
 import type { ProductCardData } from "@/lib/catalog";
@@ -64,8 +64,13 @@ export function ShopView({
   heroChildren?: ReactNode;
   /** photo banner slides shown at the top instead of the title band (shop page) */
   slider?: Banner[];
-  /** collection pages: a calm title band with a few product photos from the collection */
-  collection?: { thumbs: { href: string; image: string; alt: string }[]; count?: number } | null;
+  /** collection pages: an editorial header (tint, facts and a photo collage) */
+  collection?: {
+    tone: CollectionTone;
+    facts: string[];
+    feature: { image: string; alt: string } | null;
+    products: { href: string; image: string; alt: string; name: string; price: string }[];
+  } | null;
 }) {
   return (
     <ShopProvider>
@@ -76,7 +81,7 @@ export function ShopView({
           <BannerSlider slides={slider} size="page" label="Shop highlights" />
         </>
       ) : collection ? (
-        <CollectionHeader eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} count={collection.count} thumbs={collection.thumbs} />
+        <CollectionHeader eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} tone={collection.tone} facts={collection.facts} feature={collection.feature} products={collection.products} />
       ) : (
         <PageHero eyebrow={eyebrow} title={title} description={description} breadcrumb={breadcrumb} image={image} imageAlt="">
           {heroChildren}
@@ -118,7 +123,7 @@ export function ShopView({
         </div>
       </div>
 
-      <div className="container-kt pt-6 pb-10">
+      <div id="products" className="container-kt scroll-mt-28 pt-6 pb-10">
         <PendingGrid>
           {products.length ? (
             <ul className="grid grid-cols-2 gap-x-3 gap-y-10 md:gap-x-5 md:gap-y-14 lg:grid-cols-3 xl:grid-cols-4">

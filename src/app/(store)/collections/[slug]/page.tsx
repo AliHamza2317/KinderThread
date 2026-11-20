@@ -2,8 +2,24 @@ import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { ShopView } from "@/components/shop/shop-view";
 import { getCategoryBySlug, getCollectionPills, getFacets, listProducts, parseFilters, VIRTUAL_COLLECTION_IMAGES, VIRTUAL_COLLECTIONS } from "@/lib/catalog";
+import type { CollectionTone } from "@/components/layout/page-hero";
 import { getSettings } from "@/lib/settings";
-import { accentLast } from "@/lib/utils";
+import { sizeRangeLabel } from "@/lib/sizes";
+import { accentLast, formatPrice } from "@/lib/utils";
+
+// each collection header gets its own soft colour (two darker ones for contrast)
+const TONE: Record<string, CollectionTone> = {
+  "new-arrivals": "sun",
+  "best-sellers": "coral",
+  sale: "cocoa",
+  "baby-boys": "sage",
+  "baby-girls": "coral",
+  newborn: "cream",
+  "everyday-wear": "sun",
+  "casual-outfits": "sage",
+  "matching-sets": "cream",
+  seasonal: "forest",
+};
 
 
 type Props = { params: Promise<{ slug: string }>; searchParams: Promise<Record<string, string | string[] | undefined>> };
@@ -39,11 +55,15 @@ export default async function CollectionPage({ params, searchParams }: Props) {
     getSettings(),
     getCollectionPills(slug),
   ]);
-  // a few product photos from the whole collection (not the filtered view) for the header
-  const thumbs = all.products
-    .filter((p) => p.images[0])
-    .slice(0, 3)
-    .map((p) => ({ href: `/products/${p.slug}`, image: p.images[0].url, alt: p.name }));
+  // editorial header: the collection photograph plus two of its products, and a few facts
+  const feature = c.image ? { image: c.image, alt: `${c.name} at Kinder Thread` } : null;
+  const products = all.products
+    .filter((p) => p.images[0] && p.images[0].url !== c.image)
+    .slice(0, feature ? 2 : 3)
+    .map((p) => ({ href: `/products/${p.slug}`, image: p.images[0].url, alt: p.name, name: p.name, price: formatPrice(p.price) }));
+  const sizes = sizeRangeLabel(all.products.flatMap((p) => p.sizes));
+  const facts = [`${all.total} ${all.total === 1 ? "style" : "styles"}`, sizes && `Sizes ${sizes}`, settings.payments.cod.enabled && "Cash on delivery"].filter(Boolean) as string[];
+
   return (
     <ShopView
       eyebrow={c.kind === "collection" ? "Collection" : "Category"}
@@ -51,7 +71,7 @@ export default async function CollectionPage({ params, searchParams }: Props) {
       description={c.description}
       image={c.image}
       pills={pills}
-      collection={{ thumbs }}
+      collection={{ tone: TONE[slug] ?? "cream", facts, feature, products }}
       breadcrumb={[{ label: "Home", href: "/" }, { label: "Shop", href: "/shop" }, { label: c.name }]}
       {...res}
       facets={facets}

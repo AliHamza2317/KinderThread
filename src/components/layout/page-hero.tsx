@@ -1,4 +1,5 @@
 import Image from "next/image";
+import { ArrowDown } from "lucide-react";
 import Link from "next/link";
 import type { ReactNode } from "react";
 import { SplitWords } from "@/components/ui/reveal";
@@ -73,56 +74,124 @@ export function PageBanner({
   );
 }
 
+export type CollectionTone = "sage" | "coral" | "sun" | "cream" | "cocoa" | "forest";
+
+const COLLECTION_TONES: Record<CollectionTone, { bg: string; glow: string; text: string; muted: string; accent: string; chip: string; dark: boolean }> = {
+  sage: { bg: "bg-sage-100", glow: "bg-sage-200/70", text: "text-cocoa", muted: "text-cocoa-500", accent: "", chip: "border-cocoa/10 bg-cream-50/70", dark: false },
+  coral: { bg: "bg-coral-100", glow: "bg-coral-200/60", text: "text-cocoa", muted: "text-cocoa-500", accent: "[&_.text-sage-700]:text-coral-700", chip: "border-cocoa/10 bg-cream-50/70", dark: false },
+  sun: { bg: "bg-sun-100", glow: "bg-sun-200/70", text: "text-cocoa", muted: "text-cocoa-500", accent: "[&_.text-sage-700]:text-sun-700", chip: "border-cocoa/10 bg-cream-50/70", dark: false },
+  cream: { bg: "bg-cream-200", glow: "bg-cream-300/70", text: "text-cocoa", muted: "text-cocoa-500", accent: "", chip: "border-cocoa/10 bg-cream-50/70", dark: false },
+  cocoa: { bg: "bg-cocoa", glow: "bg-cocoa-600/50", text: "text-cream-50", muted: "text-cream-200/80", accent: "[&_.text-sage-700]:text-sun-200", chip: "border-cream-50/15 bg-cream-50/10", dark: true },
+  forest: { bg: "bg-sage-700", glow: "bg-sage-600/60", text: "text-cream-50", muted: "text-cream-100/80", accent: "[&_.text-sage-700]:text-sun-200", chip: "border-cream-50/15 bg-cream-50/10", dark: true },
+};
+
+type CollagePhoto = { href?: string; image: string; alt: string; name?: string; price?: string };
+
 /**
- * Collection header: a calm full-width band with the breadcrumb, label and style count,
- * the title and a short line — and, on larger screens, a few crisp photos of products
- * from the collection (instead of stretching a portrait photo into a wide banner).
+ * Collection header in an editorial style: a tinted band with the breadcrumb, label,
+ * a large title, a short line, small facts (styles, sizes, cash on delivery) and a
+ * button to the products — and a photo collage (the collection photograph plus two
+ * products with name and price). Photos keep their own proportions, so nothing is
+ * stretched into a wide banner.
  */
 export function CollectionHeader({
   eyebrow,
   title,
   description,
   breadcrumb,
-  count,
-  thumbs = [],
+  tone = "cream",
+  facts = [],
+  feature,
+  products = [],
+  ctaHref = "#products",
 }: {
   eyebrow?: string;
   title: string;
   description?: string | null;
   breadcrumb?: Crumb[];
-  count?: number;
-  thumbs?: { href: string; image: string; alt: string }[];
+  tone?: CollectionTone;
+  facts?: string[];
+  feature?: CollagePhoto | null;
+  products?: CollagePhoto[];
+  ctaHref?: string;
 }) {
+  const t = COLLECTION_TONES[tone];
+  const photos = [feature, ...products].filter(Boolean) as CollagePhoto[];
+  const [big, ...small] = photos.slice(0, 3);
   return (
-    <section className="border-b border-cocoa/[0.06] bg-cream-100">
-      <div className="container-kt grid items-center gap-8 py-9 md:py-12 lg:grid-cols-12 lg:py-10">
-        <div className={cn(thumbs.length ? "lg:col-span-6" : "lg:col-span-12")}>
-          {breadcrumb && <Breadcrumbs items={breadcrumb} className="mb-5" />}
-          {(eyebrow || count !== undefined) && (
-            <p className="flex items-center gap-2 text-[0.72rem] font-semibold tracking-[0.2em] text-cocoa-500 uppercase">
-              {eyebrow}
-              {eyebrow && count !== undefined && <span aria-hidden className="h-1 w-1 rounded-full bg-coral-400" />}
-              {count !== undefined && `${count} ${count === 1 ? "style" : "styles"}`}
-            </p>
+    <section className={cn("relative isolate overflow-hidden", t.bg, t.text)}>
+      {/* soft light behind the collage */}
+      <div aria-hidden className={cn("pointer-events-none absolute -z-10 aspect-square w-[46rem] rounded-full blur-3xl max-lg:hidden", t.glow, "top-1/2 right-[-6rem] -translate-y-1/2")} />
+      <div className="container-kt grid items-center gap-6 py-8 md:gap-8 md:py-12 lg:grid-cols-12 lg:gap-12 lg:py-14">
+        <div className={cn("lg:col-span-6", t.accent)}>
+          {breadcrumb && (
+            <Breadcrumbs
+              items={breadcrumb}
+              className={cn("mb-5 md:mb-6", t.dark && "text-cream-200/70 [&_a:hover]:text-cream-50 [&_[aria-current]]:text-cream-50 [&_span[aria-hidden]]:text-cream-200/40")}
+            />
           )}
-          <h1 className="mt-3 font-display text-[clamp(2.3rem,1.3rem+2.8vw,3.9rem)] leading-[1] font-medium tracking-[-0.045em]">
+          {eyebrow && <p className={cn("eyebrow eyebrow-rule", t.muted)}>{eyebrow}</p>}
+          <h1 className="mt-4 font-display text-[clamp(2.8rem,1.4rem+4vw,5.4rem)] leading-[0.95] font-medium tracking-[-0.055em]">
             <SplitWords text={title} />
           </h1>
-          {description && <p className="mt-4 max-w-md text-[0.98rem] leading-relaxed text-cocoa-500">{description}</p>}
+          {description && <p className={cn("mt-4 max-w-md text-[0.98rem] leading-relaxed md:mt-5 md:text-[1.05rem]", t.muted)}>{description}</p>}
+          {facts.length > 0 && (
+            <ul className="mt-5 flex flex-wrap gap-2 md:mt-6">
+              {facts.map((f) => (
+                <li key={f} className={cn("rounded-full border px-3.5 py-1.5 text-[0.78rem] font-semibold", t.chip)}>
+                  {f}
+                </li>
+              ))}
+            </ul>
+          )}
+          <a
+            href={ctaHref}
+            className={cn(
+              "group mt-8 hidden h-12 items-center gap-2 rounded-full pr-1.5 pl-6 text-[0.8rem] font-semibold tracking-[0.14em] uppercase transition-colors sm:inline-flex",
+              t.dark ? "bg-cream-50 text-cocoa hover:bg-sun-200" : "bg-cocoa text-cream-50 hover:bg-sage-700",
+            )}
+          >
+            Shop the collection
+            <span className={cn("grid h-9 w-9 place-items-center rounded-full transition-transform duration-500 group-hover:translate-y-0.5", t.dark ? "bg-cocoa text-cream-50" : "bg-cream-50 text-cocoa")}>
+              <ArrowDown className="h-4 w-4" />
+            </span>
+          </a>
         </div>
-        {thumbs.length > 0 && (
-          <ul className="hidden justify-end gap-3 lg:col-span-6 lg:flex xl:gap-4" aria-label="From this collection">
-            {thumbs.slice(0, 3).map((t) => (
-              <li key={t.href} className="w-[min(30%,10.5rem)]">
-                <Link href={t.href} className="group relative block aspect-[4/5] overflow-hidden rounded-[1.1rem] bg-cream-200 shadow-[0_18px_40px_-26px_rgb(20_16_12/0.45)]">
-                  <Image src={t.image} alt={t.alt} fill sizes="170px" className="object-cover transition-transform duration-700 ease-[var(--ease-soft)] group-hover:scale-[1.05]" />
-                </Link>
-              </li>
-            ))}
-          </ul>
+
+        {big && (
+          <div className="lg:col-span-6">
+            <div className={cn("grid h-[13rem] gap-2.5 sm:h-[20rem] md:gap-3 lg:h-[26rem]", small.length ? "grid-cols-5 grid-rows-2" : "grid-cols-1")}>
+              <CollageTile photo={big} className={cn(small.length ? "col-span-3 row-span-2" : "")} sizes="(min-width: 1024px) 26vw, 60vw" priority />
+              {small.map((p, i) => (
+                <CollageTile key={p.image + i} photo={p} className={cn("col-span-2", small.length === 1 && "row-span-2")} sizes="(min-width: 1024px) 18vw, 40vw" caption />
+              ))}
+            </div>
+          </div>
         )}
       </div>
     </section>
+  );
+}
+
+function CollageTile({ photo, className, sizes, priority, caption }: { photo: CollagePhoto; className?: string; sizes: string; priority?: boolean; caption?: boolean }) {
+  const inner = (
+    <>
+      <Image src={photo.image} alt={photo.alt} fill priority={priority} sizes={sizes} className="object-cover transition-transform duration-[1.2s] ease-[var(--ease-soft)] group-hover:scale-[1.05]" />
+      {caption && photo.name && (
+        <span className="absolute inset-x-2 bottom-2 hidden items-center justify-between gap-2 rounded-full bg-cream-50/90 py-1.5 pr-1.5 pl-3 text-cocoa backdrop-blur-md sm:flex">
+          <span className="min-w-0 truncate text-[0.74rem] font-semibold">{photo.name}</span>
+          {photo.price && <span className="shrink-0 rounded-full bg-cocoa px-2 py-0.5 text-[0.68rem] font-semibold text-cream-50">{photo.price}</span>}
+        </span>
+      )}
+    </>
+  );
+  const cls = cn("group relative block overflow-hidden rounded-[1.25rem] bg-cream-200 shadow-[0_24px_50px_-30px_rgb(20_16_12/0.55)] md:rounded-[1.5rem]", className);
+  return photo.href ? (
+    <Link href={photo.href} className={cls} aria-label={photo.name ?? photo.alt}>
+      {inner}
+    </Link>
+  ) : (
+    <div className={cls}>{inner}</div>
   );
 }
 
