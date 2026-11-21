@@ -88,7 +88,7 @@ export function SearchOverlay({ categories }: { categories: NavCategory[] }) {
                   value={q}
                   onChange={(e) => setQ(e.target.value)}
                   placeholder="Search rompers, dresses, SKU…"
-                  className="min-w-0 flex-1 bg-transparent font-display text-2xl placeholder:text-cocoa-300 focus:outline-none md:text-4xl"
+                  className="kt-field-lg min-w-0 flex-1 bg-transparent font-display text-2xl placeholder:text-cocoa-300 focus:outline-none md:text-4xl"
                   aria-label="Search products"
                   enterKeyHint="search"
                 />

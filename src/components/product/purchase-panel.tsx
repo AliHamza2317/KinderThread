@@ -109,7 +109,7 @@ export function PurchasePanel({ product, sizeGuide, whatsapp, info, url }: Props
             {product.isSample && <span className="rounded-full border border-cocoa/10 px-2 py-0.5 text-[0.62rem] font-semibold tracking-[0.12em] text-cocoa-400 uppercase">Sample</span>}
           </div>
         )}
-        <h1 className="font-display text-[clamp(2rem,1.3rem+1.8vw,2.9rem)] leading-[1.02] font-medium tracking-[-0.045em] text-cocoa">{product.name}</h1>
+        <h1 className="font-display text-[clamp(1.6rem,1rem+1.9vw,2.9rem)] leading-[1.02] font-medium tracking-[-0.045em] text-cocoa">{product.name}</h1>
         <Price price={price} compareAt={product.compareAtPrice} size="lg" className="mt-4" />
         {info.cod && <p className="mt-1.5 text-[0.82rem] text-cocoa-500">Cash on delivery available · {info.estimate}</p>}
         {product.isSample && (

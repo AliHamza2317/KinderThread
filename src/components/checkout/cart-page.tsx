@@ -34,7 +34,7 @@ export function CartPageClient({ freeThreshold }: { freeThreshold: number }) {
           <span className="grid h-20 w-20 place-items-center rounded-full bg-cream-50">
             <ShoppingBag className="h-8 w-8 text-cocoa-400" strokeWidth={1.5} />
           </span>
-          <h1 className="mt-6 font-display text-[clamp(2rem,1.3rem+2.2vw,3.2rem)] leading-[1.02] font-medium tracking-[-0.04em]">
+          <h1 className="mt-6 font-display text-[clamp(1.65rem,0.9rem+2.6vw,3.2rem)] leading-[1.02] font-medium tracking-[-0.04em]">
             Your bag is <span className="font-serif-accent text-sage-700">empty</span>
           </h1>
           <p className="mt-3 text-cocoa-500">Little outfits are waiting for little adventures.</p>
@@ -89,7 +89,7 @@ export function CartPageClient({ freeThreshold }: { freeThreshold: number }) {
 
         <aside className="lg:col-span-5">
           <div className="sticky top-28 space-y-6 rounded-[2rem] bg-cream-100 p-6 md:p-8">
-            <h2 className="font-display text-[1.6rem] tracking-[-0.03em]">Order summary</h2>
+            <h2 className="font-display text-[1.3rem] tracking-[-0.03em] md:text-[1.6rem]">Order summary</h2>
             <FreeShippingMeter subtotal={(quote?.subtotal ?? 0) - (quote?.discount ?? 0)} threshold={freeThreshold} />
             <CouponField value={couponCode} onApply={setCoupon} error={quote?.couponError} applied={quote?.coupon?.code} />
             <Totals quote={quote} showPaymentFee={false} />

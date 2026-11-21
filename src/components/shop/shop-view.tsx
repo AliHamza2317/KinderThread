@@ -136,7 +136,7 @@ export function ShopView({
             </ul>
           ) : (
             <div className="flex flex-col items-center rounded-[2rem] bg-cream-100 px-6 py-20 text-center">
-              <p className="font-display text-2xl tracking-[-0.03em]">No styles match these filters</p>
+              <p className="font-display text-xl tracking-[-0.03em] md:text-2xl">No styles match these filters</p>
               <p className="mt-2 max-w-sm text-cocoa-500">Try removing a filter or two — or browse everything we have.</p>
               <ButtonLink href={emptyAction?.href ?? basePath} variant="secondary" className="mt-6">
                 {emptyAction?.label ?? "Clear filters"}

@@ -47,7 +47,7 @@ export function WishlistClient({ showSample }: { showSample: boolean }) {
             <span className="grid h-16 w-16 place-items-center rounded-full bg-coral-50">
               <Heart className="h-7 w-7 text-coral-500" strokeWidth={1.6} />
             </span>
-            <p className="mt-4 font-display text-2xl">Your wishlist is empty</p>
+            <p className="mt-4 font-display text-xl md:text-2xl">Your wishlist is empty</p>
             <p className="mt-2 max-w-sm text-cocoa-500">
               Tap the heart on any style to save it here for later.
             </p>

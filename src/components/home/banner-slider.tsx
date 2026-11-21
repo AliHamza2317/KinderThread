@@ -126,11 +126,11 @@ export function BannerSlider({ slides, interval = 5500, size = "home", label = "
                 <div className={cn("max-w-xl transition-[opacity,transform] duration-700 motion-reduce:transition-none", active ? "translate-y-0 opacity-100" : "translate-y-4 opacity-0", light ? "text-cream-50 [&_.text-sage-700]:text-sun-200" : "text-cocoa")}>
                   <p className={cn("text-[0.72rem] font-semibold tracking-[0.2em] uppercase", light ? "text-cream-100/90" : "text-cocoa-500")}>{s.eyebrow}</p>
                   {i === 0 && size === "home" ? (
-                    <h1 className="mt-3 font-display text-[clamp(2.4rem,1.1rem+3.6vw,4.6rem)] leading-[0.98] font-medium tracking-[-0.045em]">
+                    <h1 className="mt-3 font-display text-[clamp(2rem,0.9rem+3.8vw,4.6rem)] leading-[0.98] font-medium tracking-[-0.045em]">
                       <SplitWords text={s.title} />
                     </h1>
                   ) : (
-                    <h2 className={cn("mt-3 font-display leading-[0.98] font-medium tracking-[-0.045em]", size === "home" ? "text-[clamp(2.4rem,1.1rem+3.6vw,4.6rem)]" : "text-[clamp(2.1rem,1.1rem+2.6vw,3.6rem)]")}>
+                    <h2 className={cn("mt-3 font-display leading-[0.98] font-medium tracking-[-0.045em]", size === "home" ? "text-[clamp(2.4rem,1.1rem+3.6vw,4.6rem)]" : "text-[clamp(1.8rem,0.9rem+2.9vw,3.6rem)]")}>
                       <SplitWords text={s.title} />
                     </h2>
                   )}

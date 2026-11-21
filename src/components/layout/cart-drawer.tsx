@@ -108,7 +108,7 @@ export function CartDrawer({ freeThreshold }: { freeThreshold: number }) {
           <span className="grid h-20 w-20 place-items-center rounded-full bg-cream-200">
             <ShoppingBag className="h-8 w-8 text-cocoa-400" />
           </span>
-          <p className="font-display text-2xl">Your bag is empty</p>
+          <p className="font-display text-xl md:text-2xl">Your bag is empty</p>
           <p className="text-sm text-cocoa-500">Little outfits are waiting for little adventures.</p>
           <ButtonLink href="/shop" onClick={() => setOpen(false)} className="mt-2">
             Start shopping

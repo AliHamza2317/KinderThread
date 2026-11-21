@@ -57,7 +57,7 @@ export default async function SizeGuidePage() {
           <div>
             <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Size guide" }]} className="mb-5" />
             <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-cocoa-500 uppercase">Fit &amp; sizing</p>
-            <h1 className="mt-3 font-display text-[clamp(2.6rem,1.6rem+3.4vw,4.6rem)] leading-[0.98] font-medium tracking-[-0.045em] text-cocoa">
+            <h1 className="mt-3 font-display text-[clamp(2.1rem,1.2rem+3.6vw,4.6rem)] leading-[0.98] font-medium tracking-[-0.045em] text-cocoa">
               <SplitWords text="Find the *perfect* fit" />
             </h1>
             <p className="mt-5 max-w-[34rem] text-[1.02rem] leading-relaxed text-cocoa-500 md:text-[1.08rem]">
@@ -92,7 +92,7 @@ export default async function SizeGuidePage() {
         <div className="mb-7 flex flex-wrap items-end justify-between gap-4 md:mb-9">
           <div>
             <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-sage-700 uppercase">Size chart</p>
-            <h2 className="mt-2 font-display text-[clamp(2rem,1.4rem+2vw,3rem)] leading-[1.02] font-medium tracking-[-0.04em] text-cocoa">
+            <h2 className="mt-2 font-display text-[clamp(1.6rem,1rem+2.2vw,3rem)] leading-[1.02] font-medium tracking-[-0.04em] text-cocoa">
               <SplitWords text="Every size, at a *glance*" />
             </h2>
           </div>
@@ -119,7 +119,7 @@ export default async function SizeGuidePage() {
         <div className="rounded-[2.5rem] bg-sage-50 px-5 py-10 ring-1 ring-sage-100 sm:px-10 md:py-14 lg:px-16">
           <div className="mx-auto mb-8 max-w-xl text-center md:mb-12">
             <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-sage-700 uppercase">How to measure</p>
-            <h2 className="mt-2 font-display text-[clamp(2rem,1.4rem+2vw,3rem)] leading-[1.02] font-medium tracking-[-0.04em] text-cocoa">
+            <h2 className="mt-2 font-display text-[clamp(1.6rem,1rem+2.2vw,3rem)] leading-[1.02] font-medium tracking-[-0.04em] text-cocoa">
               <SplitWords text="Measure in a *minute*" />
             </h2>
             <p className="mt-3 text-[0.95rem] leading-relaxed text-cocoa-500">A soft tape measure is all you need. Measure over a thin vest, and keep the tape snug but never tight.</p>
@@ -150,7 +150,7 @@ export default async function SizeGuidePage() {
               <MessageCircle className="h-5 w-5" strokeWidth={1.7} />
             </span>
             <div>
-              <h2 className="font-display text-[1.7rem] leading-tight font-medium tracking-[-0.03em]">Still unsure about a size?</h2>
+              <h2 className="font-display text-[1.4rem] leading-tight md:text-[1.7rem] font-medium tracking-[-0.03em]">Still unsure about a size?</h2>
               <p className="mt-1.5 max-w-md text-[0.92rem] leading-relaxed text-cream-200/75">Send us your little one&apos;s height and age and we&apos;ll help you choose.</p>
             </div>
           </div>

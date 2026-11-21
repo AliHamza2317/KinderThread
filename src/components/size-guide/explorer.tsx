@@ -118,7 +118,7 @@ export function FitFinder({ variant = "hero", onChoose, className }: { variant?:
       <div className="flex items-start justify-between gap-4">
         <div>
           <p className="text-[0.7rem] font-semibold tracking-[0.18em] text-sage-700 uppercase">Fit finder</p>
-          <h2 className={cn("mt-1.5 tracking-[-0.02em] text-cocoa", compact ? "text-[1.05rem] font-semibold" : "font-display text-[1.6rem] leading-tight font-medium sm:text-[1.85rem]")}>
+          <h2 className={cn("mt-1.5 tracking-[-0.02em] text-cocoa", compact ? "text-[1.05rem] font-semibold" : "font-display text-[1.35rem] leading-tight font-medium sm:text-[1.85rem]")}>
             How tall is your little one?
           </h2>
         </div>
@@ -131,7 +131,7 @@ export function FitFinder({ variant = "hero", onChoose, className }: { variant?:
           <Minus className="h-4 w-4" />
         </button>
         <p className="text-center tabular-nums" aria-live="polite">
-          <span className={cn("font-display font-medium tracking-[-0.04em] text-cocoa", compact ? "text-[2.4rem]" : "text-[3.4rem] sm:text-[4rem]")}>{showHeight(height, unit)}</span>
+          <span className={cn("font-display font-medium tracking-[-0.04em] text-cocoa", compact ? "text-[2.4rem]" : "text-[2.9rem] sm:text-[4rem]")}>{showHeight(height, unit)}</span>
           <span className="ml-1.5 text-[1rem] font-medium text-cocoa-400">{unit}</span>
         </p>
         <button type="button" onClick={() => setHeight(height + step)} disabled={height >= bounds.max} aria-label="Taller" className="grid h-11 w-11 place-items-center rounded-full border border-cocoa/12 text-cocoa transition hover:border-cocoa disabled:opacity-35">

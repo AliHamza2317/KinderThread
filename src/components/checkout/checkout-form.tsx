@@ -128,7 +128,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
 
         <div className="space-y-5 lg:col-span-7">
           <section aria-labelledby="contact-h" className="rounded-[1.75rem] border border-cocoa/10 bg-cream-50 p-5 md:p-8">
-            <h2 id="contact-h" className="flex items-center gap-3 font-display text-[1.6rem] tracking-[-0.03em]">
+            <h2 id="contact-h" className="flex items-center gap-3 font-display text-[1.3rem] tracking-[-0.03em] md:text-[1.6rem]">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-cocoa font-sans text-[0.8rem] font-semibold text-cream-50">1</span>
               Contact
             </h2>
@@ -146,7 +146,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
           </section>
 
           <section aria-labelledby="delivery-h" className="rounded-[1.75rem] border border-cocoa/10 bg-cream-50 p-5 md:p-8">
-            <h2 id="delivery-h" className="flex items-center gap-3 font-display text-[1.6rem] tracking-[-0.03em]">
+            <h2 id="delivery-h" className="flex items-center gap-3 font-display text-[1.3rem] tracking-[-0.03em] md:text-[1.6rem]">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-cocoa font-sans text-[0.8rem] font-semibold text-cream-50">2</span>
               Delivery
             </h2>
@@ -173,7 +173,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
           </section>
 
           <section aria-labelledby="pay-h" className="rounded-[1.75rem] border border-cocoa/10 bg-cream-50 p-5 md:p-8">
-            <h2 id="pay-h" className="flex items-center gap-3 font-display text-[1.6rem] tracking-[-0.03em]">
+            <h2 id="pay-h" className="flex items-center gap-3 font-display text-[1.3rem] tracking-[-0.03em] md:text-[1.6rem]">
               <span className="grid h-8 w-8 place-items-center rounded-full bg-cocoa font-sans text-[0.8rem] font-semibold text-cream-50">3</span>
               Payment
             </h2>
@@ -221,7 +221,7 @@ export function CheckoutForm({ options, defaults, freeThreshold, estimate }: { o
 
         <aside className="lg:col-span-5">
           <div className="sticky top-28 space-y-6 rounded-[2rem] bg-cream-100 p-6 md:p-8">
-            <h2 className="font-display text-[1.6rem] tracking-[-0.03em]">Your order</h2>
+            <h2 className="font-display text-[1.3rem] tracking-[-0.03em] md:text-[1.6rem]">Your order</h2>
             <SummaryLines quote={quote} />
             {hasSamples && (
               <p className="flex gap-2 rounded-2xl bg-cream-50 px-3.5 py-2.5 text-[0.8rem] text-cocoa-500">

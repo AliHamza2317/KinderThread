@@ -63,7 +63,7 @@ export function PageBanner({
         <div className="max-w-xl">
           {breadcrumb && <Breadcrumbs items={breadcrumb} className="mb-4 text-cream-100/75 [&_a:hover]:text-cream-50 [&_[aria-current]]:text-cream-50 [&_span[aria-hidden]]:text-cream-100/45" />}
           {eyebrow && <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-cream-100/90 uppercase">{eyebrow}</p>}
-          <h1 className="mt-2 font-display text-[clamp(2.2rem,1.2rem+2.8vw,3.8rem)] leading-[1] font-medium tracking-[-0.045em]">
+          <h1 className="mt-2 font-display text-[clamp(1.75rem,0.9rem+3vw,3.8rem)] leading-[1] font-medium tracking-[-0.045em]">
             <SplitWords text={title} />
           </h1>
           {description && <p className="mt-3 max-w-md text-[0.95rem] leading-relaxed text-cream-100/90 md:text-[1rem]">{description}</p>}
@@ -140,7 +140,7 @@ export function CollectionHeader({
               />
             )}
             {eyebrow && <p className={cn("eyebrow eyebrow-rule", t.muted)}>{eyebrow}</p>}
-            <h1 className="mt-4 font-display text-[clamp(2.8rem,1.4rem+4vw,5.4rem)] leading-[0.95] font-medium tracking-[-0.055em]">
+            <h1 className="mt-4 font-display text-[clamp(2.2rem,1rem+4.4vw,5.4rem)] leading-[0.95] font-medium tracking-[-0.055em]">
               <SplitWords text={title} />
             </h1>
             {description && <p className={cn("mt-4 max-w-md text-[0.98rem] leading-relaxed md:mt-5 md:text-[1.05rem]", t.muted)}>{description}</p>}
@@ -241,7 +241,7 @@ export function PageHero({
       <div className={cn("container-kt text-center", size === "sm" ? "py-9 md:py-12" : "py-10 md:py-16")}>
         {breadcrumb && <Breadcrumbs items={breadcrumb} align="center" className="mb-4" />}
         {eyebrow && <p className="text-[0.72rem] font-semibold tracking-[0.2em] text-cocoa-500 uppercase">{eyebrow}</p>}
-        <h1 className="mx-auto mt-2 max-w-4xl font-display text-[clamp(2rem,1.3rem+2.2vw,3.4rem)] leading-[1.02] font-medium tracking-[-0.04em]">
+        <h1 className="mx-auto mt-2 max-w-4xl font-display text-[clamp(1.65rem,0.9rem+2.6vw,3.4rem)] leading-[1.02] font-medium tracking-[-0.04em]">
           <SplitWords text={title} />
         </h1>
         {description && <p className="mx-auto mt-3 max-w-xl text-[0.98rem] leading-relaxed text-cocoa-500">{description}</p>}

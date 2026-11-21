@@ -45,7 +45,7 @@ export function AuthShell({ mode, title, intro, children, footer, next = "/accou
       <div className="container-kt grid items-center gap-10 pt-8 md:pt-12 lg:grid-cols-[1fr_1.08fr] lg:gap-14 lg:py-14">
         {/* form */}
         <div className="w-full justify-self-center lg:max-w-[29rem]">
-          <h1 className="font-display text-[clamp(3.1rem,2rem+3vw,3.75rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-cocoa lg:text-[clamp(2.4rem,1.5rem+2.4vw,3.75rem)] lg:whitespace-nowrap">
+          <h1 className="font-display text-[clamp(2.75rem,1.8rem+3vw,3.75rem)] leading-[1.02] font-semibold tracking-[-0.045em] text-cocoa lg:text-[clamp(2.4rem,1.5rem+2.4vw,3.75rem)] lg:whitespace-nowrap">
             <Title text={title} />
           </h1>
           <p className="mt-5 max-w-[22rem] text-[1rem] leading-relaxed text-cocoa-500 lg:max-w-[24rem] lg:text-[1.05rem]">{intro}</p>

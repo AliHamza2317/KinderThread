@@ -34,7 +34,7 @@ export default async function AboutPage() {
           <div className="container-kt w-full pt-24 pb-10 text-cream-50 md:pb-14">
             <Breadcrumbs items={[{ label: "Home", href: "/" }, { label: "Our story" }]} className="mb-6 text-cream-200/80 [&_[aria-current]]:text-cream-50 [&_a:hover]:text-cream-50" />
             <p className="eyebrow eyebrow-rule text-cream-200">{story.eyebrow}</p>
-            <h1 className="mt-4 max-w-4xl font-display text-[clamp(2.6rem,1rem+4.6vw,5.6rem)] leading-[0.95] font-medium tracking-[-0.05em] [&_.text-sage-700]:text-sun-200">
+            <h1 className="mt-4 max-w-4xl font-display text-[clamp(2.1rem,1rem+4.6vw,5.6rem)] leading-[0.95] font-medium tracking-[-0.05em] [&_.text-sage-700]:text-sun-200">
               <SplitWords text={accentLast(story.heading)} />
             </h1>
             {story.imagesAreSamples && <p className="mt-6 text-[0.68rem] font-semibold tracking-[0.12em] text-cream-200/70 uppercase">Placeholder imagery</p>}
@@ -45,7 +45,7 @@ export default async function AboutPage() {
       {/* intro statement */}
       <section className="container-kt py-20 md:py-32">
         <Reveal className="mx-auto max-w-4xl text-center">
-          <p className="font-display text-[clamp(1.7rem,1rem+2.4vw,3.2rem)] leading-[1.12] font-medium tracking-[-0.035em] text-cocoa">{story.body}</p>
+          <p className="font-display text-[clamp(1.25rem,0.6rem+2.8vw,3.2rem)] leading-[1.12] font-medium tracking-[-0.035em] text-cocoa">{story.body}</p>
         </Reveal>
       </section>
 
@@ -77,7 +77,7 @@ export default async function AboutPage() {
             <div className="container-kt">
               <div className="text-center">
                 <p className="eyebrow eyebrow-rule justify-center">What we care about</p>
-                <h2 className="mx-auto mt-3 max-w-3xl font-display text-[clamp(1.9rem,1.2rem+1.8vw,2.8rem)] leading-[1.05] font-medium tracking-[-0.035em]">
+                <h2 className="mx-auto mt-3 max-w-3xl font-display text-[clamp(1.55rem,0.9rem+2.2vw,2.8rem)] leading-[1.05] font-medium tracking-[-0.035em]">
                   <SplitWords text="Little things, done with *care*" />
                 </h2>
               </div>
@@ -95,7 +95,7 @@ export default async function AboutPage() {
                         <span className="grid h-11 w-11 place-items-center rounded-full bg-sage-100 text-sage-800">
                           <Icon className="h-5 w-5" strokeWidth={1.6} />
                         </span>
-                        <h3 className="mt-5 font-display text-[1.6rem] leading-[1.05] tracking-[-0.035em]">{v.title}</h3>
+                        <h3 className="mt-5 font-display text-[1.3rem] leading-[1.05] md:text-[1.6rem] tracking-[-0.035em]">{v.title}</h3>
                         <p className="mt-2 text-[0.95rem] leading-relaxed text-cocoa-500">{v.body}</p>
                       </div>
                     </article>
@@ -109,7 +109,7 @@ export default async function AboutPage() {
 
       {/* closing call to action */}
       <section className="container-kt pb-8 text-center">
-        <h2 className="mx-auto max-w-2xl font-display text-[clamp(1.9rem,1.2rem+1.8vw,2.8rem)] leading-[1.05] font-medium tracking-[-0.035em]">
+        <h2 className="mx-auto max-w-2xl font-display text-[clamp(1.55rem,0.9rem+2.2vw,2.8rem)] leading-[1.05] font-medium tracking-[-0.035em]">
           <SplitWords text="Come and see the *collection*" />
         </h2>
         <div className="mt-8 flex flex-wrap justify-center gap-3">

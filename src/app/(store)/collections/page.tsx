@@ -34,7 +34,7 @@ export default async function CollectionsIndex() {
                 <div aria-hidden className="absolute inset-0 bg-gradient-to-t from-cocoa-900/80 via-cocoa-900/20 to-transparent" />
                 <div className="absolute inset-x-0 bottom-0 p-6 text-cream-50 md:p-7">
                   <p className="text-[0.7rem] font-semibold tracking-[0.2em] text-cream-100/90 uppercase">{LABELS[slug] ?? "Collection"}</p>
-                  <h2 className="mt-2 font-display text-[clamp(1.8rem,1.2rem+1.4vw,2.6rem)] leading-[1] font-medium tracking-[-0.04em]">{v.name}</h2>
+                  <h2 className="mt-2 font-display text-[clamp(1.5rem,1rem+1.6vw,2.6rem)] leading-[1] font-medium tracking-[-0.04em]">{v.name}</h2>
                   <p className="mt-2 hidden max-w-xs text-[0.9rem] text-cream-100/85 md:block">{v.description}</p>
                   <span className="mt-5 inline-flex h-11 items-center rounded-full bg-cream-50 px-6 text-[0.76rem] font-semibold tracking-[0.14em] text-cocoa uppercase transition-colors group-hover:bg-sun-200">Shop now</span>
                 </div>

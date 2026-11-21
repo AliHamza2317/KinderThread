@@ -95,7 +95,7 @@ export function Drawer({
               transition={{ type: "spring", stiffness: 320, damping: 36 }}
             >
               <div className="flex items-center justify-between border-b border-cocoa-100 px-6 py-5">
-                <h2 id={id} className="font-display text-2xl">
+                <h2 id={id} className="font-display text-xl md:text-2xl">
                   {title}
                 </h2>
                 <button onClick={onClose} className="-mr-2 grid h-10 w-10 place-items-center rounded-full hover:bg-cocoa-50" aria-label="Close">
@@ -157,7 +157,7 @@ export function Modal({
               transition={{ type: "spring", stiffness: 340, damping: 32 }}
             >
               <div className={cn("sticky top-0 z-10 flex items-center justify-between bg-cream/95 px-6 pt-5 pb-3 backdrop-blur", hideTitle && "pb-0")}>
-                <h2 id={id} className={cn("font-display text-2xl", hideTitle && "sr-only")}>
+                <h2 id={id} className={cn("font-display text-xl md:text-2xl", hideTitle && "sr-only")}>
                   {title}
                 </h2>
                 <button onClick={onClose} className="-mr-2 ml-auto grid h-10 w-10 place-items-center rounded-full hover:bg-cocoa-50" aria-label="Close">
