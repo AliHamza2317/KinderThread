@@ -6,7 +6,7 @@ import type { AuthUser } from "../../middleware/auth.js";
 import { getSettings } from "../content/settings.service.js";
 import { markReturned } from "../orders/order.admin.service.js";
 import type { OrderDocument } from "../orders/order.model.js";
-import { OPEN_RETURN_STATUSES, RETURN_NEXT, ReturnRequest, type ReturnStatus } from "./return.model.js";
+import { OPEN_RETURN_STATUSES, RETURN_NEXT, ReturnRequest, type ReturnRequestDocument, type ReturnStatus } from "./return.model.js";
 import type { adminReturnQuery, ReturnRequestInput, returnUpdateInput } from "./return.validation.js";
 
 const DAY_MS = 24 * 60 * 60 * 1000;
@@ -33,13 +33,27 @@ export async function returnEligibility(order: OrderDocument, now = new Date()):
   return { eligible: true, reason: null, deadline };
 }
 
+/** What a customer sees of their request (staff notes stay private). */
+export const toCustomerReturn = (request: ReturnRequestDocument) => ({
+  id: request.id as string,
+  type: request.type,
+  status: request.status,
+  reason: request.reason,
+  details: request.details ?? null,
+  createdAt: request.createdAt,
+  updatedAt: request.updatedAt,
+});
+
 export async function requestReturn(order: OrderDocument, userId: string, input: ReturnRequestInput) {
   const check = await returnEligibility(order);
   if (!check.eligible) throw conflict(check.reason ?? "This order isn't eligible for a return.");
-  return ReturnRequest.create({ ...input, order: order._id, user: userId });
+  return toCustomerReturn(await ReturnRequest.create({ ...input, order: order._id, user: userId }));
 }
 
-export const returnsForOrder = (orderId: Types.ObjectId) => ReturnRequest.find({ order: orderId }).sort({ createdAt: -1 });
+export async function customerReturnsForOrder(orderId: Types.ObjectId) {
+  const requests = await ReturnRequest.find({ order: orderId }).sort({ createdAt: -1 });
+  return requests.map(toCustomerReturn);
+}
 
 /* admin */
 

@@ -4,6 +4,9 @@ import { env } from "../config/env.js";
 /**
  * One shared connection per process. On Vercel the same function instance serves many
  * requests, so the promise is cached and reused instead of reconnecting every time.
+ * Mongoose makes sure the indexes exist when a model is first used (cheap when they do);
+ * the unique ones (emails, slugs, SKUs, order numbers) are part of the data's safety.
+ * Checkout uses transactions, so MongoDB must run as a replica set — Atlas always does.
  */
 let connection: Promise<typeof mongoose> | null = null;
 
@@ -11,7 +14,8 @@ export function connectDb(): Promise<typeof mongoose> {
   if (!connection) {
     connection = mongoose
       .connect(env.MONGODB_URI, {
-        maxPoolSize: 10,
+        // each Vercel instance keeps its own pool; small pools stay well inside Atlas connection limits
+        maxPoolSize: 5,
         serverSelectionTimeoutMS: 8000,
       })
       .catch((error: unknown) => {

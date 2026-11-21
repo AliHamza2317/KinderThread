@@ -1,5 +1,6 @@
 import { z } from "zod";
 import { email, optionalDate, phone } from "../../lib/fields.js";
+import { paging } from "../../lib/pagination.js";
 import { cartLines, PAYMENT_METHODS } from "../cart/cart.validation.js";
 import { ORDER_FLOW, ORDER_STATUSES, PAYMENT_STATUSES } from "./order.model.js";
 
@@ -32,14 +33,13 @@ export const adminOrderQuery = z.object({
   status: z.enum(ORDER_STATUSES).optional(),
   paymentStatus: z.enum(PAYMENT_STATUSES).optional(),
   paymentMethod: z.enum(PAYMENT_METHODS).optional(),
-  from: optionalDate,
-  to: optionalDate,
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(25),
+  from: optionalDate("start"),
+  to: optionalDate("end"),
+  ...paging(),
 });
 
 export const statusInput = z.object({
-  status: z.enum(ORDER_FLOW as [string, ...string[]], { message: "Choose a status." }),
+  status: z.enum(ORDER_FLOW, { message: "Choose a status." }),
   note: z.string().trim().max(500).optional(),
   isPublic: z.boolean().default(true),
 });
@@ -60,7 +60,9 @@ export const shippingInput = z
   .object({
     courier: z.string().trim().max(60).default(""),
     trackingNumber: z.string().trim().max(80).default(""),
-    trackingUrl: z.union([z.literal(""), z.url("Enter a full tracking link starting with https://").max(400)]).default(""),
+    trackingUrl: z
+      .union([z.literal(""), z.url({ protocol: /^https?$/, error: "Enter a full tracking link starting with https://" }).max(400)])
+      .default(""),
     markShipped: z.boolean().default(false),
   })
   .refine((s) => !s.trackingNumber || s.courier, { path: ["courier"], message: "Add the courier name for this tracking number." });

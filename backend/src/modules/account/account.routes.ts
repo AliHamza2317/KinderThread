@@ -8,7 +8,7 @@ export const accountRouter = Router();
 
 accountRouter.use(requireAuth);
 
-accountRouter.patch("/profile", account.updateProfile);
+accountRouter.put("/profile", account.updateProfile);
 accountRouter.post("/password", formLimiter, account.changePassword);
 
 accountRouter.get("/addresses", account.listAddresses);

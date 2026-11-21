@@ -21,8 +21,8 @@ export const couponInput = z
     value: z.number().int("Use a whole number.").min(0).default(0),
     minSubtotal: z.number().int().min(0).nullable().default(null),
     maxUses: z.number().int().min(1, "Max uses must be at least 1.").nullable().default(null),
-    startsAt: optionalDate,
-    endsAt: optionalDate,
+    startsAt: optionalDate("start"),
+    endsAt: optionalDate("end"),
     isActive: z.boolean().default(true),
   })
   .superRefine((c, ctx) => {

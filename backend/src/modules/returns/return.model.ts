@@ -14,7 +14,7 @@ export const RETURN_REASONS = [
   "Other",
 ] as const;
 
-/** Which status a request may move to next (staff can't skip back to an earlier step). */
+/** Which statuses a request may move to next (a rejected request can be reopened; COMPLETED is final). */
 export const RETURN_NEXT: Record<ReturnStatus, ReturnStatus[]> = {
   REQUESTED: ["APPROVED", "REJECTED"],
   APPROVED: ["RECEIVED", "COMPLETED", "REJECTED"],

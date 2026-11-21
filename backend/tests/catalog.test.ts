@@ -42,6 +42,13 @@ describe("catalogue", () => {
     expect((await api().get("/api/products?q=linen")).body.total).toBe(1);
   });
 
+  it("treats built-in object names as unknown values, not errors", async () => {
+    await createCatalog();
+    expect((await api().get("/api/products?age=constructor")).status).toBe(200);
+    expect((await api().get("/api/products?category=constructor")).body.total).toBe(0);
+    expect((await api().get("/api/categories/constructor")).status).toBe(404);
+  });
+
   it("validates query parameters", async () => {
     const res = await api().get("/api/products?sort=cheapest");
     expect(res.status).toBe(400);
@@ -56,6 +63,10 @@ describe("catalogue", () => {
     expect(res.body.sizeGuide.name).toBe("Standard");
     expect(res.body.categories[0]).toMatchObject({ name: "Baby Girls", slug: "baby-girls" });
     expect((await api().get("/api/products/draft-romper")).status).toBe(404);
+    // internal fields stay private
+    expect(res.body.soldCount).toBeUndefined();
+    expect(res.body.status).toBeUndefined();
+    expect(res.body.variants[0]).toMatchObject({ size: "2-3Y", price: 3790 });
   });
 
   it("returns facets and virtual collections", async () => {

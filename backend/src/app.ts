@@ -23,14 +23,21 @@ app.get("/", (_req, res) => {
   res.json({ name: "Kinder Thread API", health: "/api/health" });
 });
 
-// every /api request needs MongoDB; the connection is opened once and then reused
+// for uptime checks: 200 when the database answers, 503 when it doesn't
+app.get("/api/health", async (_req, res) => {
+  try {
+    await connectDb();
+    await mongoose.connection.db?.admin().ping();
+    res.json({ status: "ok", database: "connected" });
+  } catch {
+    res.status(503).json({ status: "error", database: "not connected" });
+  }
+});
+
+// every other /api request needs MongoDB; the connection is opened once and then reused
 app.use("/api", async (_req, _res, next) => {
   await connectDb();
   next();
-});
-
-app.get("/api/health", (_req, res) => {
-  res.json({ status: "ok", database: mongoose.connection.readyState === 1 ? "connected" : "not connected" });
 });
 
 app.use("/api", apiRouter);

@@ -1,5 +1,6 @@
 import { z } from "zod";
-import { objectId, optionalText, rupees, slug } from "../../lib/fields.js";
+import { objectId, optionalLink, optionalText, rupees, safeLink, slug } from "../../lib/fields.js";
+import { paging } from "../../lib/pagination.js";
 import { GENDERS, PRODUCT_STATUSES } from "./product.model.js";
 
 type Gender = (typeof GENDERS)[number];
@@ -31,8 +32,7 @@ export const productListQuery = z.object({
   inStock: flag,
   sale: flag,
   sort: z.enum(PRODUCT_SORTS).default("featured"),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(60).default(24),
+  ...paging(24),
 });
 
 export type ProductListQuery = z.infer<typeof productListQuery>;
@@ -86,7 +86,7 @@ export const productInput = z
     images: z
       .array(
         z.object({
-          url: z.string().trim().min(1).max(600),
+          url: safeLink,
           alt: z.string().trim().max(200).default(""),
           color: z.string().trim().max(40).nullable().default(null),
         }),
@@ -140,8 +140,7 @@ export type ProductInput = z.infer<typeof productInput>;
 export const adminProductQuery = z.object({
   q: z.string().trim().max(80).optional(),
   status: z.enum(PRODUCT_STATUSES).optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(25),
+  ...paging(),
 });
 
 export const stockInput = z.object({
@@ -157,7 +156,7 @@ export const categoryInput = z.object({
   name: z.string().trim().min(2, "Name is required.").max(80),
   slug: slug.optional(),
   description: optionalText(600),
-  image: optionalText(600),
+  image: optionalLink,
   kind: z.enum(["category", "collection"]).default("category"),
   sortOrder: z.number().int().min(-1000).max(10000).default(0),
   isVisible: z.boolean().default(true),

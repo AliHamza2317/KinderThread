@@ -1,4 +1,5 @@
 import { z } from "zod";
+import { paging } from "../../lib/pagination.js";
 import { RETURN_REASONS, RETURN_STATUSES, RETURN_TYPES } from "./return.model.js";
 
 export const returnRequestInput = z.object({
@@ -9,8 +10,7 @@ export const returnRequestInput = z.object({
 
 export const adminReturnQuery = z.object({
   status: z.enum(RETURN_STATUSES).optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(25),
+  ...paging(),
 });
 
 export const returnUpdateInput = z.object({

@@ -22,4 +22,4 @@ export const VIRTUAL_COLLECTIONS = {
 
 export type VirtualCollectionSlug = keyof typeof VIRTUAL_COLLECTIONS;
 
-export const isVirtualCollection = (slug: string): slug is VirtualCollectionSlug => slug in VIRTUAL_COLLECTIONS;
+export const isVirtualCollection = (slug: string): slug is VirtualCollectionSlug => Object.hasOwn(VIRTUAL_COLLECTIONS, slug);

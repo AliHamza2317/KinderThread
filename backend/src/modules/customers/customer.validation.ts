@@ -1,9 +1,9 @@
 import { z } from "zod";
+import { paging } from "../../lib/pagination.js";
 
 export const customerQuery = z.object({
   q: z.string().trim().max(80).optional(),
-  page: z.coerce.number().int().min(1).default(1),
-  limit: z.coerce.number().int().min(1).max(100).default(25),
+  ...paging(),
 });
 
 /** "VIP, Repeat buyer" → ["vip", "repeat-buyer"] */

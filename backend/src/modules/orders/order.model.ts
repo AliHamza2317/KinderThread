@@ -7,8 +7,11 @@ export const PAYMENT_STATUSES = ["UNPAID", "PENDING_VERIFICATION", "PAID", "REFU
 export type OrderStatus = (typeof ORDER_STATUSES)[number];
 export type PaymentStatus = (typeof PAYMENT_STATUSES)[number];
 
-/** The normal life of an order, in order. Cancelled and returned are end states. */
-export const ORDER_FLOW: OrderStatus[] = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"];
+/**
+ * The normal life of an order, in order — an order only moves forward along it.
+ * Cancelled and returned are end states (they have their own endpoints).
+ */
+export const ORDER_FLOW = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED", "DELIVERED"] as const satisfies readonly OrderStatus[];
 
 export const ORDER_STATUS_LABEL: Record<OrderStatus, string> = {
   PENDING: "Order placed",
@@ -79,7 +82,8 @@ const orderSchema = new Schema(
     items: { type: [orderItemSchema], default: [] },
     events: { type: [orderEventSchema], default: [] },
   },
-  baseOptions,
+  // two staff saving the same order at once: the second save is refused instead of overwriting the first
+  { ...baseOptions, optimisticConcurrency: true },
 );
 
 orderSchema.index({ createdAt: -1 });

@@ -1,16 +1,17 @@
-import type { QueryFilter } from "mongoose";
+import mongoose, { type ClientSession, type QueryFilter } from "mongoose";
 import type { z } from "zod";
 import { conflict, notFound } from "../../lib/http-error.js";
 import { skipFor, toPage } from "../../lib/pagination.js";
 import { containsText } from "../../lib/text.js";
 import type { AuthUser } from "../../middleware/auth.js";
 import { releaseCoupon } from "../coupons/coupon.service.js";
-import { Order, ORDER_STATUS_LABEL, type OrderDocument, type OrderStatus, type PaymentStatus } from "./order.model.js";
+import { Order, ORDER_FLOW, ORDER_STATUS_LABEL, type OrderDocument, type OrderStatus, type PaymentStatus } from "./order.model.js";
 import type { adminOrderQuery, cancelInput, internalNoteInput, noteInput, paymentInput, returnedInput, shippingInput, statusInput } from "./order.validation.js";
-import { recordSales, releaseStock } from "./stock.service.js";
+import { putBackStock } from "./stock.service.js";
 
 /** Orders that have ended can't move any more. */
 const FINAL_STATUSES: OrderStatus[] = ["CANCELLED", "RETURNED"];
+const CANCELLABLE: OrderStatus[] = ["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED"];
 
 const PAYMENT_EVENT: Record<PaymentStatus, string> = {
   UNPAID: "Payment marked as unpaid",
@@ -25,8 +26,7 @@ export async function listOrders(query: z.infer<typeof adminOrderQuery>) {
   if (query.paymentStatus) filter.paymentStatus = query.paymentStatus;
   if (query.paymentMethod) filter.paymentMethod = query.paymentMethod;
   if (query.from || query.to) {
-    const to = query.to ? new Date(query.to.getTime() + 24 * 60 * 60 * 1000) : undefined; // include the whole "to" day
-    filter.createdAt = { ...(query.from && { $gte: query.from }), ...(to && { $lt: to }) };
+    filter.createdAt = { ...(query.from && { $gte: query.from }), ...(query.to && { $lte: query.to }) };
   }
   if (query.q) {
     const text = containsText(query.q);
@@ -58,8 +58,8 @@ export async function listOrders(query: z.infer<typeof adminOrderQuery>) {
   return toPage(items, total, query);
 }
 
-export async function getOrder(id: string): Promise<OrderDocument> {
-  const order = await Order.findById(id);
+export async function getOrder(id: string, session?: ClientSession): Promise<OrderDocument> {
+  const order = await Order.findById(id).session(session ?? null);
   if (!order) throw notFound("Order not found.");
   return order;
 }
@@ -71,20 +71,22 @@ function addEvent(order: OrderDocument, event: { status?: OrderStatus | null; me
 const stockItemsOf = (order: OrderDocument) =>
   order.items.filter((item) => item.product && item.variant).map((item) => ({ productId: String(item.product), variantId: String(item.variant), quantity: item.quantity }));
 
-/** Puts the order's items back into stock once (cancelled or returned orders). */
-async function restock(order: OrderDocument) {
+/** Puts the order's items back into stock — at most once per order. */
+async function restock(order: OrderDocument, session: ClientSession) {
   if (order.stockReleased) return;
-  const items = stockItemsOf(order);
-  await releaseStock(items);
-  await recordSales(items, -1);
+  await putBackStock(stockItemsOf(order), session);
   order.stockReleased = true;
 }
 
+/** Orders only move forward (Pending → Confirmed → Packed → Shipped → Delivered); steps may be skipped. */
 export async function updateStatus(id: string, input: z.infer<typeof statusInput>, actor: AuthUser) {
   const order = await getOrder(id);
-  const status = input.status as OrderStatus;
+  const status = input.status;
   if (FINAL_STATUSES.includes(order.status)) throw conflict(`This order is ${order.status.toLowerCase()} and can no longer change status.`);
   if (order.status === status) throw conflict(`The order is already “${ORDER_STATUS_LABEL[status]}”.`);
+  if (ORDER_FLOW.indexOf(status) < ORDER_FLOW.indexOf(order.status as (typeof ORDER_FLOW)[number])) {
+    throw conflict(`An order that is “${ORDER_STATUS_LABEL[order.status]}” can't go back to “${ORDER_STATUS_LABEL[status]}”.`);
+  }
 
   order.status = status;
   addEvent(order, { status, message: input.note || ORDER_STATUS_LABEL[status], isPublic: input.isPublic, actor });
@@ -132,28 +134,36 @@ export async function updateShipping(id: string, input: z.infer<typeof shippingI
   return order.save();
 }
 
-/** Cancels an order that hasn't been delivered; its items go back into stock. */
+/**
+ * Cancels an order that hasn't been delivered: its items go back into stock and the coupon use
+ * is given back. Done in one transaction, so a double-click can't put the stock back twice
+ * (the second attempt sees the order already cancelled).
+ */
 export async function cancelOrder(id: string, input: z.infer<typeof cancelInput>, actor: AuthUser) {
-  const order = await getOrder(id);
-  if (!["PENDING", "CONFIRMED", "PROCESSING", "SHIPPED"].includes(order.status)) {
-    throw conflict("Only orders that haven't been delivered (and aren't already cancelled) can be cancelled.");
-  }
-  await restock(order);
-  if (order.couponCode) await releaseCoupon(order.couponCode);
-  order.status = "CANCELLED";
-  addEvent(order, { status: "CANCELLED", message: input.reason ? `Order cancelled — ${input.reason}` : "Order cancelled", isPublic: true, actor });
-  return order.save();
+  return mongoose.connection.transaction(async (session) => {
+    const order = await getOrder(id, session);
+    if (!CANCELLABLE.includes(order.status)) {
+      throw conflict("Only orders that haven't been delivered (and aren't already cancelled) can be cancelled.");
+    }
+    await restock(order, session);
+    if (order.couponCode) await releaseCoupon(order.couponCode, session);
+    order.status = "CANCELLED";
+    addEvent(order, { status: "CANCELLED", message: input.reason ? `Order cancelled — ${input.reason}` : "Order cancelled", isPublic: true, actor });
+    return order.save({ session });
+  });
 }
 
 /** Marks a shipped/delivered order as returned, optionally putting the items back into stock. */
 export async function markReturned(id: string, input: z.infer<typeof returnedInput>, actor: AuthUser) {
-  const order = await getOrder(id);
-  if (order.status !== "SHIPPED" && order.status !== "DELIVERED") {
-    throw conflict("Only shipped or delivered orders can be marked as returned.");
-  }
-  if (input.restock) await restock(order);
-  order.status = "RETURNED";
-  addEvent(order, { status: "RETURNED", message: input.note ? `Order returned — ${input.note}` : "Order returned", isPublic: true, actor });
-  return order.save();
+  return mongoose.connection.transaction(async (session) => {
+    const order = await getOrder(id, session);
+    if (order.status !== "SHIPPED" && order.status !== "DELIVERED") {
+      throw conflict("Only shipped or delivered orders can be marked as returned.");
+    }
+    if (input.restock) await restock(order, session);
+    order.status = "RETURNED";
+    addEvent(order, { status: "RETURNED", message: input.note ? `Order returned — ${input.note}` : "Order returned", isPublic: true, actor });
+    return order.save({ session });
+  });
 }
 

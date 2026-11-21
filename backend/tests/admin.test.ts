@@ -63,6 +63,17 @@ describe("admin catalogue", () => {
     expect((await Product.findById(dress._id))!.variants[0].stock).toBe(42);
   });
 
+  it("never undoes a sale when an older product form is saved", async () => {
+    const { shirt } = await createCatalog();
+    const { auth } = await createUser("STAFF");
+    const form = (await api().get(`/api/admin/products/${shirt.id}`).set(auth)).body; // stock 10
+    await api().post("/api/orders").send(checkoutBody(form.variants[0].id, 3)); // a sale meanwhile → 7
+
+    const saved = await api().put(`/api/admin/products/${shirt.id}`).set(auth).send({ ...form, description: "Updated description text." });
+    expect(saved.status).toBe(200);
+    expect(saved.body.variants[0].stock).toBe(7);
+  });
+
   it("protects the automatic collection slugs", async () => {
     const { auth } = await createUser("STAFF");
     const res = await api().post("/api/admin/categories").set(auth).send({ name: "Sale", slug: "sale" });
@@ -93,6 +104,30 @@ describe("admin orders", () => {
     const list = await api().get("/api/admin/orders?status=CANCELLED").set(auth);
     expect(list.body.total).toBe(1);
   });
+
+  it("only moves orders forward and rejects unsafe tracking links", async () => {
+    const { shirt } = await createCatalog();
+    const { auth } = await createUser("STAFF");
+    const placed = await api().post("/api/orders").send(checkoutBody(String(shirt.variants[0]._id)));
+    const id = placed.body.id;
+    expect((await api().patch(`/api/admin/orders/${id}/status`).set(auth).send({ status: "SHIPPED" })).status).toBe(200);
+    expect((await api().patch(`/api/admin/orders/${id}/status`).set(auth).send({ status: "PENDING" })).status).toBe(409);
+    const link = await api().patch(`/api/admin/orders/${id}/shipping`).set(auth).send({ courier: "TCS", trackingUrl: "javascript:alert(1)" });
+    expect(link.status).toBe(400);
+  });
+
+  it("puts stock back only once when cancel is clicked twice", async () => {
+    const { shirt } = await createCatalog();
+    const { auth } = await createUser("STAFF");
+    const placed = await api().post("/api/orders").send(checkoutBody(String(shirt.variants[0]._id), 2)); // 10 → 8
+
+    const results = await Promise.all([
+      api().post(`/api/admin/orders/${placed.body.id}/cancel`).set(auth).send({}),
+      api().post(`/api/admin/orders/${placed.body.id}/cancel`).set(auth).send({}),
+    ]);
+    expect(results.map((r) => r.status).sort()).toEqual([200, 409]);
+    expect((await Product.findById(shirt._id))!.variants[0].stock).toBe(10);
+  });
 });
 
 describe("settings & staff", () => {
@@ -101,6 +136,7 @@ describe("settings & staff", () => {
     const { auth } = await createUser("ADMIN");
     expect((await api().put("/api/admin/settings/shipping").set(auth).send({ flatRate: -5 })).status).toBe(400);
     expect((await api().put("/api/admin/settings/nope").set(auth).send({})).status).toBe(400);
+    expect((await api().put("/api/admin/settings/constructor").set(auth).send({})).status).toBe(400);
 
     const saved = await api().put("/api/admin/settings/shipping").set(auth).send({ flatRate: 300, freeThreshold: 10000 });
     expect(saved.body).toMatchObject({ flatRate: 300, freeThreshold: 10000 });
@@ -108,6 +144,22 @@ describe("settings & staff", () => {
       .post("/api/cart/quote")
       .send({ lines: [{ variantId: String(dress.variants[0]._id), quantity: 1 }] });
     expect(quote.body.shippingFee).toBe(300);
+  });
+
+  it("lets only admins change payment details", async () => {
+    const staff = await createUser("STAFF");
+    const admin = await createUser("ADMIN");
+    const payments = { cod: { enabled: true }, bank: { enabled: true, accountNumber: "0123" } };
+    expect((await api().put("/api/admin/settings/payments").set(staff.auth).send(payments)).status).toBe(403);
+    expect((await api().put("/api/admin/settings/payments").set(admin.auth).send(payments)).status).toBe(200);
+  });
+
+  it("reads coupon dates as whole days in Pakistan time", async () => {
+    const { auth } = await createUser("STAFF");
+    const res = await api().post("/api/admin/coupons").set(auth).send({ code: "EID", type: "FIXED", value: 300, startsAt: "2026-12-01", endsAt: "2026-12-31" });
+    expect(res.status).toBe(201);
+    expect(res.body.startsAt).toBe("2026-11-30T19:00:00.000Z");
+    expect(res.body.endsAt).toBe("2026-12-31T18:59:59.999Z");
   });
 
   it("keeps at least one admin and stops admins changing themselves", async () => {

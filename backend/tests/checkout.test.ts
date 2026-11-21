@@ -59,6 +59,18 @@ describe("checkout", () => {
     expect(product!.variants.find((v) => v.size === "3-4Y")!.stock).toBe(1);
   });
 
+  it("refuses a bag with items that no longer exist, and more than 10 of one item", async () => {
+    const { dress } = await createCatalog();
+    const gone = await api()
+      .post("/api/orders")
+      .send({ ...checkoutBody(variantOf(dress, "2-3Y")), lines: [{ variantId: variantOf(dress, "2-3Y"), quantity: 1 }, { variantId: "64b000000000000000000000", quantity: 1 }] });
+    expect(gone.status).toBe(409);
+    expect(gone.body.message).toContain("no longer sold");
+
+    const tooMany = await api().post("/api/orders").send(checkoutBody(variantOf(dress, "2-3Y"), 11));
+    expect(tooMany.status).toBe(400);
+  });
+
   it("checks the form and the payment method", async () => {
     const { dress } = await createCatalog();
     const invalid = await api().post("/api/orders").send({ ...checkoutBody(variantOf(dress, "2-3Y")), phone: "12345", email: "nope" });

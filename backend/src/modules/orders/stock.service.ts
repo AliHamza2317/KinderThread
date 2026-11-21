@@ -1,45 +1,35 @@
+import type { ClientSession } from "mongoose";
+import { conflict } from "../../lib/http-error.js";
 import { Product } from "../catalog/product.model.js";
 
 export type StockItem = { productId: string; variantId: string; quantity: number };
 
 /**
  * Takes the ordered quantities out of stock. Each update only succeeds while enough stock
- * is left, so two customers can never buy the same last piece. All-or-nothing: if one item
- * runs out, the items already taken are put back and false is returned.
+ * is left, so two customers can never buy the same last piece. Run it inside a transaction:
+ * when an item has run out it throws, and the transaction undoes the items already taken.
  */
-export async function reserveStock(items: StockItem[]): Promise<boolean> {
-  const taken: StockItem[] = [];
+export async function takeStock(items: StockItem[], session: ClientSession): Promise<void> {
   for (const item of items) {
     const result = await Product.updateOne(
       { _id: item.productId, variants: { $elemMatch: { _id: item.variantId, stock: { $gte: item.quantity } } } },
-      { $inc: { "variants.$.stock": -item.quantity } },
+      { $inc: { "variants.$.stock": -item.quantity, soldCount: item.quantity } },
+      { session },
     );
-    if (result.modifiedCount !== 1) {
-      await releaseStock(taken);
-      return false;
-    }
-    taken.push(item);
+    if (result.modifiedCount !== 1) throw conflict("Sorry — one of your items just sold out. Please review your bag.");
   }
-  return true;
 }
 
-/** Puts quantities back into stock (failed checkout, cancelled or returned order). */
-export async function releaseStock(items: StockItem[]): Promise<void> {
+/** Puts quantities back into stock (cancelled or returned order) and un-counts the sale. */
+export async function putBackStock(items: StockItem[], session: ClientSession): Promise<void> {
   if (!items.length) return;
   await Product.bulkWrite(
     items.map((item) => ({
       updateOne: {
         filter: { _id: item.productId, "variants._id": item.variantId },
-        update: { $inc: { "variants.$.stock": item.quantity } },
+        update: { $inc: { "variants.$.stock": item.quantity, soldCount: -item.quantity } },
       },
     })),
-  );
-}
-
-/** Keeps the "units sold" counter used by the best-seller sort. */
-export async function recordSales(items: StockItem[], direction: 1 | -1 = 1): Promise<void> {
-  if (!items.length) return;
-  await Product.bulkWrite(
-    items.map((item) => ({ updateOne: { filter: { _id: item.productId }, update: { $inc: { soldCount: direction * item.quantity } } } })),
+    { session },
   );
 }

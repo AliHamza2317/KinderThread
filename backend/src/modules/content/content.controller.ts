@@ -1,12 +1,15 @@
 import type { Request, Response } from "express";
-import { badRequest } from "../../lib/http-error.js";
+import { badRequest, forbidden } from "../../lib/http-error.js";
 import { validate } from "../../lib/validate.js";
+import { currentUser } from "../../middleware/auth.js";
 import * as content from "./content.service.js";
 import { bannerInput, galleryImageInput, pageInput } from "./content.validation.js";
 import { getSettings, saveSettingsGroup } from "./settings.service.js";
 import { isSettingKey } from "./settings.schema.js";
 
 type IdParams = { id: string };
+
+const ADMIN_ONLY_SETTINGS: string[] = ["payments"];
 
 /* storefront */
 
@@ -35,6 +38,8 @@ export async function gallery(_req: Request, res: Response) {
 export async function saveSettings(req: Request<{ key: string }>, res: Response) {
   const { key } = req.params;
   if (!isSettingKey(key)) throw badRequest(`Unknown settings group “${key}”.`);
+  // bank / wallet account numbers decide where customers send money: admins only
+  if (ADMIN_ONLY_SETTINGS.includes(key) && currentUser(req).role !== "ADMIN") throw forbidden("Only an administrator can change payment details.");
   res.json(await saveSettingsGroup(key, req.body));
 }
 

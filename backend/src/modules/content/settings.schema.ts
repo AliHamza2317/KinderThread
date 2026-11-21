@@ -278,4 +278,4 @@ export type Settings = { [K in SettingKey]: z.infer<(typeof settingSchemas)[K]> 
 
 export const SETTING_KEYS = Object.keys(settingSchemas) as SettingKey[];
 
-export const isSettingKey = (key: string): key is SettingKey => key in settingSchemas;
+export const isSettingKey = (key: string): key is SettingKey => Object.hasOwn(settingSchemas, key);

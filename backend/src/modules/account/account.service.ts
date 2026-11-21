@@ -1,11 +1,12 @@
 import { badRequest, conflict, notFound } from "../../lib/http-error.js";
+import { skipFor, toPage } from "../../lib/pagination.js";
 import { hashPassword, verifyPassword } from "../../lib/password.js";
 import { issueToken, toPublicUser } from "../auth/auth.service.js";
 import { getProductsByIds } from "../catalog/product.service.js";
 import { Order } from "../orders/order.model.js";
 import { toCustomerOrder } from "../orders/order.views.js";
 import type { ReturnRequestInput } from "../returns/return.validation.js";
-import { requestReturn, returnEligibility, returnsForOrder } from "../returns/return.service.js";
+import { customerReturnsForOrder, requestReturn, returnEligibility } from "../returns/return.service.js";
 import { User, type UserDocument } from "../users/user.model.js";
 import type { AddressInput, ProfileInput } from "./account.validation.js";
 
@@ -118,9 +119,12 @@ export async function removeFromWishlist(userId: string, productId: string) {
 
 /* orders & returns */
 
-export async function listMyOrders(userId: string) {
-  const orders = await Order.find({ user: userId }).sort({ createdAt: -1 }).limit(100);
-  return orders.map(toCustomerOrder);
+export async function listMyOrders(userId: string, paging: { page: number; limit: number }) {
+  const [orders, total] = await Promise.all([
+    Order.find({ user: userId }).sort({ createdAt: -1 }).skip(skipFor(paging)).limit(paging.limit),
+    Order.countDocuments({ user: userId }),
+  ]);
+  return toPage(orders.map(toCustomerOrder), total, paging);
 }
 
 async function findMyOrder(userId: string, number: string) {
@@ -132,7 +136,7 @@ async function findMyOrder(userId: string, number: string) {
 /** One order with its return requests and whether a new return can be requested. */
 export async function getMyOrder(userId: string, number: string) {
   const order = await findMyOrder(userId, number);
-  const [returns, eligibility] = await Promise.all([returnsForOrder(order._id), returnEligibility(order)]);
+  const [returns, eligibility] = await Promise.all([customerReturnsForOrder(order._id), returnEligibility(order)]);
   return { ...toCustomerOrder(order), returns, returnEligibility: eligibility };
 }
 

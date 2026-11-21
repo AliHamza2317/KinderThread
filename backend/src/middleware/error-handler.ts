@@ -36,7 +36,11 @@ export function errorHandler(error: unknown, _req: Request, res: Response, _next
   }
 
   if (error instanceof mongoose.Error.CastError) {
-    res.status(400).json({ message: `Invalid ${error.path}.` });
+    res.status(400).json({ message: error.kind === "ObjectId" ? "Invalid id." : `Invalid ${error.path}.` });
+    return;
+  }
+  if (error instanceof mongoose.Error.VersionError) {
+    res.status(409).json({ message: "Someone else changed this at the same time. Reload and try again." });
     return;
   }
   if (error instanceof mongoose.Error.ValidationError) {

@@ -76,8 +76,9 @@ errors anywhere → middleware/error-handler.ts → { "message": "...", "errors"
 
 ## Running locally
 
-Requirements: **Node.js 22.9+** and a MongoDB database (a free [MongoDB Atlas](https://www.mongodb.com/atlas)
-cluster works, or MongoDB installed locally).
+Requirements: **Node.js 22.9+** and a MongoDB database that supports transactions — a free
+[MongoDB Atlas](https://www.mongodb.com/atlas) cluster (recommended), or a local MongoDB started as a replica set
+(`mongod --replSet rs0`, then `rs.initiate()` once in `mongosh`).
 
 ```bash
 npm install
@@ -130,7 +131,7 @@ Everything is under `/api`. 🔓 public · 👤 signed-in customer · 🛠 staff
 
 | Method & path | | Description |
 |---|---|---|
-| `GET /health` | 🔓 | API and database status |
+| `GET /health` | 🔓 | 200 when the API and database are up, 503 when the database can't be reached |
 | `GET /categories` | 🔓 | visible categories with product counts |
 | `GET /categories/:slug` | 🔓 | a category, or `new-arrivals` / `best-sellers` / `sale` |
 | `GET /products` | 🔓 | shop grid. Query: `q, category, gender, size, age, color, min, max, inStock, sale, sort (featured·newest·price-asc·price-desc·best), page, limit` |
@@ -154,11 +155,11 @@ Everything is under `/api`. 🔓 public · 👤 signed-in customer · 🛠 staff
 | `POST /auth/login` | 🔓 | `{ email, password }` → `{ user, token }` (customers and staff) |
 | `GET /auth/me` | 👤 | the signed-in user |
 | `POST /auth/logout-all` | 👤 | sign out on every device |
-| `PATCH /account/profile` | 👤 | `{ name, email, phone }` |
+| `PUT /account/profile` | 👤 | `{ name, email, phone }` |
 | `POST /account/password` | 👤 | `{ current, password }` → `{ token }` (other devices are signed out) |
 | `GET · POST /account/addresses`, `PUT · DELETE /account/addresses/:id`, `POST /account/addresses/:id/default` | 👤 | saved addresses (one default) |
 | `GET · PUT /account/wishlist`, `POST · DELETE /account/wishlist/:productId` | 👤 | wishlist kept across devices |
-| `GET /account/orders`, `GET /account/orders/:number` | 👤 | my orders; the detail includes return requests and whether a return is possible |
+| `GET /account/orders?page=`, `GET /account/orders/:number` | 👤 | my orders (paged); the detail includes return requests and whether a return is possible |
 | `POST /account/orders/:number/returns` | 👤 | `{ type: RETURN·EXCHANGE, reason, details? }` — delivered orders, within the return window |
 
 ### Admin (`/api/admin/…`)
@@ -166,20 +167,20 @@ Everything is under `/api`. 🔓 public · 👤 signed-in customer · 🛠 staff
 | Method & path | | Description |
 |---|---|---|
 | `GET /dashboard` | 🛠 | sales (30 days), orders by status, low stock, recent orders, top products |
-| `GET · POST /products`, `GET · PUT · DELETE /products/:id` | 🛠 | products with colours, images and variants (sizes, SKUs, stock) |
+| `GET · POST /products`, `GET · PUT · DELETE /products/:id` | 🛠 | products with colours, images and variants (sizes, SKUs). Saving keeps the live stock of existing sizes — change stock with `PATCH /products/stock` |
 | `GET /products/check-slug?slug=&excludeId=` | 🛠 | is a URL slug free? |
 | `PATCH /products/stock` | 🛠 | `{ updates: [{ variantId, stock }] }` inventory in bulk |
 | `DELETE /products/samples` | 👑 | remove the starter sample products |
 | `GET · POST /categories`, `PUT · DELETE /categories/:id` | 🛠 | categories and collections |
 | `GET · POST /size-guides`, `GET · PUT · DELETE /size-guides/:id` | 🛠 | size charts (one default) |
 | `GET /orders`, `GET /orders/:id` | 🛠 | orders. Query: `q, status, paymentStatus, paymentMethod, from, to, page, limit` |
-| `PATCH /orders/:id/status` · `/payment` · `/shipping` · `/internal-note` | 🛠 | move the order along, payment status, courier & tracking, staff note |
+| `PATCH /orders/:id/status` · `/payment` · `/shipping` · `/internal-note` | 🛠 | move the order forward (never back), payment status, courier & tracking, staff note |
 | `POST /orders/:id/notes` · `/cancel` · `/mark-returned` | 🛠 | timeline note, cancel (stock goes back), mark returned |
 | `GET /returns`, `PATCH /returns/:id` | 🛠 | return / exchange requests and their status |
 | `GET /customers`, `GET /customers/:id`, `PATCH /customers/:id/tags` · `/active` | 🛠 | customers with order totals |
 | `GET · POST /coupons`, `PUT · DELETE /coupons/:id`, `PATCH /coupons/:id/active` | 🛠 | coupons |
 | `GET /subscribers`, `PATCH /subscribers/:id/active`, `DELETE /subscribers/:id` | 🛠 | newsletter list |
-| `GET /settings`, `PUT /settings/:key` | 🛠 | edit one settings group (`store, shipping, payments, home, policies, seo …`) |
+| `GET /settings`, `PUT /settings/:key` | 🛠 | edit one settings group (`store, shipping, home, policies, seo …`); `payments` (account numbers) is 👑 admin only |
 | `GET · POST /pages`, `PUT · DELETE /pages/:id` | 🛠 | help pages |
 | `GET · POST /banners` · `/gallery`, `PUT · DELETE /banners/:id` · `/gallery/:id` | 🛠 | homepage banners and gallery |
 | `GET · POST /staff`, `PATCH /staff/:id/role` · `/active`, `POST /staff/:id/reset-password` | 👑 | staff accounts (always keeps one active admin) |
@@ -211,12 +212,16 @@ capped at 4 MB); files can't be written to the function's disk, which is why upl
 
 ## Good to know
 
-- **Stock can't be oversold:** each item is taken out of stock with a single conditional update
-  (`stock >= quantity`); if one item fails, the ones already taken are put back (`orders/stock.service.ts`).
-  Coupon usage limits work the same way.
+- **Stock can't be oversold:** checkout runs in one MongoDB transaction — each item is taken out of stock
+  with a conditional update (`stock >= quantity`), the coupon use is counted against its limit, and the order is
+  saved; if any step fails, none of them happen (`orders/checkout.service.ts`, `orders/stock.service.ts`).
+  Cancelling or returning an order puts stock back in a transaction too, so it can't happen twice.
+- **Dates** typed as a plain day (coupon start/end, order filters) are read in Pakistan time: an end date
+  lasts until 23:59 that day.
 - **Rate limits** (sign-in, checkout, forms) are counted in memory per server instance — enough to slow down
   bots. Use a shared store such as Redis if you need exact limits across instances.
-- **Settings** are cached for 30 seconds per instance and the cache is cleared when they are saved.
+- **Settings** are cached for 30 seconds per instance (checkout always reads them fresh), and the cache is
+  cleared when they are saved.
 - The **starter products** are samples with placeholder photos (`isSample: true`). Remove them with
   `DELETE /api/admin/products/samples` once your real products are in.
 - The settings schema (`src/modules/content/settings.schema.ts`) mirrors the frontend's `src/lib/settings.ts`;

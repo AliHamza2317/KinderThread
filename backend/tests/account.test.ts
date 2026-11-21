@@ -77,7 +77,7 @@ describe("my orders & returns", () => {
 
     const placed = await api().post("/api/orders").set(auth).send(checkoutBody(variantId));
     const number = placed.body.number;
-    expect((await api().get("/api/account/orders").set(auth)).body).toHaveLength(1);
+    expect((await api().get("/api/account/orders").set(auth)).body.items).toHaveLength(1);
 
     const early = await api().post(`/api/account/orders/${number}/returns`).set(auth).send({ type: "EXCHANGE", reason: "Size doesn't fit" });
     expect(early.status).toBe(409);
@@ -89,10 +89,20 @@ describe("my orders & returns", () => {
 
     const request = await api().post(`/api/account/orders/${number}/returns`).set(auth).send({ type: "EXCHANGE", reason: "Size doesn't fit", details: "Need 18-24M" });
     expect(request.status).toBe(201);
-    expect(request.body).toMatchObject({ status: "REQUESTED", user: user.id });
+    expect(request.body).toMatchObject({ status: "REQUESTED", type: "EXCHANGE" });
+    expect(user.id).toBeTypeOf("string");
+
+    expect(request.body.user).toBeUndefined();
 
     const again = await api().post(`/api/account/orders/${number}/returns`).set(auth).send({ type: "RETURN", reason: "Changed my mind" });
     expect(again.status).toBe(409);
+
+    // staff notes on the request stay private
+    const staff = await createUser("STAFF");
+    await api().patch(`/api/admin/returns/${request.body.id}`).set(staff.auth).send({ status: "APPROVED", adminNote: "internal remark" });
+    const mine = await api().get(`/api/account/orders/${number}`).set(auth);
+    expect(mine.body.returns[0]).toMatchObject({ status: "APPROVED" });
+    expect(mine.body.returns[0].adminNote).toBeUndefined();
 
     const someoneElse = await createUser();
     expect((await api().get(`/api/account/orders/${number}`).set(someoneElse.auth)).status).toBe(404);

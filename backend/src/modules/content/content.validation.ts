@@ -1,5 +1,5 @@
 import { z } from "zod";
-import { optionalText, slug } from "../../lib/fields.js";
+import { optionalLink, optionalText, safeLink, slug } from "../../lib/fields.js";
 
 /** Page slugs that would clash with the store's own routes. */
 const RESERVED_PAGE_SLUGS = ["admin", "account", "api", "cart", "checkout", "shop", "search", "products", "collections", "wishlist", "size-guide", "track-order"];
@@ -17,18 +17,18 @@ export const bannerInput = z.object({
   eyebrow: optionalText(60),
   title: z.string().trim().min(2, "Add a title.").max(120),
   subtitle: optionalText(200),
-  image: optionalText(600),
+  image: optionalLink,
   ctaLabel: optionalText(40),
-  ctaHref: optionalText(300),
+  ctaHref: optionalLink,
   tone: z.string().trim().max(20).default("cream"),
   sortOrder: z.number().int().min(-1000).max(10000).default(0),
   isActive: z.boolean().default(true),
 });
 
 export const galleryImageInput = z.object({
-  url: z.string().trim().min(1, "Add an image.").max(600),
+  url: safeLink,
   alt: z.string().trim().max(200).default(""),
-  href: optionalText(300),
+  href: optionalLink,
   isSample: z.boolean().default(false),
   sortOrder: z.number().int().min(-1000).max(10000).default(0),
   isActive: z.boolean().default(true),

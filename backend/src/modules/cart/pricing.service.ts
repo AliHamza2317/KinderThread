@@ -27,6 +27,8 @@ export type PricedLine = {
 
 export type CartQuote = {
   lines: PricedLine[];
+  /** variant ids that no longer exist (deleted products or sizes) */
+  unavailable: string[];
   itemCount: number;
   subtotal: number;
   discount: number;
@@ -39,13 +41,11 @@ export type CartQuote = {
   freeShippingRemaining: number;
 };
 
-/** Adds up repeated lines for the same variant and keeps quantities within limits. */
+/** Adds up repeated lines for the same variant. */
 function mergeLines(lines: CartLine[]): Map<string, number> {
   const merged = new Map<string, number>();
   for (const line of lines) {
-    if (line.quantity <= 0) continue;
-    const quantity = Math.min(MAX_QTY_PER_LINE, (merged.get(line.variantId) ?? 0) + line.quantity);
-    merged.set(line.variantId, quantity);
+    if (line.quantity > 0) merged.set(line.variantId, (merged.get(line.variantId) ?? 0) + line.quantity);
   }
   return merged;
 }
@@ -60,20 +60,24 @@ export async function quoteCart(input: CartLine[], options: { couponCode?: strin
   const products = await Product.find({ "variants._id": { $in: [...wanted.keys()] } });
 
   const lines: PricedLine[] = [];
+  const unavailable: string[] = [];
   for (const [variantId, requested] of wanted) {
     const product = products.find((p) => p.variants.some((v) => v._id.toString() === variantId));
     const variant = product?.variants.find((v) => v._id.toString() === variantId);
-    if (!product || !variant) continue; // deleted since it was added — just drop it
+    if (!product || !variant) {
+      unavailable.push(variantId); // deleted since it was added to the bag
+      continue;
+    }
 
     const available = product.status === "ACTIVE" && variant.isActive;
-    const quantity = available ? Math.min(requested, Math.max(0, variant.stock)) : 0;
+    const quantity = available ? Math.min(requested, MAX_QTY_PER_LINE, Math.max(0, variant.stock)) : 0;
     const unitPrice = variant.price ?? product.price;
     const image = product.images.find((i) => i.color && i.color === variant.color) ?? product.images[0];
 
     let issue: string | null = null;
     if (!available) issue = "No longer available";
     else if (variant.stock <= 0) issue = "Out of stock";
-    else if (quantity < requested) issue = `Only ${variant.stock} left`;
+    else if (quantity < requested) issue = variant.stock < requested ? `Only ${variant.stock} left` : `Up to ${MAX_QTY_PER_LINE} per order`;
 
     lines.push({
       variantId,
@@ -122,6 +126,7 @@ export async function quoteCart(input: CartLine[], options: { couponCode?: strin
 
   return {
     lines,
+    unavailable,
     itemCount: lines.reduce((sum, line) => sum + line.quantity, 0),
     subtotal,
     discount,

@@ -1,3 +1,4 @@
+import type { ClientSession } from "mongoose";
 import { conflict, notFound } from "../../lib/http-error.js";
 import { Coupon, type CouponDocument } from "./coupon.model.js";
 import type { CouponInput } from "./coupon.validation.js";
@@ -19,18 +20,22 @@ export const findCouponByCode = (code: string) => Coupon.findOne({ code: code.tr
 
 /**
  * Counts one use of a coupon — atomically, so two customers can't both take the last use.
- * Returns false when the limit was reached in the meantime.
+ * Throws when the limit was reached in the meantime (run it inside the checkout transaction).
  */
-export async function useCoupon(code: string): Promise<boolean> {
+export async function useCoupon(code: string, session: ClientSession): Promise<void> {
   const result = await Coupon.updateOne(
     { code, isActive: true, $or: [{ maxUses: null }, { $expr: { $lt: ["$usedCount", "$maxUses"] } }] },
     { $inc: { usedCount: 1 } },
+    { session },
   );
-  return result.modifiedCount === 1;
+  if (result.modifiedCount !== 1) {
+    throw conflict("This code has just reached its usage limit.", { couponCode: ["This code has reached its usage limit."] });
+  }
 }
 
-export async function releaseCoupon(code: string) {
-  await Coupon.updateOne({ code, usedCount: { $gt: 0 } }, { $inc: { usedCount: -1 } });
+/** Gives a use back (the order was cancelled). */
+export async function releaseCoupon(code: string, session: ClientSession): Promise<void> {
+  await Coupon.updateOne({ code, usedCount: { $gt: 0 } }, { $inc: { usedCount: -1 } }, { session });
 }
 
 /* admin */

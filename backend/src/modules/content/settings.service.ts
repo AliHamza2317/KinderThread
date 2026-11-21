@@ -3,8 +3,9 @@ import { Setting } from "./content.models.js";
 import { SETTING_KEYS, settingSchemas, type SettingKey, type Settings } from "./settings.schema.js";
 
 /**
- * Settings are read on almost every request (prices, delivery fees …), so they are kept
- * in memory for a short time. Saving a group clears the cache straight away.
+ * Settings are read on almost every request (prices, delivery fees …), so each server
+ * instance keeps them in memory for a short time. Saving clears this instance's copy at
+ * once; other instances pick the change up within CACHE_MS.
  */
 const CACHE_MS = 30_000;
 let cache: { settings: Settings; loadedAt: number } | null = null;
@@ -16,8 +17,9 @@ function parseGroup(key: SettingKey, saved: unknown) {
   return result.success ? result.data : schema.parse({});
 }
 
-export async function getSettings(): Promise<Settings> {
-  if (cache && Date.now() - cache.loadedAt < CACHE_MS) return cache.settings;
+/** `fresh: true` skips the cache (checkout uses it, so a just-disabled payment method is respected). */
+export async function getSettings({ fresh = false } = {}): Promise<Settings> {
+  if (!fresh && cache && Date.now() - cache.loadedAt < CACHE_MS) return cache.settings;
 
   const rows = await Setting.find();
   const saved = new Map(rows.map((row) => [row.key, row.value]));

@@ -7,7 +7,7 @@ export const PAYMENT_METHODS = ["cod", "bank", "jazzcash", "easypaisa"] as const
 export type PaymentMethod = (typeof PAYMENT_METHODS)[number];
 
 export const cartLines = z
-  .array(z.object({ variantId: objectId, quantity: z.number().int().min(0).max(50) }))
+  .array(z.object({ variantId: objectId, quantity: z.number().int().min(0).max(MAX_QTY_PER_LINE, `Up to ${MAX_QTY_PER_LINE} of each item per order.`) }))
   .max(60, "Your bag has too many lines.");
 
 export type CartLine = z.infer<typeof cartLines>[number];

@@ -1,11 +1,12 @@
 import { randomInt } from "node:crypto";
+import mongoose from "mongoose";
 import { badRequest, conflict, notFound } from "../../lib/http-error.js";
 import { quoteCart, type CartQuote } from "../cart/pricing.service.js";
 import { getSettings } from "../content/settings.service.js";
-import { releaseCoupon, useCoupon } from "../coupons/coupon.service.js";
+import { useCoupon } from "../coupons/coupon.service.js";
 import { Order, type OrderDocument, type PaymentStatus } from "./order.model.js";
 import type { CheckoutInput } from "./order.validation.js";
-import { recordSales, releaseStock, reserveStock, type StockItem } from "./stock.service.js";
+import { takeStock, type StockItem } from "./stock.service.js";
 
 /** e.g. KT2611-48213 (year + month, then a random number). */
 function newOrderNumber(now = new Date()): string {
@@ -16,20 +17,21 @@ function newOrderNumber(now = new Date()): string {
 const isDuplicateNumber = (error: unknown) =>
   (error as { code?: number })?.code === 11000 && "number" in ((error as { keyValue?: object }).keyValue ?? {});
 
-/** Lists the lines that can't be bought as asked, e.g. "Linen Shirt (2-3Y): Only 1 left". */
+/** Lists what can't be bought as asked, e.g. "Linen Shirt (2-3Y): Only 1 left". */
 function describeIssues(quote: CartQuote): string | null {
   const problems = quote.lines.filter((line) => line.issue).map((line) => `${line.name} (${line.size}): ${line.issue}`);
-  return problems.length ? `Some items in your bag have changed — ${problems.join("; ")}.` : null;
+  if (quote.unavailable.length) problems.push(`${quote.unavailable.length} item(s) are no longer sold`);
+  return problems.length ? `Some items in your bag have changed — ${problems.join("; ")}. Please review your bag.` : null;
 }
 
 /**
  * Places an order:
- *   1. check the payment method and price the bag on the server
- *   2. reserve stock and the coupon (atomically, see stock.service / coupon.service)
- *   3. save the order — and give the stock/coupon back if anything fails
+ *   1. check the payment method and price the bag on the server (the browser's prices are never used)
+ *   2. in one MongoDB transaction: take the stock, count the coupon use and save the order —
+ *      if any step fails, none of them happen
  */
 export async function placeOrder(input: CheckoutInput, userId: string | null): Promise<OrderDocument> {
-  const settings = await getSettings();
+  const settings = await getSettings({ fresh: true }); // a payment method switched off a moment ago must not be accepted
 
   const method = settings.payments[input.paymentMethod];
   if (!method.enabled) throw badRequest("This payment method isn't available right now.", { paymentMethod: ["Choose another payment method."] });
@@ -44,15 +46,9 @@ export async function placeOrder(input: CheckoutInput, userId: string | null): P
   if (quote.itemCount === 0) throw badRequest("Your bag is empty.");
 
   const stockItems: StockItem[] = quote.lines.map((line) => ({ productId: line.productId, variantId: line.variantId, quantity: line.quantity }));
-  if (!(await reserveStock(stockItems))) throw conflict("Sorry — one of your items just sold out. Please review your bag.");
-
   const couponCode = quote.coupon?.code ?? null;
-  if (couponCode && !(await useCoupon(couponCode))) {
-    await releaseStock(stockItems);
-    throw conflict("This code has just reached its usage limit.", { couponCode: ["This code has reached its usage limit."] });
-  }
 
-  const orderData = {
+  const order = {
     user: userId,
     customerName: input.name,
     email: input.email,
@@ -85,21 +81,18 @@ export async function placeOrder(input: CheckoutInput, userId: string | null): P
     events: [{ status: "PENDING" as const, message: "Order placed", isPublic: true, actor: "customer" }],
   };
 
-  try {
-    // retry with a new number in the (rare) case the random number is already taken
-    for (let attempt = 1; ; attempt++) {
-      try {
-        const order = await Order.create({ ...orderData, number: newOrderNumber() });
-        await recordSales(stockItems);
-        return order;
-      } catch (error) {
-        if (!isDuplicateNumber(error) || attempt >= 5) throw error;
-      }
+  // the random order number can (rarely) be taken already: then try again with a new one
+  for (let attempt = 1; ; attempt++) {
+    try {
+      return await mongoose.connection.transaction(async (session) => {
+        await takeStock(stockItems, session);
+        if (couponCode) await useCoupon(couponCode, session);
+        const [created] = await Order.create([{ ...order, number: newOrderNumber() }], { session });
+        return created;
+      });
+    } catch (error) {
+      if (!isDuplicateNumber(error) || attempt >= 5) throw error;
     }
-  } catch (error) {
-    await releaseStock(stockItems);
-    if (couponCode) await releaseCoupon(couponCode);
-    throw error;
   }
 }
 

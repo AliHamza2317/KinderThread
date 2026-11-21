@@ -9,6 +9,9 @@ export const AGE_GROUPS: Record<string, readonly string[]> = {
   little: ["2-3Y", "3-4Y", "4-5Y"],
 };
 
+/** Sizes of an age group, or [] for an unknown group. */
+export const sizesForAge = (age: string): readonly string[] => (Object.hasOwn(AGE_GROUPS, age) ? AGE_GROUPS[age] : []);
+
 const position = (size: string) => {
   const index = (SIZES as readonly string[]).indexOf(size);
   return index === -1 ? SIZES.length : index;

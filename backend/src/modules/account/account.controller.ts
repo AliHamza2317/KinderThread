@@ -1,10 +1,9 @@
 import type { Request, Response } from "express";
-import { objectId } from "../../lib/fields.js";
 import { validate } from "../../lib/validate.js";
 import { currentUser } from "../../middleware/auth.js";
 import { returnRequestInput } from "../returns/return.validation.js";
 import * as account from "./account.service.js";
-import { addressInput, passwordInput, profileInput, wishlistInput } from "./account.validation.js";
+import { addressInput, myOrdersQuery, passwordInput, profileInput, wishlistInput } from "./account.validation.js";
 
 /** Every route here is behind requireAuth (see account.routes.ts). */
 
@@ -28,15 +27,15 @@ export async function addAddress(req: Request, res: Response) {
 }
 
 export async function updateAddress(req: Request<{ id: string }>, res: Response) {
-  res.json(await account.updateAddress(userId(req), validate(objectId, req.params.id), validate(addressInput, req.body)));
+  res.json(await account.updateAddress(userId(req), req.params.id, validate(addressInput, req.body)));
 }
 
 export async function setDefaultAddress(req: Request<{ id: string }>, res: Response) {
-  res.json(await account.setDefaultAddress(userId(req), validate(objectId, req.params.id)));
+  res.json(await account.setDefaultAddress(userId(req), req.params.id));
 }
 
 export async function deleteAddress(req: Request<{ id: string }>, res: Response) {
-  res.json(await account.deleteAddress(userId(req), validate(objectId, req.params.id)));
+  res.json(await account.deleteAddress(userId(req), req.params.id));
 }
 
 export async function getWishlist(req: Request, res: Response) {
@@ -49,15 +48,15 @@ export async function setWishlist(req: Request, res: Response) {
 }
 
 export async function addToWishlist(req: Request<{ productId: string }>, res: Response) {
-  res.json(await account.addToWishlist(userId(req), validate(objectId, req.params.productId)));
+  res.json(await account.addToWishlist(userId(req), req.params.productId));
 }
 
 export async function removeFromWishlist(req: Request<{ productId: string }>, res: Response) {
-  res.json(await account.removeFromWishlist(userId(req), validate(objectId, req.params.productId)));
+  res.json(await account.removeFromWishlist(userId(req), req.params.productId));
 }
 
 export async function listOrders(req: Request, res: Response) {
-  res.json(await account.listMyOrders(userId(req)));
+  res.json(await account.listMyOrders(userId(req), validate(myOrdersQuery, req.query)));
 }
 
 export async function getOrder(req: Request<{ number: string }>, res: Response) {

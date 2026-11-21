@@ -1,12 +1,13 @@
-import { MongoMemoryServer } from "mongodb-memory-server";
+import { MongoMemoryReplSet } from "mongodb-memory-server";
 import mongoose from "mongoose";
 import { afterAll, beforeEach } from "vitest";
 
 /**
- * Every test file gets a throw-away MongoDB running in memory, and the environment
- * variables the app needs — set before the app is imported.
+ * Every test file gets a throw-away MongoDB running in memory (a one-node replica set,
+ * like Atlas, so transactions work) and the environment variables the app needs —
+ * set before the app is imported.
  */
-const mongo = await MongoMemoryServer.create();
+const mongo = await MongoMemoryReplSet.create({ replSet: { count: 1 } });
 
 process.env.NODE_ENV = "test";
 process.env.MONGODB_URI = mongo.getUri("kinder-thread-test");

@@ -16,7 +16,7 @@ The research, creative direction and design system are in [`docs/PLAN.md`](docs/
 
 ## Run both locally
 
-Requirements: **Node.js 22.9+** and a MongoDB database (a free MongoDB Atlas cluster is fine).
+Requirements: **Node.js 22.9+** and a MongoDB database with transactions — a free MongoDB Atlas cluster is ideal (a local MongoDB must run as a replica set).
 
 Backend — set up `.env` first (see [backend/README.md](backend/README.md)):
 

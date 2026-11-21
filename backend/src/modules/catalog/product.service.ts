@@ -1,7 +1,7 @@
-import type { QueryFilter, SortOrder } from "mongoose";
-import { conflict, notFound } from "../../lib/http-error.js";
+import mongoose, { type QueryFilter, type SortOrder } from "mongoose";
+import { badRequest, conflict, notFound } from "../../lib/http-error.js";
 import { skipFor, toPage, type Page } from "../../lib/pagination.js";
-import { AGE_GROUPS, sortSizes } from "../../lib/sizes.js";
+import { sizesForAge, sortSizes } from "../../lib/sizes.js";
 import { containsText, escapeRegex, slugify } from "../../lib/text.js";
 import { Category, type CategoryDocument } from "./category.model.js";
 import { VIRTUAL_COLLECTIONS, isVirtualCollection } from "./collections.js";
@@ -16,11 +16,16 @@ type ProductFilter = QueryFilter<ProductDocument>;
 /*                         product card (lists & grids)                      */
 /* ------------------------------------------------------------------------- */
 
-/** The small version of a product used by the shop grid, search and wishlists. */
-export function toProductCard(product: ProductDocument) {
-  const variants = product.variants
+/** The sizes a customer can choose, with the price each one actually sells for. */
+function sellableVariants(product: Pick<ProductDocument, "variants" | "price">) {
+  return product.variants
     .filter((v) => v.isActive)
     .map((v) => ({ id: v._id.toString(), sku: v.sku, size: v.size, color: v.color ?? null, stock: v.stock, price: v.price ?? product.price }));
+}
+
+/** The small version of a product used by the shop grid, search and wishlists. */
+export function toProductCard(product: ProductDocument) {
+  const variants = sellableVariants(product);
   const availableSizes = sortSizes(variants.filter((v) => v.stock > 0).map((v) => v.size));
 
   return {
@@ -90,7 +95,7 @@ async function buildFilter(query: Omit<ProductListQuery, "sort" | "page" | "limi
 
   // sizes picked directly plus the sizes of any chosen age group (?age=baby)
   const sizes = new Set(query.size);
-  for (const age of query.age) AGE_GROUPS[age]?.forEach((s) => sizes.add(s));
+  for (const age of query.age) sizesForAge(age).forEach((s) => sizes.add(s));
   if (sizes.size || query.inStock) {
     and.push({
       variants: {
@@ -142,7 +147,7 @@ export async function getFacets(query: ProductListQuery) {
 
 /** Full product page data: active sizes only, its size guide and a few related products. */
 export async function getProductBySlug(slug: string) {
-  const product = await Product.findOne({ slug, status: "ACTIVE" }).populate<{ categories: CategoryDocument[] }>("categories", "name slug");
+  const product = await Product.findOne({ slug, status: "ACTIVE" }).populate<{ categories: CategoryDocument[] }>("categories", "name slug isVisible");
   if (!product) throw notFound("Product not found.");
 
   const [sizeGuide, related] = await Promise.all([
@@ -152,10 +157,26 @@ export async function getProductBySlug(slug: string) {
       .limit(4),
   ]);
 
-  const json = product.toJSON();
+  // an explicit list of fields: internal ones (status, sort order, units sold …) stay private
   return {
-    ...json,
-    variants: json.variants.filter((v: { isActive: boolean }) => v.isActive),
+    id: product.id as string,
+    slug: product.slug,
+    name: product.name,
+    description: product.description,
+    fabric: product.fabric ?? null,
+    care: product.care ?? null,
+    price: product.price,
+    compareAtPrice: product.compareAtPrice ?? null,
+    gender: product.gender,
+    isSample: product.isSample,
+    isNewArrival: product.isNewArrival,
+    isBestSeller: product.isBestSeller,
+    seoTitle: product.seoTitle ?? null,
+    seoDescription: product.seoDescription ?? null,
+    categories: product.categories.filter((c) => c.isVisible).map((c) => ({ id: c.id as string, name: c.name, slug: c.slug })),
+    colors: product.colors.map((c) => ({ name: c.name, hex: c.hex })),
+    images: product.images.map((i) => ({ url: i.url, alt: i.alt, color: i.color ?? null })),
+    variants: sellableVariants(product),
     sizeGuide: sizeGuide ?? null,
     related: related.map(toProductCard),
   };
@@ -224,26 +245,39 @@ async function assertUnique(input: ProductInput & { slug: string }, excludeId?: 
   }
 }
 
-/** Maps validated input onto the document fields (variant ids are kept so carts stay valid). */
-function productFields(input: ProductInput & { slug: string }) {
-  return {
-    ...input,
-    variants: input.variants.map(({ id, ...variant }) => ({ ...(id && { _id: id }), ...variant })),
-  };
+function withSlug(input: ProductInput) {
+  const slug = input.slug || slugify(input.name);
+  if (!slug) throw badRequest("Add a URL slug using letters and numbers.", { slug: ["Slug is required."] });
+  return { ...input, slug };
 }
 
 export async function createProduct(input: ProductInput) {
-  const data = { ...input, slug: input.slug || slugify(input.name) };
+  const data = withSlug(input);
   await assertUnique(data);
-  return Product.create(productFields(data));
+  return Product.create({ ...data, variants: data.variants.map(({ id: _id, ...variant }) => variant) });
 }
 
+/**
+ * Saves the product form. Sizes that already exist keep their id (so bags stay valid) and their
+ * live stock — a sale made while the form was open must not be undone. Stock of existing sizes is
+ * changed on the inventory screen (PATCH /products/stock); new sizes take the stock from the form.
+ * Runs in a transaction, so a checkout touching the same product at that moment can't be overwritten.
+ */
 export async function updateProduct(id: string, input: ProductInput) {
-  const product = await getProductById(id);
-  const data = { ...input, slug: input.slug || slugify(input.name) };
+  const data = withSlug(input);
   await assertUnique(data, id);
-  product.set(productFields(data));
-  return product.save();
+
+  return mongoose.connection.transaction(async (session) => {
+    const product = await Product.findById(id).session(session);
+    if (!product) throw notFound("Product not found.");
+
+    const liveStock = new Map(product.variants.map((v) => [v._id.toString(), v.stock]));
+    const variants = data.variants.map(({ id: variantId, ...variant }) =>
+      variantId && liveStock.has(variantId) ? { ...variant, _id: variantId, stock: liveStock.get(variantId) } : variant,
+    );
+    product.set({ ...data, variants });
+    return product.save({ session });
+  });
 }
 
 export async function deleteProduct(id: string) {
