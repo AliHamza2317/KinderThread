@@ -1,0 +1,66 @@
+[
+  {
+    "url": "/images/gallery/g1.webp",
+    "alt": "A toddler in a tulle skirt walking across a sunny lawn",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 0,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g2.webp",
+    "alt": "Soft baby clothes bundled on a woven rug",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 1,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g3.webp",
+    "alt": "Tiny toes on a soft white blanket",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 2,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g4.webp",
+    "alt": "A calm wooden nursery",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 3,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g5.webp",
+    "alt": "Close-up of a patterned knit",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 4,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g6.webp",
+    "alt": "A little foot on a striped sheet",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 5,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g7.webp",
+    "alt": "Baby clothes hanging on a rail",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 6,
+    "isActive": true
+  },
+  {
+    "url": "/images/gallery/g8.webp",
+    "alt": "A white clothing rail with wooden hangers",
+    "href": null,
+    "isSample": true,
+    "sortOrder": 7,
+    "isActive": true
+  }
+]

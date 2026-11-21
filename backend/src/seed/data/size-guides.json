@@ -1,0 +1,82 @@
+[
+  {
+    "name": "Kinder Thread standard (0–5 years)",
+    "unit": "cm",
+    "isDefault": true,
+    "notes": "Sample measurements — replace with the measurements from your supplier's size chart.",
+    "rows": [
+      {
+        "size": "0-3M",
+        "age": "0–3 months",
+        "height": "56–62",
+        "chest": "41",
+        "waist": "41",
+        "length": "35"
+      },
+      {
+        "size": "3-6M",
+        "age": "3–6 months",
+        "height": "62–68",
+        "chest": "43",
+        "waist": "43",
+        "length": "37"
+      },
+      {
+        "size": "6-9M",
+        "age": "6–9 months",
+        "height": "68–74",
+        "chest": "45",
+        "waist": "45",
+        "length": "39"
+      },
+      {
+        "size": "9-12M",
+        "age": "9–12 months",
+        "height": "74–80",
+        "chest": "47",
+        "waist": "46",
+        "length": "41"
+      },
+      {
+        "size": "12-18M",
+        "age": "12–18 months",
+        "height": "80–86",
+        "chest": "49",
+        "waist": "47",
+        "length": "43"
+      },
+      {
+        "size": "18-24M",
+        "age": "18–24 months",
+        "height": "86–92",
+        "chest": "51",
+        "waist": "48",
+        "length": "45"
+      },
+      {
+        "size": "2-3Y",
+        "age": "2–3 years",
+        "height": "92–98",
+        "chest": "53",
+        "waist": "49",
+        "length": "47"
+      },
+      {
+        "size": "3-4Y",
+        "age": "3–4 years",
+        "height": "98–104",
+        "chest": "55",
+        "waist": "50",
+        "length": "50"
+      },
+      {
+        "size": "4-5Y",
+        "age": "4–5 years",
+        "height": "104–110",
+        "chest": "57",
+        "waist": "51",
+        "length": "53"
+      }
+    ]
+  }
+]

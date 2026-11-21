@@ -1,0 +1,79 @@
+[
+  {
+    "name": "Baby Boys",
+    "slug": "baby-boys",
+    "description": "Easy, considered pieces for little boys — soft shirts, knits and everyday tees.",
+    "image": "/images/editorial/cat-baby-boys.webp",
+    "kind": "category",
+    "sortOrder": 0,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": true
+  },
+  {
+    "name": "Baby Girls",
+    "slug": "baby-girls",
+    "description": "Dresses, blouses and knits for little girls, in soft and timeless colours.",
+    "image": "/images/editorial/cat-baby-girls.webp",
+    "kind": "category",
+    "sortOrder": 1,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": true
+  },
+  {
+    "name": "Newborn",
+    "slug": "newborn",
+    "description": "Gentle first pieces for the very first days — bodysuits, knits and booties.",
+    "image": "/images/editorial/cat-newborn.webp",
+    "kind": "category",
+    "sortOrder": 2,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": true
+  },
+  {
+    "name": "Everyday Wear",
+    "slug": "everyday-wear",
+    "description": "Comfortable essentials for crawling, playing, napping and growing.",
+    "image": "/images/editorial/cat-everyday.webp",
+    "kind": "category",
+    "sortOrder": 3,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": true
+  },
+  {
+    "name": "Casual Outfits",
+    "slug": "casual-outfits",
+    "description": "Relaxed looks for playdates, park days and family visits.",
+    "image": "/images/products/rainbow-socks.webp",
+    "kind": "category",
+    "sortOrder": 4,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": false
+  },
+  {
+    "name": "Matching Sets",
+    "slug": "matching-sets",
+    "description": "Coordinated pieces that work together — one less decision in the morning.",
+    "image": "/images/editorial/cat-matching-sets.webp",
+    "kind": "collection",
+    "sortOrder": 5,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": false
+  },
+  {
+    "name": "Seasonal Collection",
+    "slug": "seasonal",
+    "description": "Knits and layers for cooler days.",
+    "image": "/images/editorial/cat-seasonal.webp",
+    "kind": "collection",
+    "sortOrder": 6,
+    "isVisible": true,
+    "showInNav": true,
+    "isFeatured": false
+  }
+]

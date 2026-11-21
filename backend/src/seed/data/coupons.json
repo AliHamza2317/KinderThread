@@ -1,0 +1,35 @@
+[
+  {
+    "code": "WELCOME10",
+    "description": "10% off your first order",
+    "type": "PERCENT",
+    "value": 10,
+    "minSubtotal": 1500,
+    "maxUses": null,
+    "startsAt": null,
+    "endsAt": null,
+    "isActive": true
+  },
+  {
+    "code": "FREESHIP",
+    "description": "Free delivery",
+    "type": "FREE_SHIPPING",
+    "value": 0,
+    "minSubtotal": 2000,
+    "maxUses": 100,
+    "startsAt": null,
+    "endsAt": null,
+    "isActive": true
+  },
+  {
+    "code": "WINTER500",
+    "description": "Rs. 500 off winter knits",
+    "type": "FIXED",
+    "value": 500,
+    "minSubtotal": 3000,
+    "maxUses": 50,
+    "startsAt": null,
+    "endsAt": null,
+    "isActive": true
+  }
+]

@@ -1,0 +1,1228 @@
+[
+  {
+    "name": "Linen Grandad Shirt",
+    "slug": "linen-grandad-shirt",
+    "description": "A relaxed short-sleeve shirt with a grandad collar and a soft, breathable feel. Easy to dress up for family visits or down for the park.",
+    "fabric": "Linen-cotton blend",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 2490,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "BOY",
+    "isSample": true,
+    "isFeatured": true,
+    "isNewArrival": true,
+    "isBestSeller": false,
+    "sortOrder": 0,
+    "categories": [
+      "baby-boys",
+      "casual-outfits",
+      "everyday-wear"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Stone",
+        "hex": "#B5AFA5"
+      },
+      {
+        "name": "Ivory",
+        "hex": "#EEE8DC"
+      },
+      {
+        "name": "Sky",
+        "hex": "#BDC9D5"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/linen-shirt-stone.webp",
+        "alt": "Linen Grandad Shirt in Stone",
+        "color": "Stone"
+      },
+      {
+        "url": "/images/products/linen-shirt-ivory.webp",
+        "alt": "Linen Grandad Shirt in Ivory",
+        "color": "Ivory"
+      },
+      {
+        "url": "/images/products/linen-shirt-sky.webp",
+        "alt": "Linen Grandad Shirt in Sky",
+        "color": "Sky"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-LGS-STO-12-18M",
+        "size": "12-18M",
+        "color": "Stone",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-STO-18-24M",
+        "size": "18-24M",
+        "color": "Stone",
+        "price": null,
+        "stock": 17,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-STO-2-3Y",
+        "size": "2-3Y",
+        "color": "Stone",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-STO-3-4Y",
+        "size": "3-4Y",
+        "color": "Stone",
+        "price": null,
+        "stock": 21,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-STO-4-5Y",
+        "size": "4-5Y",
+        "color": "Stone",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-IVO-12-18M",
+        "size": "12-18M",
+        "color": "Ivory",
+        "price": null,
+        "stock": 5,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-IVO-18-24M",
+        "size": "18-24M",
+        "color": "Ivory",
+        "price": null,
+        "stock": 20,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-IVO-2-3Y",
+        "size": "2-3Y",
+        "color": "Ivory",
+        "price": null,
+        "stock": 8,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-IVO-3-4Y",
+        "size": "3-4Y",
+        "color": "Ivory",
+        "price": null,
+        "stock": 7,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-IVO-4-5Y",
+        "size": "4-5Y",
+        "color": "Ivory",
+        "price": null,
+        "stock": 5,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-SKY-12-18M",
+        "size": "12-18M",
+        "color": "Sky",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-SKY-18-24M",
+        "size": "18-24M",
+        "color": "Sky",
+        "price": null,
+        "stock": 17,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-SKY-2-3Y",
+        "size": "2-3Y",
+        "color": "Sky",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-SKY-3-4Y",
+        "size": "3-4Y",
+        "color": "Sky",
+        "price": null,
+        "stock": 6,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LGS-SKY-4-5Y",
+        "size": "4-5Y",
+        "color": "Sky",
+        "price": null,
+        "stock": 12,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Nordic Yoke Cardigan",
+    "slug": "nordic-yoke-cardigan",
+    "description": "A button-front cardigan with a patterned yoke — a warm layer over dresses and tees on cooler mornings.",
+    "fabric": "Soft knit",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 3490,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "GIRL",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestSeller": true,
+    "sortOrder": 1,
+    "categories": [
+      "baby-girls",
+      "seasonal"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Rose",
+        "hex": "#B5726B"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/nordic-cardigan-rose.webp",
+        "alt": "Nordic Yoke Cardigan in Rose",
+        "color": "Rose"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-NYC-ROS-12-18M",
+        "size": "12-18M",
+        "color": "Rose",
+        "price": null,
+        "stock": 12,
+        "isActive": true
+      },
+      {
+        "sku": "KT-NYC-ROS-18-24M",
+        "size": "18-24M",
+        "color": "Rose",
+        "price": null,
+        "stock": 4,
+        "isActive": true
+      },
+      {
+        "sku": "KT-NYC-ROS-2-3Y",
+        "size": "2-3Y",
+        "color": "Rose",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      },
+      {
+        "sku": "KT-NYC-ROS-3-4Y",
+        "size": "3-4Y",
+        "color": "Rose",
+        "price": null,
+        "stock": 20,
+        "isActive": true
+      },
+      {
+        "sku": "KT-NYC-ROS-4-5Y",
+        "size": "4-5Y",
+        "color": "Rose",
+        "price": null,
+        "stock": 14,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Chunky Knit Sweater",
+    "slug": "chunky-knit-sweater",
+    "description": "A cosy raglan-sleeve sweater with ribbed cuffs and hem, made for layering through the cooler months.",
+    "fabric": "Chunky knit",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 3190,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": false,
+    "isBestSeller": true,
+    "sortOrder": 2,
+    "categories": [
+      "seasonal",
+      "baby-boys",
+      "everyday-wear"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Rust",
+        "hex": "#A35C3F"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/chunky-sweater-rust.webp",
+        "alt": "Chunky Knit Sweater in Rust",
+        "color": "Rust"
+      },
+      {
+        "url": "/images/products/chunky-sweater-rust-2.webp",
+        "alt": "Chunky Knit Sweater in Rust",
+        "color": "Rust"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-CKS-RUS-12-18M",
+        "size": "12-18M",
+        "color": "Rust",
+        "price": null,
+        "stock": 15,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKS-RUS-18-24M",
+        "size": "18-24M",
+        "color": "Rust",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKS-RUS-2-3Y",
+        "size": "2-3Y",
+        "color": "Rust",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKS-RUS-3-4Y",
+        "size": "3-4Y",
+        "color": "Rust",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKS-RUS-4-5Y",
+        "size": "4-5Y",
+        "color": "Rust",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Cable Knit Bloomers",
+    "slug": "cable-knit-bloomers",
+    "description": "Soft knitted bloomers with an elasticated waist — lovely with a bodysuit or cardigan.",
+    "fabric": "Knitted",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 1890,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestSeller": false,
+    "sortOrder": 3,
+    "categories": [
+      "newborn",
+      "baby-boys"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Moss",
+        "hex": "#4E6A3A"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/knit-bloomers-moss.webp",
+        "alt": "Cable Knit Bloomers in Moss",
+        "color": "Moss"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-CKB-MOS-0-3M",
+        "size": "0-3M",
+        "color": "Moss",
+        "price": null,
+        "stock": 6,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKB-MOS-3-6M",
+        "size": "3-6M",
+        "color": "Moss",
+        "price": null,
+        "stock": 9,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKB-MOS-6-9M",
+        "size": "6-9M",
+        "color": "Moss",
+        "price": null,
+        "stock": 5,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKB-MOS-9-12M",
+        "size": "9-12M",
+        "color": "Moss",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-CKB-MOS-12-18M",
+        "size": "12-18M",
+        "color": "Moss",
+        "price": null,
+        "stock": 2,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Knitted Hat & Mitten Set",
+    "slug": "knitted-hat-mitten-set",
+    "description": "A textured knit hat with matching thumbless mittens to keep little hands and ears warm.",
+    "fabric": "Soft knit",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 1690,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": false,
+    "isBestSeller": false,
+    "sortOrder": 4,
+    "categories": [
+      "newborn",
+      "seasonal",
+      "matching-sets"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Snow",
+        "hex": "#F1F0EC"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/hat-mittens-snow.webp",
+        "alt": "Knitted Hat & Mitten Set in Snow",
+        "color": "Snow"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-HMS-SNO-0-3M",
+        "size": "0-3M",
+        "color": "Snow",
+        "price": null,
+        "stock": 11,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HMS-SNO-3-6M",
+        "size": "3-6M",
+        "color": "Snow",
+        "price": null,
+        "stock": 7,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HMS-SNO-6-9M",
+        "size": "6-9M",
+        "color": "Snow",
+        "price": null,
+        "stock": 21,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HMS-SNO-9-12M",
+        "size": "9-12M",
+        "color": "Snow",
+        "price": null,
+        "stock": 16,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HMS-SNO-12-18M",
+        "size": "12-18M",
+        "color": "Snow",
+        "price": null,
+        "stock": 11,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HMS-SNO-18-24M",
+        "size": "18-24M",
+        "color": "Snow",
+        "price": null,
+        "stock": 7,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Ribbed Knit Beanie",
+    "slug": "ribbed-knit-beanie",
+    "description": "A classic ribbed beanie with a deep turn-up cuff.",
+    "fabric": "Ribbed knit",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 990,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": false,
+    "isBestSeller": false,
+    "sortOrder": 5,
+    "categories": [
+      "seasonal"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Berry",
+        "hex": "#9E3A78"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/ribbed-beanie-berry.webp",
+        "alt": "Ribbed Knit Beanie in Berry",
+        "color": "Berry"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-RKB-BER-6-9M",
+        "size": "6-9M",
+        "color": "Berry",
+        "price": null,
+        "stock": 18,
+        "isActive": true
+      },
+      {
+        "sku": "KT-RKB-BER-12-18M",
+        "size": "12-18M",
+        "color": "Berry",
+        "price": null,
+        "stock": 2,
+        "isActive": true
+      },
+      {
+        "sku": "KT-RKB-BER-2-3Y",
+        "size": "2-3Y",
+        "color": "Berry",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      },
+      {
+        "sku": "KT-RKB-BER-4-5Y",
+        "size": "4-5Y",
+        "color": "Berry",
+        "price": null,
+        "stock": 2,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Hand-Crochet Booties",
+    "slug": "hand-crochet-booties",
+    "description": "Soft crocheted booties with a button strap, for the first months before first steps.",
+    "fabric": "Crocheted yarn",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 1290,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": false,
+    "isBestSeller": true,
+    "sortOrder": 6,
+    "categories": [
+      "newborn"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Coral",
+        "hex": "#E38B76"
+      },
+      {
+        "name": "Cream",
+        "hex": "#F0E7D7"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/crochet-booties-coral.webp",
+        "alt": "Hand-Crochet Booties in Coral",
+        "color": "Coral"
+      },
+      {
+        "url": "/images/products/crochet-booties-cream.webp",
+        "alt": "Hand-Crochet Booties in Cream",
+        "color": "Cream"
+      },
+      {
+        "url": "/images/products/crochet-booties-cream-2.webp",
+        "alt": "Hand-Crochet Booties in Cream",
+        "color": "Cream"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-HCB-COR-0-3M",
+        "size": "0-3M",
+        "color": "Coral",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-COR-3-6M",
+        "size": "3-6M",
+        "color": "Coral",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-COR-6-9M",
+        "size": "6-9M",
+        "color": "Coral",
+        "price": null,
+        "stock": 5,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-COR-9-12M",
+        "size": "9-12M",
+        "color": "Coral",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-CRE-0-3M",
+        "size": "0-3M",
+        "color": "Cream",
+        "price": null,
+        "stock": 8,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-CRE-3-6M",
+        "size": "3-6M",
+        "color": "Cream",
+        "price": null,
+        "stock": 20,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-CRE-6-9M",
+        "size": "6-9M",
+        "color": "Cream",
+        "price": null,
+        "stock": 11,
+        "isActive": true
+      },
+      {
+        "sku": "KT-HCB-CRE-9-12M",
+        "size": "9-12M",
+        "color": "Cream",
+        "price": null,
+        "stock": 12,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Everyday Crew Tee",
+    "slug": "everyday-crew-tee",
+    "description": "A soft crew-neck tee with a relaxed fit — the one they'll reach for every day.",
+    "fabric": "Cotton jersey",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 1190,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": false,
+    "isBestSeller": false,
+    "sortOrder": 7,
+    "categories": [
+      "everyday-wear",
+      "casual-outfits",
+      "baby-boys"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Melange Blue",
+        "hex": "#AFC3D6"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/crew-tee-grey.webp",
+        "alt": "Everyday Crew Tee in Melange Blue",
+        "color": "Melange Blue"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-ECT-MEL-9-12M",
+        "size": "9-12M",
+        "color": "Melange Blue",
+        "price": null,
+        "stock": 9,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ECT-MEL-12-18M",
+        "size": "12-18M",
+        "color": "Melange Blue",
+        "price": null,
+        "stock": 19,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ECT-MEL-18-24M",
+        "size": "18-24M",
+        "color": "Melange Blue",
+        "price": null,
+        "stock": 14,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ECT-MEL-2-3Y",
+        "size": "2-3Y",
+        "color": "Melange Blue",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ECT-MEL-3-4Y",
+        "size": "3-4Y",
+        "color": "Melange Blue",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ECT-MEL-4-5Y",
+        "size": "4-5Y",
+        "color": "Melange Blue",
+        "price": null,
+        "stock": 12,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Lace Occasion Dress",
+    "slug": "lace-occasion-dress",
+    "description": "A delicate dress with flutter sleeves and a lace overlay, for birthdays, weddings and family celebrations.",
+    "fabric": "Lace with cotton lining",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 4290,
+    "compareAtPrice": 4990,
+    "status": "ACTIVE",
+    "gender": "GIRL",
+    "isSample": true,
+    "isFeatured": true,
+    "isNewArrival": false,
+    "isBestSeller": false,
+    "sortOrder": 8,
+    "categories": [
+      "baby-girls"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Ivory",
+        "hex": "#F3EEE3"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/lace-dress-ivory.webp",
+        "alt": "Lace Occasion Dress in Ivory",
+        "color": "Ivory"
+      },
+      {
+        "url": "/images/products/lace-dress-ivory-2.webp",
+        "alt": "Lace Occasion Dress in Ivory",
+        "color": "Ivory"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-LOD-IVO-6-9M",
+        "size": "6-9M",
+        "color": "Ivory",
+        "price": null,
+        "stock": 15,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LOD-IVO-9-12M",
+        "size": "9-12M",
+        "color": "Ivory",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LOD-IVO-12-18M",
+        "size": "12-18M",
+        "color": "Ivory",
+        "price": null,
+        "stock": 12,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LOD-IVO-18-24M",
+        "size": "18-24M",
+        "color": "Ivory",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LOD-IVO-2-3Y",
+        "size": "2-3Y",
+        "color": "Ivory",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-LOD-IVO-3-4Y",
+        "size": "3-4Y",
+        "color": "Ivory",
+        "price": null,
+        "stock": 20,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Polka Dot Smock Dress",
+    "slug": "polka-dot-smock-dress",
+    "description": "A sweet long-sleeve smock dress with a rounded collar and a scattering of dots.",
+    "fabric": "Cotton",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 3290,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "GIRL",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestSeller": false,
+    "sortOrder": 9,
+    "categories": [
+      "baby-girls",
+      "casual-outfits"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Lilac",
+        "hex": "#CDB5CE"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/dot-smock-dress-lilac.webp",
+        "alt": "Polka Dot Smock Dress in Lilac",
+        "color": "Lilac"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-PDS-LIL-12-18M",
+        "size": "12-18M",
+        "color": "Lilac",
+        "price": null,
+        "stock": 2,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PDS-LIL-18-24M",
+        "size": "18-24M",
+        "color": "Lilac",
+        "price": null,
+        "stock": 9,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PDS-LIL-2-3Y",
+        "size": "2-3Y",
+        "color": "Lilac",
+        "price": null,
+        "stock": 8,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PDS-LIL-3-4Y",
+        "size": "3-4Y",
+        "color": "Lilac",
+        "price": null,
+        "stock": 16,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PDS-LIL-4-5Y",
+        "size": "4-5Y",
+        "color": "Lilac",
+        "price": null,
+        "stock": 4,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Tulle Party Dress",
+    "slug": "tulle-party-dress",
+    "description": "A party dress with a soft cotton bodice and a full tulle skirt that twirls just right.",
+    "fabric": "Cotton bodice, tulle skirt",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 3790,
+    "compareAtPrice": 4290,
+    "status": "ACTIVE",
+    "gender": "GIRL",
+    "isSample": true,
+    "isFeatured": true,
+    "isNewArrival": false,
+    "isBestSeller": true,
+    "sortOrder": 10,
+    "categories": [
+      "baby-girls"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Mint",
+        "hex": "#A8D2C3"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/tulle-dress-mint.webp",
+        "alt": "Tulle Party Dress in Mint",
+        "color": "Mint"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-TPD-MIN-12-18M",
+        "size": "12-18M",
+        "color": "Mint",
+        "price": null,
+        "stock": 18,
+        "isActive": true
+      },
+      {
+        "sku": "KT-TPD-MIN-18-24M",
+        "size": "18-24M",
+        "color": "Mint",
+        "price": null,
+        "stock": 6,
+        "isActive": true
+      },
+      {
+        "sku": "KT-TPD-MIN-2-3Y",
+        "size": "2-3Y",
+        "color": "Mint",
+        "price": null,
+        "stock": 6,
+        "isActive": true
+      },
+      {
+        "sku": "KT-TPD-MIN-3-4Y",
+        "size": "3-4Y",
+        "color": "Mint",
+        "price": null,
+        "stock": 11,
+        "isActive": true
+      },
+      {
+        "sku": "KT-TPD-MIN-4-5Y",
+        "size": "4-5Y",
+        "color": "Mint",
+        "price": null,
+        "stock": 0,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Printed Bodysuit 3-Pack",
+    "slug": "printed-bodysuit-3-pack",
+    "description": "Three soft bodysuits with gentle prints — an easy rotation for the first months.",
+    "fabric": "Cotton jersey",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 2490,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestSeller": false,
+    "sortOrder": 11,
+    "categories": [
+      "newborn",
+      "matching-sets",
+      "everyday-wear"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "White Prints",
+        "hex": "#ECEEEF"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/sleepsuit-set.webp",
+        "alt": "Printed Bodysuit 3-Pack in White Prints",
+        "color": "White Prints"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-PB3-WHI-0-3M",
+        "size": "0-3M",
+        "color": "White Prints",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PB3-WHI-3-6M",
+        "size": "3-6M",
+        "color": "White Prints",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PB3-WHI-6-9M",
+        "size": "6-9M",
+        "color": "White Prints",
+        "price": null,
+        "stock": 15,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PB3-WHI-9-12M",
+        "size": "9-12M",
+        "color": "White Prints",
+        "price": null,
+        "stock": 9,
+        "isActive": true
+      },
+      {
+        "sku": "KT-PB3-WHI-12-18M",
+        "size": "12-18M",
+        "color": "White Prints",
+        "price": null,
+        "stock": 7,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Everyday Socks 5-Pack",
+    "slug": "everyday-socks-5-pack",
+    "description": "Five pairs of soft everyday socks in mixed colours.",
+    "fabric": "Cotton blend",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 890,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "UNISEX",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": false,
+    "isBestSeller": false,
+    "sortOrder": 12,
+    "categories": [
+      "everyday-wear"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Mixed",
+        "hex": "#E7A99E"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/rainbow-socks.webp",
+        "alt": "Everyday Socks 5-Pack in Mixed",
+        "color": "Mixed"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-ES5-MIX-0-3M",
+        "size": "0-3M",
+        "color": "Mixed",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ES5-MIX-6-9M",
+        "size": "6-9M",
+        "color": "Mixed",
+        "price": null,
+        "stock": 6,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ES5-MIX-12-18M",
+        "size": "12-18M",
+        "color": "Mixed",
+        "price": null,
+        "stock": 8,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ES5-MIX-2-3Y",
+        "size": "2-3Y",
+        "color": "Mixed",
+        "price": null,
+        "stock": 7,
+        "isActive": true
+      },
+      {
+        "sku": "KT-ES5-MIX-4-5Y",
+        "size": "4-5Y",
+        "color": "Mixed",
+        "price": null,
+        "stock": 17,
+        "isActive": true
+      }
+    ]
+  },
+  {
+    "name": "Frill Romper & Bloomer Set",
+    "slug": "frill-romper-bloomer-set",
+    "description": "A sleeveless frill top with matching bloomers — a soft, easy set for warm days.",
+    "fabric": "Cotton gauze",
+    "care": "Machine wash cold, inside out. Do not bleach. Line dry in shade. Cool iron if needed.",
+    "price": 2890,
+    "compareAtPrice": null,
+    "status": "ACTIVE",
+    "gender": "GIRL",
+    "isSample": true,
+    "isFeatured": false,
+    "isNewArrival": true,
+    "isBestSeller": false,
+    "sortOrder": 13,
+    "categories": [
+      "matching-sets",
+      "newborn"
+    ],
+    "sizeGuide": "Kinder Thread standard (0–5 years)",
+    "colors": [
+      {
+        "name": "Cream",
+        "hex": "#EEE5D1"
+      }
+    ],
+    "images": [
+      {
+        "url": "/images/products/linen-romper-set.webp",
+        "alt": "Frill Romper & Bloomer Set in Cream",
+        "color": "Cream"
+      }
+    ],
+    "variants": [
+      {
+        "sku": "KT-FRB-CRE-3-6M",
+        "size": "3-6M",
+        "color": "Cream",
+        "price": null,
+        "stock": 13,
+        "isActive": true
+      },
+      {
+        "sku": "KT-FRB-CRE-6-9M",
+        "size": "6-9M",
+        "color": "Cream",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      },
+      {
+        "sku": "KT-FRB-CRE-9-12M",
+        "size": "9-12M",
+        "color": "Cream",
+        "price": null,
+        "stock": 11,
+        "isActive": true
+      },
+      {
+        "sku": "KT-FRB-CRE-12-18M",
+        "size": "12-18M",
+        "color": "Cream",
+        "price": null,
+        "stock": 11,
+        "isActive": true
+      },
+      {
+        "sku": "KT-FRB-CRE-18-24M",
+        "size": "18-24M",
+        "color": "Cream",
+        "price": null,
+        "stock": 10,
+        "isActive": true
+      }
+    ]
+  }
+]

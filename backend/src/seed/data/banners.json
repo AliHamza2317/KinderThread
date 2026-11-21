@@ -1,0 +1,24 @@
+[
+  {
+    "eyebrow": "Soft & simple",
+    "title": "Everyday *Essentials*",
+    "subtitle": "Bodysuits, tees and easy pieces for every day.",
+    "image": "/images/gallery/g7.webp",
+    "ctaLabel": "Shop now",
+    "ctaHref": "/collections/everyday-wear",
+    "tone": "cream",
+    "sortOrder": 0,
+    "isActive": true
+  },
+  {
+    "eyebrow": "The winter edit",
+    "title": "Warm *Knits*",
+    "subtitle": "Cardigans, sweaters and soft layers.",
+    "image": "/images/gallery/g5.webp",
+    "ctaLabel": "Shop now",
+    "ctaHref": "/collections/seasonal",
+    "tone": "cream",
+    "sortOrder": 1,
+    "isActive": true
+  }
+]
