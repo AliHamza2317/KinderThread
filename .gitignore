@@ -1,12 +1,22 @@
+# dependencies and build output (frontend and backend)
 node_modules
 .next
 out
 build
+dist
+coverage
+.vercel
+
+# secrets — never commit real environment files
 .env
 .env*.local
+
+# generated
 *.tsbuildinfo
 next-env.d.ts
+test-results
+playwright-report
+
+# misc
 .DS_Store
 npm-debug.log*
-/test-results
-/playwright-report
